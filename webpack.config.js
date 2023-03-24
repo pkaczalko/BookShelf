@@ -1,11 +1,11 @@
 const path = require('path');
 
 module.exports = {
-    mode: "production",
-    entry: "./main.js",
+    mode: "development",
+    entry: "./src/index.js",
     output: {
         filename: "main.js",
-        path: path.resolve(__dirname, "Dist")
+        path: path.resolve(__dirname, "dist")
     },
     module:{
         rules:[{
@@ -17,6 +17,11 @@ module.exports = {
                     presets: ['@babel/preset-env','@babel/preset-react']
                 }
             }
+        },
+        {
+            test: /\.scss$/i,
+            exclude: /(node_modules|bower_components)/,
+            use: ["style-loader", "css-loader", "sass-loader"],
         }]
     },
 };

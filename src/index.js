@@ -6,6 +6,7 @@ function HomePage(){
     return (
         <div>
             <h1>BookShelf HomePage</h1>
+            <p>Helo</p>
         </div>
     );
 };

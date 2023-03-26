@@ -8,5 +8,14 @@ module.exports = merge.merge(common, {
     output: {
         filename: 'main.js',
         path: path.resolve(__dirname, "dist")
+    },
+    module: {
+        rules: [
+          {
+            test: /\.scss$/i,
+            exclude: /(node_modules|bower_components)/,
+            use: ["style-loader", "css-loader", "sass-loader"],
+          }
+        ],
     }
 });

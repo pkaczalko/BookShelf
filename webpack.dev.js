@@ -12,9 +12,8 @@ module.exports = merge.merge(common, {
     module: {
         rules: [
           {
-            test: /\.scss$/i,
-            exclude: /(node_modules|bower_components)/,
-            use: ["style-loader", "css-loader", "sass-loader"],
+            test: /\.css$/i,
+            use: ['style-loader', 'css-loader', "sass-loader"]
           }
         ],
     }

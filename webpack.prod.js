@@ -16,10 +16,14 @@ module.exports = merge.merge(common, {
     ],
     module: {
         rules: [
+          // {
+          //   test: /\.css$/i,
+          //   exclude: /(node_modules|bower_components)/,
+          //   use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+          // }
           {
-            test: /\.scss$/i,
-            exclude: /(node_modules|bower_components)/,
-            use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+            test: /\.css$/i,
+            use: ['style-loader', 'css-loader', "sass-loader"]
           }
         ],
     } 

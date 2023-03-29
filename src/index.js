@@ -1,12 +1,11 @@
 import React from "react";
 import {createRoot} from 'react-dom/client';
-import "./main.scss"
+import { MyNavbar } from "./homePage/Navbar";
 
 function HomePage(){
     return (
         <div>
-            <h1>BookShelf HomePage</h1>
-            <p>Helo</p>
+            <MyNavbar />
         </div>
     );
 };

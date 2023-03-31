@@ -4,22 +4,22 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 export default function CategoryTitle(props){
     const [hover, setHover] = React.useState({backgroundColor: "#E8E8E8", borderWidth: "0px",
-                                              boxShadow:"none", width:"200px", opacity:"0"})
+                                              boxShadow:"none", transform: "translateX(0px)", opacity:"0"})
 
     const textStyle = { color:"#00BFFF", width:hover.width, fontSize:"20px", fontWeight: "600", opacity:hover.opacity,
-                        transition: "width 1s, opacity 1s,transform 1s", padding:"5px", marginTop:"6.5px"};
+                        transform: hover.transform, transition: "opacity 1s, transform 1s", padding:"5px", marginTop:"6.5px"};
 
     const buttonStyle = {fontSize:"29px", width:hover.width, backgroundColor: hover.backgroundColor,
                          borderWidth: hover.borderWidth, boxShadow: hover.boxShadow,
-                         transition: "width 1s, opacity 1s, transform .30s", whiteSpace: "nowrap"}
+                         whiteSpace: "nowrap"}
 
 
     function handleMouseEnter(){
-      setHover({backgroundColor: "#E8E8E8", borderWidth:"0px", boxShadow:"none", width:"440px", opacity:"1"})
+      setHover({backgroundColor: "#E8E8E8", borderWidth:"0px", boxShadow:"none", opacity:"1", transform: "translateX(12px)"})
     }
 
     function handleMouseOut(){
-      setHover({backgroundColor: "#E8E8E8", borderWidth:"0px", boxShadow:"none", width:"200px", opacity:"0"})
+      setHover({backgroundColor: "#E8E8E8", borderWidth:"0px", boxShadow:"none", opacity:"0", transform: "translateX(0px)"})
     }
 
     return(

@@ -5,7 +5,7 @@ import CatalogueNavbar from "./CatalogueNavbar";
 import BookCard from "./BookCard";
 import AddBookButton from "./AddBookBtn";
 import AddBookPopup from "./AddBookPopup";
-import Category from "./Category";
+import CategoryTitle from "./CategoryTitle";
 
 function RandomBookPanel(props){
     const [books, setBooks] = React.useState([])
@@ -61,7 +61,7 @@ export function Main(){
         <Container fluid className="d-flex justify-content-start" style={mainStyle}>
             <CatalogueNavbar data={data}/>
             <Container className="d-flex flex-column">
-                <Category />
+                <CategoryTitle name="Moje Książki" />
                 <AddBookButton onClick = {handleShow}/>
                 <AddBookPopup show={showAddPopup} handleClose={handleClose}/>
             </Container>

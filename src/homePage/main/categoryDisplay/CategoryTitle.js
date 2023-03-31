@@ -7,7 +7,7 @@ export default function CategoryTitle(props){
                                               boxShadow:"none", width:"200px", opacity:"0"})
 
     const textStyle = { color:"#00BFFF", width:hover.width, fontSize:"20px", fontWeight: "600", opacity:hover.opacity,
-                        transition: "width 1s, opacity 1s,transform 1s", padding:"5px", marginTop:"7px"};
+                        transition: "width 1s, opacity 1s,transform 1s", padding:"5px", marginTop:"6.5px"};
 
     const buttonStyle = {fontSize:"29px", width:hover.width, backgroundColor: hover.backgroundColor,
                          borderWidth: hover.borderWidth, boxShadow: hover.boxShadow,

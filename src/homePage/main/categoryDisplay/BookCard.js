@@ -6,7 +6,8 @@ export default function BookCard(props){
     const bookCardStyle = {width:"200px", height:"auto", padding:"10px",
                            borderRadius:"12px", boxShadow: "0px 8px 16px 0px rgba(0,0,0,0.2)"}
 
-    const book = props.data
+    const book = props.
+    
     return(
         <Card border="dark" bg="light" key="dark" text="dark" style={bookCardStyle}>
             {book.imageLinks && <Card.Img src={book.imageLinks.thumbnail}/>}

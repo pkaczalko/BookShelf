@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 export default function CatalogueNavbar(props){
     const data = props.data
 
-    const catalogueNavbarStyle = {width: "300px", height: `${(data.length) * 42 + 100}px`, backgroundColor:"white", borderRadius:"14px",
+    const catalogueNavbarStyle = {minWidth: "200px", width: "300px", height: `${(data.length) * 42 + 100}px`, backgroundColor:"white", borderRadius:"14px",
                                   boxShadow: "0px 8px 16px 0px rgba(0,0,0,0.2)"}
     const headerStyle = {textAlign:"center", fontWeight:"bold", padding: "10px"}
 

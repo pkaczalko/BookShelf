@@ -6,36 +6,6 @@ import BookCard from "./categoryDisplay/BookCard";
 import CategoryTitle from "./categoryDisplay/CategoryTitle";
 import CategoryCards from "./categoryDisplay/CategoryCards";
 
-function RandomBookPanel(props){
-    const [books, setBooks] = React.useState([])
-
-    const category = props.category
-
-    React.useEffect(() =>{
-        fetch("https://www.googleapis.com/books/v1/volumes?q=category:" + category)
-        .then(res => res.json())
-        .then((data) => {
-            const volumeInfo = data.items.map((book) =>{
-                return book.volumeInfo
-            })
-            setBooks(volumeInfo)
-        })
-    },[])
-
-    const BookCardList = books.map((book) =>{
-        return <BookCard data={book} />
-    })
-
-    return(
-        <Container>
-            <h1 style={{marginLeft:"40px"}}>{category}</h1>
-            <Container fluid className="d-flex justify-content-between" style={{padding:"15px"}}>
-                {BookCardList.slice(5)}
-            </Container>
-        </Container>
-    )
-}
-
 export function Main(){
     const mainStyle = {padding: "20px 20px 20px 20px"}
     const data = [{category: "Horror", id:1},
@@ -54,8 +24,8 @@ export function Main(){
     return(
         <Container fluid className="d-flex justify-content-start" style={mainStyle}>
             <CatalogueNavbar data={data}/>
-            <Container className="d-flex flex-column">
-                <CategoryCards />
+            <Container className="d-flex flex-column" style={{marginLeft: "-12px"}}>
+                <CategoryCards name="Moje Książki"/>
             </Container>
         </Container>
     )

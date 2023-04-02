@@ -1,5 +1,5 @@
 import React from "react";
-import {Container} from 'react-bootstrap'
+import {Carousel, Container} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.css';
 import CatalogueNavbar from "./CatalogueNavbar";
 import BookCard from "./categoryDisplay/BookCard";

@@ -2,6 +2,7 @@ import React from "react";
 import {createRoot} from 'react-dom/client';
 import { Main } from "./homePage/main/Main";
 import { MyNavbar } from "./homePage/navbar/Navbar";
+import "./main.scss";
 
 document.body.style.background = "#E8E8E8"
 

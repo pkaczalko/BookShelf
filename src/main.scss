@@ -1,8 +1,10 @@
 //Your changes
+
 .carousel-control-next {
     height: auto;
-    width: 8rem !important;
+    // width: 8rem !important;
     // align-items: right;
+    display: none !important;
   }
 
  .carousel-control-next-icon{
@@ -11,5 +13,6 @@
     width: 5rem !important;
     height: 5rem !important;
     opacity: 1 !important;
+    // display: block !important;
   }
 @import "../node_modules/bootstrap/scss/bootstrap.scss";

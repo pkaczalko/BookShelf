@@ -1,18 +1,22 @@
 import React from "react";
-import {Carousel, Container} from 'react-bootstrap'
+import {Carousel, Container, Button, Image} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.css';
-import AddBookPopup from "../addBook/AddBookPopup";
-import AddBookCard from "../addBook/AddBookCard";
 import CategoryTitle from "./CategoryTitle";
-import BookCard from "./BookCard";
 import CardsSectionDisplay from "./CardsSectionDisplay";
+import ButtonRight from "./ButtonRight";
 
 export default function CategoryCards(props){
+    const carouselStyle = {width:"1280px"};
+
+    const carouselRef = React.useRef(null);
+    const handleNext = () => {
+        carouselRef.current.next();
+    }
 
     return(
-        <Container>
+        <Container style={{position:"relative"}}>
             <CategoryTitle name={props.name} />
-            <Carousel variant="dark">
+            <Carousel variant="dark" interval={null} ref={carouselRef} style={carouselStyle}>
                 <Carousel.Item >
                     <CardsSectionDisplay /> 
                 </Carousel.Item>
@@ -20,6 +24,7 @@ export default function CategoryCards(props){
                     <CardsSectionDisplay /> 
                 </Carousel.Item>
             </Carousel>
+            <ButtonRight handleNext = {handleNext}/>
         </Container>
     )
 }

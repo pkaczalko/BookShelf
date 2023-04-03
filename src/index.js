@@ -5,6 +5,7 @@ import { MyNavbar } from "./homePage/navbar/Navbar";
 import "./main.scss";
 
 document.body.style.background = "#E8E8E8"
+document.body.style.overflowX = "hidden";
 
 function HomePage(){
     return (

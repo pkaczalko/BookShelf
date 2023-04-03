@@ -12,7 +12,7 @@ export default function CardsSectionDisplay(){
     const handleClose = () => setShowAddPopup(false)
     const handleShow = () => setShowAddPopup(true)
 
-    const maxSize = 4
+    const maxSize = 5
 
     React.useEffect(() =>{
         fetch("https://www.googleapis.com/books/v1/volumes?q=dune")

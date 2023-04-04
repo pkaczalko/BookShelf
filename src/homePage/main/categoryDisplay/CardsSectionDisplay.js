@@ -4,7 +4,7 @@ import AddBookPopup from "../addBook/AddBookPopup";
 import AddBookCard from "../addBook/AddBookCard";
 import BookCard from "./BookCard";
 
-export default function CardsSectionDisplay(){
+export default function CardsSectionDisplay(props){
     const categoryCardsStyle = {padding:"10px", marginLeft:"-12px"}
     const [showAddPopup, setShowAddPopup] = React.useState(false)
     const [books, setBooks] = React.useState([])
@@ -13,15 +13,16 @@ export default function CardsSectionDisplay(){
     const handleShow = () => setShowAddPopup(true)
 
     const maxSize = 5
+    const isbn = props.isbn
 
     React.useEffect(() =>{
-        fetch("https://www.googleapis.com/books/v1/volumes?q=dune")
+        fetch("https://www.googleapis.com/books/v1/volumes?q=" + isbn)
         .then(res => res.json())
         .then((data) => {
             const volumeInfo = data.items.map((book) =>{
                 return book.volumeInfo
             })
-            setBooks(volumeInfo.slice(0,maxSize))
+            setBooks(volumeInfo.slice(0, maxSize))
         })
     },[])
 

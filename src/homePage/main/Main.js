@@ -21,11 +21,14 @@ export function Main(){
                   {category: "etc5", id:11},
                   {category: "etc6", id:12}]
 
+    const isbn = [{name: "harrypotter", id:1},
+                  {name: "diune", id:2},
+                  {name: "stephenKing", id:3}]
     return(
         <Container fluid className="d-flex justify-content-start" style={mainStyle}>
             <CatalogueNavbar data={data}/>
             <Container className="d-flex flex-column" style={{marginLeft: "-12px"}}>
-                <CategoryCards name="Moje Książki"/>
+                <CategoryCards name="Moje Książki" isbn={isbn}/>
             </Container>
         </Container>
     )

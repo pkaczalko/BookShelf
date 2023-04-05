@@ -11,7 +11,7 @@ export default function AddBookCard(props){
     const addIconStyle = {width:"100%", padding:"5px", marginTop:"37px"}
 
     function handleMouseOver(){
-        setHover({...hover, cursor: "pointer", transform: "translateY(-12px)"})
+        setHover({...hover, cursor: "pointer", transform: "translateY(-10px)"})
     }
 
     function handleMouseOut(){
@@ -20,7 +20,7 @@ export default function AddBookCard(props){
 
     return(
         <Card onClick={props.onHandleClick} onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} style={cardStyle} 
-              bg={hover.bg} key="dark" text={hover.text}>
+              bg={hover.bg} key={props.key} text={hover.text}>
             <Card.Header style={{height:"247px"}}>
                 <Card.Img variant="top" src={addIcon} style={addIconStyle}/>
             </Card.Header>

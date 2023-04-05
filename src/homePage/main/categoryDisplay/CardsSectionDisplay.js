@@ -7,34 +7,20 @@ import BookCard from "./BookCard";
 export default function CardsSectionDisplay(props){
     const categoryCardsStyle = {padding:"10px", marginLeft:"-12px"}
     const [showAddPopup, setShowAddPopup] = React.useState(false)
-    const [books, setBooks] = React.useState([])
 
     const handleClose = () => setShowAddPopup(false)
     const handleShow = () => setShowAddPopup(true)
 
-    const maxSize = 5
-    const isbn = props.isbn
-
-    React.useEffect(() =>{
-        fetch("https://www.googleapis.com/books/v1/volumes?q=" + isbn)
-        .then(res => res.json())
-        .then((data) => {
-            const volumeInfo = data.items.map((book) =>{
-                return book.volumeInfo
-            })
-            setBooks(volumeInfo.slice(0, maxSize))
-        })
-    },[])
-
+    const books = props.isbn
     const BookCardList = books.map((book) =>{
-        return <BookCard data={book} />
+        return <BookCard data={book.info} key={book.id}/>
     })
 
     return(
         <Container style={categoryCardsStyle} className="d-flex justify-content-start">
             {BookCardList}
-            <AddBookCard onHandleClick={handleShow} />
-            <AddBookPopup show={showAddPopup} handleClose={handleClose}/>
+            {props.last && <AddBookCard onHandleClick={handleShow} />}
+            {props.last && <AddBookPopup show={showAddPopup} handleClose={handleClose}/>}
         </Container>
     )
 }

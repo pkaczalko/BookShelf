@@ -1,23 +1,34 @@
 import React from "react";
-import { StyleSheet, View, SafeAreaView, StatusBar, Platform } from "react-native";
+import { StyleSheet, View, SafeAreaView, StatusBar, Platform, Modal } from "react-native";
 import { List } from "react-native-paper";
 import { useNavigation } from '@react-navigation/native';
 
-export default function AddBookMenu(){
+export default function AddBookMenu({handleBottomSheetMenu}){
     const navigation = useNavigation();
 
+    function handleISBN(){
+        navigation.navigate('add', {screen: 'addBookViaISBN'})
+        handleBottomSheetMenu(false)
+    }
+    function handleManual(){
+        navigation.navigate('add', {screen: 'addBookManually'})
+        handleBottomSheetMenu(false)
+    }
+    function handleShelf(){
+        navigation.navigate('add', {screen: 'addShelf'})
+        handleBottomSheetMenu(false)
+    }
     return(
         <SafeAreaView style={styles.safeContainer}>
     
             <List.Section style={styles.listContainer}>
                 <List.Item title="Dodaj książkę przez ISBN" left={()=> <List.Icon icon="barcode-scan" style={styles.listIcon}/>}
-                           onPress={() => navigation.navigate('addBookViaISBN')}/>
+                           onPress={handleISBN}/>
                 <List.Item title="Dodaj książkę ręcznie" left={()=> <List.Icon icon="pencil" style={styles.listIcon}/>} 
-                           onPress={() => navigation.navigate('addBookManually')}/>
+                           onPress={handleManual}/>
                 <List.Item title="Dodaj nową półkę" left={()=> <List.Icon icon="bookshelf" style={styles.listIcon}/>} 
-                           onPress={() => navigation.navigate('addShelf')}/>
+                           onPress={handleShelf}/>
             </List.Section>
-
         </SafeAreaView>    
     )
 }

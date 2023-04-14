@@ -44,7 +44,7 @@ const BottomSheet = React.forwardRef(({children, scale}, ref) =>{
 
     const rBottomSheetStyle = useAnimatedStyle(()=>{
         const borderRadius = interpolate(translateY.value, [MAX_TRANSLATE_Y + 50, MAX_TRANSLATE_Y], [25, 5], Extrapolate.CLAMP)
-        if (active.value === false && translateY.value > -10) runOnJS(setIsVisible)(false)
+        if (active.value === false && translateY.value > -4) runOnJS(setIsVisible)(false)
         return{
             borderRadius,
             transform: [{translateY: translateY.value}]

@@ -75,9 +75,9 @@ function MyBooksRoute(){
                 </Appbar.Header>
 
                 <TopTab.Navigator>
-                    <TopTab.Screen name="tags" component={TagsRoute} options={{title: "Tagi"}}/>
-                    <TopTab.Screen name="categories" component={CategoriesRoute} options={{title:"Kategorie"}}/>
                     <TopTab.Screen name="shelves" component={ShelvesRoute} options={{title:"Półki"}}/>
+                    <TopTab.Screen name="categories" component={CategoriesRoute} options={{title:"Kategorie"}}/>
+                    <TopTab.Screen name="tags" component={TagsRoute} options={{title: "Tagi"}}/>
                 </TopTab.Navigator>
             </SafeAreaView>
           );
@@ -96,6 +96,10 @@ export default function App(){
 
     const refBottomSheet = React.useRef(null)
     const [bottomSheetVisible, setBottomSheetVisible] = React.useState(true)
+
+    React.useEffect(()=>{
+        setBottomSheetVisible(true)
+    },[bottomSheetVisible])
 
     function onHandlePress(){
         const isActive = refBottomSheet?.current?.isActive()

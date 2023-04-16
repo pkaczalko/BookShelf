@@ -2,22 +2,23 @@ import React from 'react'
 import { View, Text, StyleSheet} from 'react-native'
 import { FlatList, NativeViewGestureHandler, ScrollView } from 'react-native-gesture-handler'
 import BottomSheet from '../AddBook/BottomSheet'
-import { IconButton, Chip, Button, Divider } from 'react-native-paper'
+import { IconButton, Chip, Button, Divider, Card } from 'react-native-paper'
 import CategoryCheckBox from './CategoryCheckBox'
+import Book from './Book'
 
 export default function Categories() {
   const refBottomSheet = React.useRef()
   
-  const fetchedData =[{title: "asdasd", id: 14},
-                      {title: "asdasd", id: 1},
-                      {title: "asdasd", id: 2},
-                      {title: "asdasd", id: 3},
-                      {title: "asdasd", id: 4},
-                      {title: "asdasd", id: 5},
-                      {title: "asdasd", id: 6},
-                      {title: "asdasd", id: 7},
-                      {title: "asdasd", id: 8},
-                      {title: "asdasd", id: 9},
+  const fetchedData =[{title: "Thriller", id: 14},
+                      {title: "Horror", id: 1},
+                      {title: "Technika", id: 2},
+                      {title: "Biografia", id: 3},
+                      {title: "Poezja", id: 4},
+                      {title: "Fantasy", id: 5},
+                      {title: "Sci-Fi", id: 6},
+                      {title: "Przygodowe", id: 7},
+                      {title: "Sport", id: 8},
+                      {title: "Naukowe", id: 9},
                       {title: "asdasd", id: 10},
                       {title: "asdasd", id: 11},
                       {title: "asdasd", id: 12},
@@ -40,24 +41,41 @@ export default function Categories() {
       }
       return item;
     });
-    setData(updatedData);
+    setData(updatedData)
   }
 
   const renderCategoryCheckbox = ({item}) => {
     return <CategoryCheckBox title={item.title} isChecked={item.isChecked} onChecked={() => handleCheck(item.id)} />
   }
 
+  const renderFilterChip = ({item}) =>{
+    if (item.isChecked === true){
+      return <Chip icon="check" mode="flat" elevated={true} elevation={1}
+                  style={styles.chipContainer} onClose={() => handleCheck(item.id)} 
+                  onPress={()=>{console.log("pressed")}}>{item.title}</Chip>
+    }
+  }
+
+  const renderBooks = ({item}) =>{
+    return (
+      <Book name={item.title}/>
+    )
+  }
   return (
-    <View style={styles.container}>
-      <Button icon="filter" mode='contained-tonal' elevated={true} elevation={4} onPress={onHandlePress} style={styles.filterButton}>Filtruj</Button>
-      <Chip icon="check" mode='flat' elevated={true} elevation={1} 
-            style={styles.chipContainer} onClose={()=>console.log("close")} onPress={()=>console.log("pressed")}>Chip</Chip>
+    <NativeViewGestureHandler>
+      <View style={styles.container}>
+        <Button icon="filter" mode='contained-tonal' elevated={true} elevation={4} 
+                onPress={onHandlePress} style={styles.filterButton}>Filtruj</Button>
+        <FlatList data={data} renderItem={renderFilterChip} keyExtractor={item => item.id} horizontal={true}/>
+        <Divider bold={true}/>  
+        <FlatList data={data} renderItem={renderBooks} keyExtractor={item => item.id} numColumns={3} /> 
         <BottomSheet ref={refBottomSheet} scale={1.09}>
           <Divider bold={true}/>
           <Text style={styles.categoryTitle}>Kategorie</Text>
           <FlatList data={data} renderItem={renderCategoryCheckbox} keyExtractor={item => item.id}/>
         </BottomSheet>
-    </View>
+      </View>
+    </NativeViewGestureHandler>
   )
 }
 
@@ -75,6 +93,7 @@ const styles = StyleSheet.create({
   },
   chipContainer:{
     marginLeft:10,
+    marginBottom:18,
     alignSelf:"flex-start", 
     height:35, 
     width:"auto",

@@ -60,7 +60,7 @@ export default function AddCamera(){
     return(
         <View style={styles.screen}>
             <Modal visible={isVisible} onRequestClose={handleBackPress} statusBarTranslucent={true} >
-                {image === undefined && <Camera style={{ flex: 1 }} type={cameraType} ref={cameraRef}>
+                {image === undefined && <Camera style={{ flex: 1 }} type={cameraType} ref={cameraRef} ratio='16:9'>
                     <View style = {{flex:0.18, backgroundColor:"black"}}/>
                     <View style={styles.cameraContainer} />
                     <View style = {styles.bottomButtonContainer}>

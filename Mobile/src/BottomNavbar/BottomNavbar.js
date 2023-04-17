@@ -19,6 +19,7 @@ import { Appbar } from 'react-native-paper';
 import Shelves from '../MyBooks/Shelves';
 import AddShelfBottomSheetPicture from '../AddBook/AddShelfBottomSheet';
 import BottomSheet from '../AddBook/BottomSheet';
+import BookPreview from '../AddBook/BookPreview';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -30,6 +31,8 @@ function AddRoute(){
     const AddBookViaISBNRoute = () => <AddBookViaISBN />
     const AddShelfRoute = () => <AddShelf />
     const AddCameraRoute = () => <AddCamera />
+    const BookPreviewRoute = () => <BookPreview />
+
     return(
         // ogarnac te screenoptions bo nie dziala
         <Stack.Navigator screenOptions={{gestureEnabled:true, gestureDirection:'horizontal', CardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS}}
@@ -59,6 +62,11 @@ function AddRoute(){
                 name="addCamera"
                 component={AddCameraRoute}
                 options={{headerShown: false}}
+             /> 
+              <Stack.Screen
+                name="bookPreview"
+                component={BookPreviewRoute}
+                options={{title: 'Podgląd książki'}}
              /> 
         </Stack.Navigator>
     )

@@ -3,7 +3,7 @@ import {StyleSheet, SafeAreaView, View, Modal, StatusBar, Platform} from 'react-
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TransitionSpecs, HeaderStyleInterpolators, CardStyleInterpolators, TransitionPresets   } from '@react-navigation/stack'
-import {BottomNavigation, Text} from 'react-native-paper'
+import {BottomNavigation, Text, SearchIcon} from 'react-native-paper'
 import AddBookManually from '../AddBook/AddBookManually';
 import AddBookMenu from '../AddBook/AddBookMenu';
 import AddBookViaISBN from '../AddBook/AddBookViaISBN';
@@ -20,6 +20,7 @@ import Shelves from '../MyBooks/Shelves';
 import AddShelfBottomSheetPicture from '../AddBook/AddShelfBottomSheet';
 import BottomSheet from '../AddBook/BottomSheet';
 import BookPreview from '../AddBook/BookPreview';
+import SearchBooks from '../SearchBooks/SearchBooks';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -91,13 +92,28 @@ function MyBooksRoute(){
           );
 }
 
+function SearchRoute(){
+    const SearchBooksRoute = () => <SearchBooks />
+    return (
+        <SafeAreaView style={{flex:1}}>
+            <Stack.Navigator screenOptions={{gestureEnabled:true, gestureDirection:'horizontal', CardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS}}
+                         headerMode="float" animation="fade" initialRouteName='addMenu'> 
+            <Stack.Screen
+                name="searchBooks"
+                component={SearchBooksRoute}
+                options={{title: 'Wyszukaj książkę',}}
+            />
+            </Stack.Navigator>
+    </SafeAreaView>
+    )
+}
+
 const WishListRoute = () => <Text>Wishlist</Text>
-const FavouritesRoute = () => <Text>Favourites</Text>
 const SettingsRoute = () => <Text>SettingsRoute</Text>
 
 export default function App(){
     const routes = [{key: 'catalogue', title:"Katalog", component: MyBooksRoute, focusedIcon:"book", unfocusedIcon:"book-outline" },
-                    {key: "favourites", title: "Ulubione", component: FavouritesRoute, focusedIcon:"heart", unfocusedIcon:"heart-outline"},
+                    {key: "search", title: "Szukaj", component: SearchRoute, focusedIcon:"magnify-plus", unfocusedIcon:"magnify-plus-outline"},
                     {key: "add", title: "Dodaj", component: AddRoute, focusedIcon: "plus-circle", unfocusedIcon: "plus-circle-outline"},
                     {key: "wishlist", title:"WishList", component: WishListRoute, focusedIcon:"book-plus", unfocusedIcon:"book-plus-outline"},
                     {key:'settings', title:"Ustawienia", component: SettingsRoute, focusedIcon:"account-settings",unfocusedIcon:"account-settings-outline"}]

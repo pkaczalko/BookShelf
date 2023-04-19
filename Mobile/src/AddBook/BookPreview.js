@@ -28,7 +28,6 @@ export default function BookPreview(){
                 const description = bookData?.items[0]?.volumeInfo?.description
                 const isbn = route.params.isbn
                 // const categories = data?.items[0]?.volumeInfo?.
-                console.log(bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail)
                 
                 setData({...data, title: check(title), authors: check(authors), publishedDate: check(publishedDate), isbn: check(isbn), 
                         imgUri: check(imgUri), description: check(description)})

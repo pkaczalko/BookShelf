@@ -2,7 +2,7 @@ import React from 'react';
 import { Camera, RNCamera ,CameraType } from 'expo-camera';
 import { StyleSheet, View, Modal, Text, Button, Image, SafeAreaView, Animated, ImageBackground, Pressable } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation,CommonActions } from "@react-navigation/native";
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Dimensions } from 'react-native';
 
@@ -20,6 +20,7 @@ export default function MyBarCodeScanner(){
             const cameraPermission = await Camera.requestCameraPermissionsAsync();
             setHasCameraPermission(cameraPermission.status === "granted")
         })();
+        console.log("dasdassd")
     },[])
 
     // React.useEffect(()=>{

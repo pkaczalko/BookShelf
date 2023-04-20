@@ -1,10 +1,12 @@
 import React from "react";
-import { StyleSheet, View, Dimensions} from "react-native";
+import { StyleSheet, View, Dimensions, BackHandler} from "react-native";
 import { TextInput, Button } from "react-native-paper";
+import { useNavigation, CommonActions } from "@react-navigation/native";
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window')
 
-export default function AddBookManually({navigation}){
+export default function AddBookManually(){
+    const navigation = useNavigation()
     const [data, setData] = React.useState({
         isbn: "",
         title: "",
@@ -19,6 +21,25 @@ export default function AddBookManually({navigation}){
             [name]: value
         }))
     }
+
+    React.useEffect(() => {
+        const backHandler = BackHandler.addEventListener(
+            'hardwareBackPress',
+            handleBackPress
+        );
+
+        return () => backHandler.remove();
+    }, []);
+
+    const handleBackPress = () => {
+        navigation.dispatch(
+            CommonActions.reset({
+            index: 0,
+            routes: [{ name: "catalogue" }],
+            })
+        );
+        return true
+    };
 
     return(
         <View style={styles.formsContainer}>

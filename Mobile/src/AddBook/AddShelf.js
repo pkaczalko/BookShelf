@@ -1,13 +1,14 @@
 import React from "react";
-import { StyleSheet, View, Text, Dimensions } from "react-native";
+import { StyleSheet, View, Text, Dimensions, BackHandler} from "react-native";
 import { Image } from 'react-native-elements';
 import { TextInput, Button, IconButton, MD3Colors } from "react-native-paper";
-import {useRoute } from "@react-navigation/native";
+import {useRoute, useNavigation, CommonActions } from "@react-navigation/native";
 import AddShelfBottomSheetPicture from "./AddShelfBottomSheet";
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window')
 
 export default function AddShelf(){
+    const navigation = useNavigation()
     const route = useRoute()
 
     const [img, setImg] = React.useState();
@@ -16,8 +17,26 @@ export default function AddShelf(){
         if (route.params?.uri) {
             setImg(route.params.uri)
         }
-      }, [route.params]);
+    }, [route.params]);
 
+    React.useEffect(() => {
+        const backHandler = BackHandler.addEventListener(
+            'hardwareBackPress',
+            handleBackPress
+        );
+
+        return () => backHandler.remove();
+    }, []);
+
+    const handleBackPress = () => {
+        navigation.dispatch(
+            CommonActions.reset({
+            index: 0,
+            routes: [{ name: "catalogue" }],
+            })
+        );
+        return true
+    };
 
     const [data, setData] = React.useState({
         name: "",

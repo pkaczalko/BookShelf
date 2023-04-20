@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, SafeAreaView, StatusBar, Platform, Modal } from "react-native";
 import { List } from "react-native-paper";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 export default function AddBookMenu({handleBottomSheetMenu}){
     const navigation = useNavigation();
@@ -29,6 +29,7 @@ export default function AddBookMenu({handleBottomSheetMenu}){
                 <List.Item title="Dodaj nową półkę" left={()=> <List.Icon icon="bookshelf" style={styles.listIcon}/>} 
                            onPress={handleShelf}/>
             </List.Section>
+            
         </SafeAreaView>    
     )
 }

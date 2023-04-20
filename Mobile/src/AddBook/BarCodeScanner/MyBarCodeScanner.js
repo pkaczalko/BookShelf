@@ -2,7 +2,7 @@ import React from 'react';
 import { Camera, RNCamera ,CameraType } from 'expo-camera';
 import { StyleSheet, View, Modal, Text, Button, Image, SafeAreaView, Animated, ImageBackground, Pressable } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
-import { useNavigation,CommonActions } from "@react-navigation/native";
+import { useNavigation,CommonActions,useRoute } from "@react-navigation/native";
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Dimensions } from 'react-native';
 
@@ -11,6 +11,7 @@ const screenWidth = Dimensions.get('screen').width;
 
 export default function MyBarCodeScanner(){
     const navigation = useNavigation();
+    const route = useRoute();
     const [isVisible, setIsVisible] = React.useState(true)
     const [hasCameraPermission, setHasCameraPermission] = React.useState();
     const [isbn, setIsbn] = React.useState();
@@ -40,7 +41,12 @@ export default function MyBarCodeScanner(){
 
     function handleBackPress(){
         setIsVisible(false);
-        navigation.goBack()
+        navigation.dispatch(
+            CommonActions.reset({
+            index: 0,
+            routes: [{ name: "catalogue" }],
+            })
+        );
     }
 
 

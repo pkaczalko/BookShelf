@@ -21,6 +21,7 @@ import AddShelfBottomSheetPicture from '../AddBook/AddShelfBottomSheet';
 import BottomSheet from '../AddBook/BottomSheet';
 import BookPreview from '../AddBook/BookPreview';
 import SearchBooks from '../SearchBooks/SearchBooks';
+import { useRoute } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -36,8 +37,8 @@ function AddRoute(){
 
     return(
         // ogarnac te screenoptions bo nie dziala
-        <Stack.Navigator screenOptions={{gestureEnabled:true, gestureDirection:'horizontal', CardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS}}
-                         headerMode="float" animation="fade" initialRouteName='addMenu'> 
+        <Stack.Navigator screenOptions={{gestureEnabled:false}}
+                         headerMode="float" animation="fade"> 
             <Stack.Screen
                 name="addMenu"
                 component={AddBookMenuRoute}
@@ -175,6 +176,7 @@ export default function App(){
         <NavigationContainer>
 
             <Tab.Navigator
+                id='MainScreen'
                 screenOptions={{
                     headerShown: false,
 

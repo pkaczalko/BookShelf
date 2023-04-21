@@ -41,6 +41,6 @@ export default function SetTabBar({ navigation, state, descriptors, insets }){
 
                     return label;
                 }}
-                />
+        />
     )
 }

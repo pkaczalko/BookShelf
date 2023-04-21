@@ -1,9 +1,9 @@
 import React from "react";
 import { Appbar } from "react-native-paper";
 import { SafeAreaView } from "react-native";
-import Tags from "../../MyBooks/Tags";
-import Categories from "../../MyBooks/Categories";
-import Shelves from "../../MyBooks/Shelves";
+import Tags from "../../Catalogue/Tags/Tags";
+import Categories from "../../Catalogue/Categories/Categories";
+import Shelves from "../../Catalogue/Shelves/Shelves";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 export default function CatalogueRoute(){

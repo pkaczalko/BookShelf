@@ -1,10 +1,10 @@
 import React from 'react'
 import { View, Text, StyleSheet} from 'react-native'
 import { FlatList, NativeViewGestureHandler, ScrollView } from 'react-native-gesture-handler'
-import BottomSheet from '../Components/BottomSheet'
+import BottomSheet from '../../Components/BottomSheet'
 import { IconButton, Chip, Button, Divider, Card } from 'react-native-paper'
-import CategoryCheckBox from './CategoryCheckBox'
-import Book from './Book'
+import CategoryCheckBox from './Components/CategoryCheckBox'
+import Book from '../../SearchBooks/Components/Book'
 
 export default function Categories() {
   const refBottomSheet = React.useRef()

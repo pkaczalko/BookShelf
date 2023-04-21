@@ -1,7 +1,7 @@
 import React from "react";
 import { SafeAreaView, View, Text, StyleSheet, Image } from "react-native";
 import { Searchbar, TextInput, Surface } from 'react-native-paper';
-import ShelfCard from "./ShelfCard";
+import ShelfCard from "./Components/ShelfCard";
 
 export default function Shelves(){
     const [searchQuery, setSearchQuery] = React.useState('')

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet} from "react-native";
 import { Searchbar, Divider } from "react-native-paper";
-import Book from "../MyBooks/Book";
+import Book from "./Components/Book";
 import { NativeViewGestureHandler, FlatList } from "react-native-gesture-handler";
 export default function SearchBooks(){
     const fetchedData =[{title: "Thriller", id: 14},

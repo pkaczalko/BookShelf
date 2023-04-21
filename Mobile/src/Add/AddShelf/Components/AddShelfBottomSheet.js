@@ -1,7 +1,7 @@
 import React from "react"
 import { View, StatusBar, StyleSheet  } from "react-native"
 import {List } from "react-native-paper";
-import BottomSheet from "./BottomSheet";
+import BottomSheet from "../../../Components/BottomSheet";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from 'expo-image-picker';
 

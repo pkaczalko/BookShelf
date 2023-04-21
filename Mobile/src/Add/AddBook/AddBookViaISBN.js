@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Dimensions } from "react-native";
-import BarCodeScanner from "./BarCodeScanner/BarCodeScanner";
+import BarCodeScanner from "../BarCodeScanner/BarCodeScanner";
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window')
 

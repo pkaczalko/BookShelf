@@ -1,4 +1,4 @@
-import { Dimensions, StatusBar, StyleSheet, Text, TouchableOpacity, View, Modal } from 'react-native'
+import { Dimensions, StatusBar, StyleSheet, View, Modal } from 'react-native'
 import React, { useCallback } from 'react'
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler'
 import Animated, {Extrapolate, event, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming} from 'react-native-reanimated'

@@ -1,16 +1,16 @@
 import React from "react"
-import AddBookManually from "../../AddBook/AddBookManually"
-import AddBookMenu from "../../AddBook/AddBookMenu"
-import AddBookViaISBN from "../../AddBook/AddBookViaISBN"
-import AddShelf from "../../AddBook/AddShelf"
-import MyCamera from "../../AddBook/Camera/MyCamera"
-import BookPreview from "../../AddBook/BookPreview"
+import AddBookManually from "../../Add/AddBook/AddBookManually"
+import AddMenu from "../../Add/AddMenu"
+import AddBookViaISBN from "../../Add/AddBook/AddBookViaISBN"
+import AddShelf from "../../Add/AddShelf/AddShelf"
+import MyCamera from "../../Add/Camera/MyCamera"
+import BookPreview from "../../Add/AddBook/BookPreview"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
 export default function AddRoute(){
     const Stack = createNativeStackNavigator();
     
-    const AddBookMenuRoute = () => <AddBookMenu />
+    const AddMenuRoute = () => <AddMenu />
     const AddByHandRoute = () => <AddBookManually />
     const AddBookViaISBNRoute = () => <AddBookViaISBN />
     const AddShelfRoute = () => <AddShelf />
@@ -23,7 +23,7 @@ export default function AddRoute(){
                          headerMode="float" animation="fade"> 
             <Stack.Screen
                 name="addMenu"
-                component={AddBookMenuRoute}
+                component={AddMenuRoute}
                 options={{title: 'Dodaj Nowe',}}
             />
              <Stack.Screen

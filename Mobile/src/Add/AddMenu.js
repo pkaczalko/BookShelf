@@ -3,7 +3,7 @@ import { StyleSheet, View, SafeAreaView, StatusBar, Platform, Modal } from "reac
 import { List } from "react-native-paper";
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-export default function AddBookMenu({handleBottomSheetMenu}){
+export default function AddMenu({handleBottomSheetMenu}){
     const navigation = useNavigation();
 
     function handleISBN(){

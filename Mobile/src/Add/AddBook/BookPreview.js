@@ -2,7 +2,7 @@ import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, ScrollView } from "react-native"
 import { useRoute, useNavigation } from "@react-navigation/native"
 import { Divider } from "react-native-paper"
-import DescriptionPreview from "./DescriptionPreview"
+import DescriptionPreview from "./Components/DescriptionPreview"
 
 export default function BookPreview(){
     const route = useRoute()

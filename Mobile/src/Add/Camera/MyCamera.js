@@ -1,11 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Modal,Text, Button, Image, SafeAreaView, Animated, ImageBackground, Pressable } from 'react-native';
+import { StyleSheet, View, Modal,Text, ImageBackground, Pressable } from 'react-native';
 import { IconButton,MD3Colors  } from 'react-native-paper';
 import { Camera, CameraType } from 'expo-camera';
-import {shareAsync} from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import { useNavigation } from "@react-navigation/native";
-import { BackHandler } from 'react-native';
 import RecordButton from './Components/RecordButton';
 
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AddBookMenu from '../AddBook/AddBookMenu';
+import AddMenu from '../Add/AddMenu';
 import {NavigationContainer} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import BottomSheet from '../AddBook/BottomSheet';
+import BottomSheet from '../Components/BottomSheet';
 import SetTabBar from './Components/SetTabBar';
 
 import SettingsRoute from './BottomRoutes/SettingsRoute';
@@ -72,7 +72,7 @@ export default function BottomNavbar(){
             </Tab.Navigator>
 
             {bottomSheetVisible && <BottomSheet ref={refBottomSheet} scale={3}>
-                <AddBookMenu handleBottomSheetMenu={handleBottomSheetMenu}/>
+                <AddMenu handleBottomSheetMenu={handleBottomSheetMenu}/>
             </BottomSheet>}
         </NavigationContainer>
 )}

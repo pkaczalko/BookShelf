@@ -9,14 +9,14 @@ import SetTabBar from './Components/SetTabBar';
 import SettingsRoute from './BottomRoutes/SettingsRoute';
 import WishListRoute from './BottomRoutes/WishListRoute';
 import SearchRoute from './BottomRoutes/SearchRoute';
-import AddBooksRoute from './BottomRoutes/AddBooksRoute';
+import AddRoute from './BottomRoutes/AddRoute';
 import CatalogueRoute from './BottomRoutes/CatalogueRoute';
 
 export default function BottomNavbar(){
     const Tab = createBottomTabNavigator();
     const routes = [{key: 'catalogue', title:"Katalog", component: CatalogueRoute, focusedIcon:"book", unfocusedIcon:"book-outline" },
                     {key: "search", title: "Szukaj", component: SearchRoute, focusedIcon:"magnify-plus", unfocusedIcon:"magnify-plus-outline"},
-                    {key: "add", title: "Dodaj", component: AddBooksRoute, focusedIcon: "plus-circle", unfocusedIcon: "plus-circle-outline"},
+                    {key: "add", title: "Dodaj", component: AddRoute, focusedIcon: "plus-circle", unfocusedIcon: "plus-circle-outline"},
                     {key: "wishlist", title:"WishList", component: WishListRoute, focusedIcon:"book-plus", unfocusedIcon:"book-plus-outline"},
                     {key:'settings', title:"Ustawienia", component: SettingsRoute, focusedIcon:"account-settings",unfocusedIcon:"account-settings-outline"}]
 

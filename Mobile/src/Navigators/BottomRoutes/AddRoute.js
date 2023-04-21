@@ -3,18 +3,18 @@ import AddBookManually from "../../AddBook/AddBookManually"
 import AddBookMenu from "../../AddBook/AddBookMenu"
 import AddBookViaISBN from "../../AddBook/AddBookViaISBN"
 import AddShelf from "../../AddBook/AddShelf"
-import AddCamera from "../../AddBook/Camera/AddCamera"
+import MyCamera from "../../AddBook/Camera/MyCamera"
 import BookPreview from "../../AddBook/BookPreview"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
-export default function AddBooksRoute(){
+export default function AddRoute(){
     const Stack = createNativeStackNavigator();
     
     const AddBookMenuRoute = () => <AddBookMenu />
     const AddByHandRoute = () => <AddBookManually />
     const AddBookViaISBNRoute = () => <AddBookViaISBN />
     const AddShelfRoute = () => <AddShelf />
-    const AddCameraRoute = () => <AddCamera />
+    const MyCameraRoute = () => <MyCamera />
     const BookPreviewRoute = () => <BookPreview />
 
     return(
@@ -43,8 +43,8 @@ export default function AddBooksRoute(){
                 options={{title: 'Dodaj Nową Półkę',}}
             />
              <Stack.Screen
-                name="addCamera"
-                component={AddCameraRoute}
+                name="myCamera"
+                component={MyCameraRoute}
                 options={{headerShown: false}}
              /> 
               <Stack.Screen

@@ -1,17 +1,14 @@
 import React from 'react';
-import { Camera, RNCamera ,CameraType } from 'expo-camera';
-import { StyleSheet, View, Modal, Text, Button, Image, SafeAreaView, Animated, ImageBackground, Pressable } from 'react-native';
-import * as MediaLibrary from 'expo-media-library';
+import { Camera, RNCamera, CameraType } from 'expo-camera';
+import { StyleSheet, View, Modal, Text } from 'react-native';
 import { useNavigation,CommonActions,useRoute } from "@react-navigation/native";
-import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Dimensions } from 'react-native';
 
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
-export default function MyBarCodeScanner(){
+export default function BarCodeScanner(){
     const navigation = useNavigation();
-    const route = useRoute();
     const [isVisible, setIsVisible] = React.useState(true)
     const [hasCameraPermission, setHasCameraPermission] = React.useState();
     const [isbn, setIsbn] = React.useState();
@@ -21,17 +18,7 @@ export default function MyBarCodeScanner(){
             const cameraPermission = await Camera.requestCameraPermissionsAsync();
             setHasCameraPermission(cameraPermission.status === "granted")
         })();
-        console.log("dasdassd")
     },[])
-
-    // React.useEffect(()=>{
-    //     if (isbn){
-    //         console.log(isbn)
-    //     }
-    // },[isbn])
-
-                // navigation.navigate('add', {screen: 'bookPreview', params: {isbn:isbn}})
-
 
     if (hasCameraPermission === undefined){
         return <Text>Requesting Permission</Text>

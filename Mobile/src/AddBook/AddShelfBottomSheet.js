@@ -36,7 +36,7 @@ const AddShelfBottomSheetPicture = React.forwardRef(({children}, ref) =>{
             <BottomSheet ref={refBottomSheet} scale={3}>
                 <List.Section style={styles.listContainer}>
                     <List.Item title="Zrób zdjęcie" left={()=> <List.Icon icon="camera" style={styles.listIcon}/>}
-                               onPress={() => navigation.navigate('addCamera')}/>
+                               onPress={() => navigation.navigate('myCamera')}/>
                     <List.Item title="Dodaj zdjęcie z galerii" left={()=> <List.Icon icon="image" style={styles.listIcon}/>} 
                                onPress={pickImage}/>
                 </List.Section>

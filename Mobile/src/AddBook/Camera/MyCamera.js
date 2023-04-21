@@ -6,10 +6,10 @@ import {shareAsync} from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import { useNavigation } from "@react-navigation/native";
 import { BackHandler } from 'react-native';
-import RecordButton from './RecordButton';
+import RecordButton from './Components/RecordButton';
 
 
-export default function AddCamera(){
+export default function MyCamera(){
     const navigation = useNavigation();
     const [cameraType, setCameraType] = React.useState(Camera.Constants.Type.back)
     const [isVisible, setIsVisible] = React.useState(true)

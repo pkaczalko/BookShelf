@@ -1,22 +1,20 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AddBookMenu from '../AddBook/AddBookMenu';
-import { CommonActions, NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import BottomSheet from '../AddBook/BottomSheet';
 import SetTabBar from './Components/SetTabBar';
-import {BottomNavigation, Text} from 'react-native-paper'
 
 import SettingsRoute from './BottomRoutes/SettingsRoute';
 import WishListRoute from './BottomRoutes/WishListRoute';
 import SearchRoute from './BottomRoutes/SearchRoute';
-import MyBooksRoute from './BottomRoutes/MyBooksRoute';
 import AddBooksRoute from './BottomRoutes/AddBooksRoute';
-
+import CatalogueRoute from './BottomRoutes/CatalogueRoute';
 
 export default function BottomNavbar(){
     const Tab = createBottomTabNavigator();
-    const routes = [{key: 'catalogue', title:"Katalog", component: MyBooksRoute, focusedIcon:"book", unfocusedIcon:"book-outline" },
+    const routes = [{key: 'catalogue', title:"Katalog", component: CatalogueRoute, focusedIcon:"book", unfocusedIcon:"book-outline" },
                     {key: "search", title: "Szukaj", component: SearchRoute, focusedIcon:"magnify-plus", unfocusedIcon:"magnify-plus-outline"},
                     {key: "add", title: "Dodaj", component: AddBooksRoute, focusedIcon: "plus-circle", unfocusedIcon: "plus-circle-outline"},
                     {key: "wishlist", title:"WishList", component: WishListRoute, focusedIcon:"book-plus", unfocusedIcon:"book-plus-outline"},

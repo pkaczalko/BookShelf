@@ -6,7 +6,7 @@ import Categories from "../../MyBooks/Categories";
 import Shelves from "../../MyBooks/Shelves";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
-export default function MyBooksRoute(){
+export default function CatalogueRoute(){
     const TopTab = createMaterialTopTabNavigator();
 
     const TagsRoute = () => <Tags />

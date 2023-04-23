@@ -1,8 +1,9 @@
-package com.BookshelfProject.Bookshelf.User;
+package com.BookshelfProject.Bookshelf.shelf;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface ShelfRepository extends JpaRepository<Shelf, Long> {
 }
+

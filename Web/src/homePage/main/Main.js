@@ -28,6 +28,7 @@ export function Main(){
             <CatalogueNavbar data={data}/>
             <Container className="d-flex flex-column" style={{marginLeft: "-12px"}}>
                 <CategoryCards name="Moje Książki" isbn={isbn}/>
+                
             </Container>
         </Container>
     )

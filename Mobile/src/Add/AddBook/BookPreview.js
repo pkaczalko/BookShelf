@@ -75,7 +75,7 @@ export default function BookPreview(){
     React.useEffect(()=>{
         if (save === true){
             const {imgUri, description, isFound, ...toSendData} = data
-            fetch('http://192.168.0.80:8080/books', {
+            fetch('http://192.168.0.80:8081/books', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

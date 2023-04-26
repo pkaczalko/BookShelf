@@ -5,6 +5,8 @@ import CatalogueNavbar from "./CatalogueNavbar";
 import BookCard from "./categoryDisplay/BookCard";
 import CategoryTitle from "./categoryDisplay/CategoryTitle";
 import CategoryCards from "./categoryDisplay/CategoryCards";
+import CategoryCardsDB from "./categoryDisplay/CategoryCardsDB";
+
 
 export function Main(){
     const mainStyle = {padding: "20px 20px 20px 20px"}
@@ -24,12 +26,12 @@ export function Main(){
     const isbn = "diune"
 
     return(
-        <Container fluid className="d-flex justify-content-start" style={mainStyle}>
-            <CatalogueNavbar data={data}/>
-            <Container className="d-flex flex-column" style={{marginLeft: "-12px"}}>
-                <CategoryCards name="Moje Książki" isbn={isbn}/>
-                
-            </Container>
+    <Container fluid className="d-flex justify-content-start" style={mainStyle}>
+        <CatalogueNavbar data={data}/>
+        <Container className="d-flex flex-column" style={{marginLeft: "-12px"}}>
+            <CategoryCardsDB name="Moje Książki" />
         </Container>
-    )
+    </Container>
+)
+
 }

@@ -96,42 +96,42 @@ export default function AddBookModal({ show, handleClose }) {
 
                     <div className="mb-3">
                         <label htmlFor="isbn" className="form-label">ISBN</label>
-                        <input type="text" className="form-control" id="isbn" />
+                        <input type="text" className="form-control" id="isbn" name="isbn" onChange={handleInputChange}/>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="publisher" className="form-label">Publisher</label>
-                        <input type="text" className="form-control" id="publisher" />
+                        <input type="text" className="form-control" id="publisher" name="publisher" onChange={handleInputChange}/>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="publishing-date" className="form-label">Publishing Date</label>
-                        <input type="date" className="form-control" id="publishing-date" />
+                        <input type="date" className="form-control" id="publishing-date" name="publishing-date" onChange={handleInputChange} />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="volume" className="form-label">Volume</label>
-                        <input type="number" className="form-control" id="volume" />
+                        <input type="number" className="form-control" id="volume" name="vloume" onChange={handleInputChange}/>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="cover-type" className="form-label">Cover Type</label>
-                        <select className="form-control" id="cover-type">
+                        <select className="form-control" id="cover-type" name="cover-type" onChange={handleInputChange}>
                             <option>Hardcover</option>
                             <option>Light cover</option>
                         </select>
                     </div>
                     <div className="mb-3 form-check">
-                        <input type="checkbox" className="form-check-input" id="favorite" />
+                        <input type="checkbox" className="form-check-input" id="favorite" name="favorite" onChange={handleInputChange}/>
                         <label className="form-check-label" htmlFor="favorite">Favorite</label>
                     </div>
                     <div className="mb-3 form-check">
-                        <input type="checkbox" className="form-check-input" id="is-read" />
+                        <input type="checkbox" className="form-check-input" id="is-read" name="is-read" onChange={handleInputChange}/>
                         <label className="form-check-label" htmlFor="is-read">Is Read</label>
                     </div>
                     <div className="mb-3 form-check">
-                        <input type="checkbox" className="form-check-input" id="wishlist" />
+                        <input type="checkbox" className="form-check-input" id="wishlist" name="wishlist" onChange={handleInputChange}/>
                         <label className="form-check-label" htmlFor="wishlist">Wishlist</label>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="shelf" className="form-label">Shelf</label>
-                        <select multiple className="form-control" id="shelf">
+                        <select multiple className="form-control" id="shelf" >
                             {shelves.map(shelf => (
                                 <option key={shelf.id}>{shelf.name}</option>
                             ))}

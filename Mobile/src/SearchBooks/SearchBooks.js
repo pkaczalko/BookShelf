@@ -4,28 +4,23 @@ import { Searchbar, Divider } from "react-native-paper";
 import Book from "./Components/Book";
 import { NativeViewGestureHandler, FlatList } from "react-native-gesture-handler";
 export default function SearchBooks(){
-    const fetchedData =[{title: "Thriller", id: 14},
-                    {title: "Horror", id: 1},
-                    {title: "Technika", id: 2},
-                    {title: "Biografia", id: 3},
-                    {title: "Poezja", id: 4},
-                    {title: "Fantasy", id: 5},
-                    {title: "Sci-Fi", id: 6},
-                    {title: "Przygodowe", id: 7},
-                    {title: "Sport", id: 8},
-                    {title: "Naukowe", id: 9},
-                    {title: "asdasd", id: 10},
-                    {title: "asdasd", id: 11},
-                    {title: "asdasd", id: 12},
-                    {title: "asdasd", id: 13}]
-    const editedData = fetchedData.map(item => ({...item, isChecked: false}))
-
-    const [data, setData] = React.useState(editedData)
+    const [data, setData] = React.useState("")
     const [searchQuery, setSearchQuery] = React.useState('')
+
+    React.useEffect(()=>{
+        fetch('http://192.168.0.80:8080/books/11')
+        .then(res => res.json())
+        .then((fetched_data) =>{
+            const editedData = fetched_data.map(item => ({...item, isChecked: false}))
+            console.log(editedData)
+            setData(editedData)
+        })
+        .catch(err => console.log(err))
+    },[])
 
     const renderBooks = ({item}) =>{
         return (
-          <Book name={item.title}/>
+          <Book isbn={item.isbn}/>
         )
     }
 

@@ -1,10 +1,11 @@
 import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, ScrollView } from "react-native"
-import { useRoute, useNavigation } from "@react-navigation/native"
+import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
 import { Divider, Button } from "react-native-paper"
 import DescriptionPreview from "./Components/DescriptionPreview"
-import axios from 'axios';
+
 export default function BookPreview(){
+    const navigation = useNavigation()
     const route = useRoute()
     const [data, setData] = React.useState({title: "",
                                             isbn: "",
@@ -72,24 +73,26 @@ export default function BookPreview(){
     }, [route.params]);
 
     React.useEffect(()=>{
-        const {imgUri, description, isFound, ...toSendData} = data
-        fetch('http://localhost:8081/books', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(toSendData)
-            })
-        .then(res => res.json())
-        .then(data => console.log(data))
-        .catch(err => console.log(err))
-    },[save])
-
-    React.useEffect(()=>{
-        fetch("http://localhost:8080/books/12")
-        .then(res => res.json())
-        .then(data => console.log(data))
-        .catch(err => console.log(err))
+        if (save === true){
+            const {imgUri, description, isFound, ...toSendData} = data
+            fetch('http://192.168.0.80:8080/books', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(toSendData)
+                })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.log(err))
+            
+            navigation.dispatch(
+                CommonActions.reset({
+                index: 0,
+                routes: [{ name: "catalogue" }],
+                })
+            );
+        }
     },[save])
 
     const authors = data.authors.map((author)=>{
@@ -119,7 +122,7 @@ export default function BookPreview(){
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>ISBN</Text>
                     <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.isbn}</Text>
                 </ScrollView>
-                <Button mode="contained" onPress={() => setSave(!save)} style={styles.saveButton}>Zapisz</Button>
+                <Button mode="contained" onPress={()=> setSave(true)} style={styles.saveButton}>Zapisz</Button>
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
         </View>

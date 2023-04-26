@@ -1,36 +1,69 @@
 import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, ScrollView } from "react-native"
 import { useRoute, useNavigation } from "@react-navigation/native"
-import { Divider } from "react-native-paper"
+import { Divider, Button } from "react-native-paper"
 import DescriptionPreview from "./Components/DescriptionPreview"
 
 export default function BookPreview(){
     const route = useRoute()
     const [data, setData] = React.useState({title: "",
-                                            authors: "",
-                                            publishedDate: "",
+                                            isbn: "",
+                                            isRead: true,
+                                            favorite: true,
+                                            borrower: "John Smith",
+                                            wishList: false,
+                                            publisher:"",
+                                            coverType:"nie ma",
+                                            volume:1,
+                                            publishingDate: "",
+                                            genres: [
+                                                {
+                                                  name: ""
+                                                }
+                                            ],
+                                            authors:[
+                                                {
+                                                    name: ""
+                                                }
+                                            ],
+
                                             imgUri: "",
                                             description: "",
-                                            isbn: "",
                                             isFound: true})
+    const [save, setSave] = React.useState(false)
+                                        
     function check(param){
         return param ? param : "Brak"
     }
+
     React.useEffect(() => {
         if (route.params?.isbn) {
             fetch("https://www.googleapis.com/books/v1/volumes?q=isbn:" + route.params.isbn) 
             .then(res => res.json())
             .then((bookData) => {
                 const title = bookData?.items[0]?.volumeInfo?.title
-                const authors = bookData?.items[0]?.volumeInfo?.authors 
-                const publishedDate = bookData?.items[0]?.volumeInfo?.publishedDate
+                const authors = bookData?.items[0]?.volumeInfo?.authors
+                let mappedAuthors = [{name: ""}]
+                if (authors){
+                    mappedAuthors = authors.map((author)=>{
+                        return {name: author}
+                    })
+                }
+                const publishingDate = bookData?.items[0]?.volumeInfo?.publishedDate
                 const imgUri = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
                 const description = bookData?.items[0]?.volumeInfo?.description
+                const publisher = bookData?.items[0]?.volumeInfo?.publisher
                 const isbn = route.params.isbn
-                // const categories = data?.items[0]?.volumeInfo?.
-                
-                setData({...data, title: check(title), authors: check(authors), publishedDate: check(publishedDate), isbn: check(isbn), 
-                        imgUri: check(imgUri), description: check(description)})
+                const genres = bookData?.items[0]?.volumeInfo?.categories
+                let mappedGenres = [{name: ""}]
+                if (genres){
+                    mappedGenres = genres.map((genre)=>{
+                        return {name: genre}
+                    })
+                }
+
+                setData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishingDate: check(publishingDate), isbn: check(isbn), 
+                        imgUri: check(imgUri), description: check(description), genres: mappedGenres})
             })
             .catch((err) =>{
                 setData({...data, isFound: false})
@@ -38,6 +71,23 @@ export default function BookPreview(){
         }
     }, [route.params]);
 
+    React.useEffect(()=>{
+        const {imgUri, description, isFound, ...toSendData} = data
+        fetch('localhost:3306/books?id=${2}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(toSendData)
+            })
+        .then(res => res.json())
+        .then(data => console.log(data))
+        .catch(err => console.log(err))
+    },[save])
+
+    const authors = data.authors.map((author)=>{
+        return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{author.name}</Text>
+    })
 
     return(
         <View style={{flex:1, flexDirection:"column"}}>
@@ -45,7 +95,7 @@ export default function BookPreview(){
                 <Image src={data.imgUri} style={styles.img} resizeMethod="resize" resizeMode="contain" />
                 <View style={{flex:1}}>
                     <Text style={styles.title} numberOfLines={2}>{data.title}</Text>
-                    <Text style={styles.authors}>{data.authors}</Text>
+                    <Text style={styles.authors}>{authors}</Text>
                 </View>
             </View>}
             {data.isFound && <View style={{flex:1, marginTop:20}}>
@@ -54,14 +104,15 @@ export default function BookPreview(){
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase"}]}>Tytuł</Text>
                     <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.title}</Text>
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Autor</Text>
-                    <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.authors}</Text>
+                    {authors}
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Opis</Text>
                     <DescriptionPreview description={data.description}/>
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Data Publikacji</Text>
-                    <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.publishedDate}</Text>
+                    <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.publishingDate}</Text>
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>ISBN</Text>
                     <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.isbn}</Text>
                 </ScrollView>
+                <Button mode="contained" onPress={() => setSave(!save)} style={styles.saveButton}>Zapisz</Button>
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
         </View>
@@ -95,5 +146,10 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         marginTop:10,
         fontSize:15
+    },
+    saveButton:{
+        width:"100%",
+        justifyContent:"flex-end",
+        borderRadius:0
     },
 })

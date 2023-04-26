@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Image, TouchableOpacity, ScrollView } from "rea
 import { useRoute, useNavigation } from "@react-navigation/native"
 import { Divider, Button } from "react-native-paper"
 import DescriptionPreview from "./Components/DescriptionPreview"
-
+import axios from 'axios';
 export default function BookPreview(){
     const route = useRoute()
     const [data, setData] = React.useState({title: "",
@@ -73,13 +73,20 @@ export default function BookPreview(){
 
     React.useEffect(()=>{
         const {imgUri, description, isFound, ...toSendData} = data
-        fetch('localhost:3306/books?id=${2}', {
+        fetch('http://localhost:8081/books', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(toSendData)
             })
+        .then(res => res.json())
+        .then(data => console.log(data))
+        .catch(err => console.log(err))
+    },[save])
+
+    React.useEffect(()=>{
+        fetch("http://localhost:8080/books/12")
         .then(res => res.json())
         .then(data => console.log(data))
         .catch(err => console.log(err))

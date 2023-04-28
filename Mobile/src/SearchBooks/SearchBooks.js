@@ -8,7 +8,7 @@ export default function SearchBooks(){
     const [searchQuery, setSearchQuery] = React.useState('')
 
     React.useEffect(()=>{
-        fetch('http://192.168.0.80:8081/books/11')
+        fetch('http://192.168.0.80:8081/books')
         .then(res => res.json())
         .then((fetched_data) =>{
             const editedData = fetched_data.map(item => ({...item, isChecked: false}))

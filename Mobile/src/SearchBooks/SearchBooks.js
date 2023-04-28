@@ -12,7 +12,6 @@ export default function SearchBooks(){
         .then(res => res.json())
         .then((fetched_data) =>{
             const editedData = fetched_data.map(item => ({...item, isChecked: false}))
-            console.log(editedData)
             setData(editedData)
         })
         .catch(err => console.log(err))

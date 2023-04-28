@@ -2,7 +2,7 @@ import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, ScrollView } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
 import { Divider, Button } from "react-native-paper"
-import DescriptionPreview from "./Components/DescriptionPreview"
+import DescriptionPreview from "../Add/AddBook/Components/DescriptionPreview"
 
 export default function BookPreview(){
     const navigation = useNavigation()
@@ -31,69 +31,45 @@ export default function BookPreview(){
                                             imgUri: "",
                                             description: "",
                                             isFound: true})
-    const [save, setSave] = React.useState(false)
                                         
     function check(param){
         return param ? param : "Brak"
     }
 
-    React.useEffect(() => {
-        if (route.params?.isbn) {
-            fetch("https://www.googleapis.com/books/v1/volumes?q=isbn:" + route.params.isbn) 
-            .then(res => res.json())
-            .then((bookData) => {
-                const title = bookData?.items[0]?.volumeInfo?.title
-                const authors = bookData?.items[0]?.volumeInfo?.authors
-                let mappedAuthors = [{name: ""}]
-                if (authors){
-                    mappedAuthors = authors.map((author)=>{
-                        return {name: author}
-                    })
-                }
-                const publishingDate = bookData?.items[0]?.volumeInfo?.publishedDate
-                const imgUri = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
-                const description = bookData?.items[0]?.volumeInfo?.description
-                const publisher = bookData?.items[0]?.volumeInfo?.publisher
-                const isbn = route.params.isbn
-                const genres = bookData?.items[0]?.volumeInfo?.categories
-                let mappedGenres = [{name: ""}]
-                if (genres){
-                    mappedGenres = genres.map((genre)=>{
-                        return {name: genre}
-                    })
-                }
+    // React.useEffect(() => {
+    //     if (route.params?.isbn) {
+    //         fetch("http://192.168.0.80:8081/books?q=isbn:" + route.params.isbn) 
+    //         .then(res => res.json())
+    //         .then((bookData) => {
+    //             const title = bookData?.items[0]?.volumeInfo?.title
+    //             const authors = bookData?.items[0]?.volumeInfo?.authors
+    //             let mappedAuthors = [{name: ""}]
+    //             if (authors){
+    //                 mappedAuthors = authors.map((author)=>{
+    //                     return {name: author}
+    //                 })
+    //             }
+    //             const publishingDate = bookData?.items[0]?.volumeInfo?.publishedDate
+    //             const imgUri = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
+    //             const description = bookData?.items[0]?.volumeInfo?.description
+    //             const publisher = bookData?.items[0]?.volumeInfo?.publisher
+    //             const isbn = route.params.isbn
+    //             const genres = bookData?.items[0]?.volumeInfo?.categories
+    //             let mappedGenres = [{name: ""}]
+    //             if (genres){
+    //                 mappedGenres = genres.map((genre)=>{
+    //                     return {name: genre}
+    //                 })
+    //             }
 
-                setData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishingDate: check(publishingDate), isbn: check(isbn), 
-                        imgUri: check(imgUri), description: check(description), genres: mappedGenres})
-            })
-            .catch((err) =>{
-                setData({...data, isFound: false})
-            })
-        }
-    }, [route.params]);
-
-    React.useEffect(()=>{
-        if (save === true){
-            const {imgUri, description, isFound, ...toSendData} = data
-            fetch('http://192.168.0.80:8081/books', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(toSendData)
-                })
-            .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(err => console.log(err))
-            
-            navigation.dispatch(
-                CommonActions.reset({
-                index: 0,
-                routes: [{ name: "catalogue" }],
-                })
-            );
-        }
-    },[save])
+    //             setData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishingDate: check(publishingDate), isbn: check(isbn), 
+    //                     imgUri: check(imgUri), description: check(description), genres: mappedGenres})
+    //         })
+    //         .catch((err) =>{
+    //             setData({...data, isFound: false})
+    //         })
+    //     }
+    // }, [route.params]);
 
     const authors = data.authors.map((author, idx)=>{
         return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>{author.name}</Text>
@@ -122,7 +98,7 @@ export default function BookPreview(){
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>ISBN</Text>
                     <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.isbn}</Text>
                 </ScrollView>
-                <Button mode="contained" onPress={()=> setSave(true)} style={styles.saveButton}>Zapisz</Button>
+                <Button mode="contained" onPress={()=> console.log("Efytuj")} style={styles.saveButton}>Edytuj</Button>
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
         </View>

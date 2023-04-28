@@ -4,7 +4,7 @@ import { FlatList, NativeViewGestureHandler, ScrollView } from 'react-native-ges
 import BottomSheet from '../../Components/BottomSheet'
 import { IconButton, Chip, Button, Divider, Card } from 'react-native-paper'
 import CategoryCheckBox from './Components/CategoryCheckBox'
-import Book from '../../SearchBooks/Components/Book'
+import Book from './Components/Book'
 
 export default function Categories() {
   const refBottomSheet = React.useRef()
@@ -68,7 +68,7 @@ export default function Categories() {
                 onPress={onHandlePress} style={styles.filterButton}>Filtruj</Button>
         <FlatList data={data} renderItem={renderFilterChip} keyExtractor={item => item.id} horizontal={true}/>
         <Divider bold={true}/>  
-        <FlatList data={data} renderItem={renderBooks} keyExtractor={item => item.id} numColumns={3} /> 
+        <FlatList data={data} renderItem={renderBooks} keyExtractor={item => item.id} numColumns={1} /> 
         <BottomSheet ref={refBottomSheet} scale={1.09}>
           <Divider bold={true}/>
           <Text style={styles.categoryTitle}>Kategorie</Text>

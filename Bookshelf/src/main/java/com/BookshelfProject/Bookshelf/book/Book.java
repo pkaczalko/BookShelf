@@ -1,7 +1,7 @@
 package com.BookshelfProject.Bookshelf.book;
 
 import com.BookshelfProject.Bookshelf.author.Author;
-import com.BookshelfProject.Bookshelf.genre.Genre;
+import com.BookshelfProject.Bookshelf.category.Category;
 import com.BookshelfProject.Bookshelf.shelf.Shelf;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -27,7 +27,9 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    @Column(unique = true)
     private String isbn;
+    private String imgURI;
     private Boolean isRead;
     private Boolean favorite;
     private String borrower;
@@ -35,19 +37,19 @@ public class Book {
     private String publisher;
     private String coverType;
     private Integer volume;
-    private LocalDate publishingDate;
+    private LocalDate publishedDate;
 
     @ManyToOne
     @JoinColumn(name = "shelf_id")
     private Shelf shelf;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST})
-    @JoinTable(name = "book_genre",
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "book_category",
             joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    private Set<Genre> genres = new HashSet<>();
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Category> categories = new HashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))

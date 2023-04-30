@@ -22,9 +22,14 @@ public class Author {
     private Long id;
     private @NonNull String name;
 
-    @ManyToMany(mappedBy = "authors")
+    @ManyToMany(mappedBy = "authors", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private Set<Book> books = new HashSet<>();
+
+    public Author(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
 
 

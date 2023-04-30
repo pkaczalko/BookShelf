@@ -17,7 +17,7 @@ export default function BookPreview(){
                                             coverType:"nie ma",
                                             volume:1,
                                             publishedDate: "",
-                                            genres: [
+                                            categories: [
                                                 {
                                                   name: ""
                                                 }
@@ -55,16 +55,16 @@ export default function BookPreview(){
                 const description = bookData?.items[0]?.volumeInfo?.description
                 const publisher = bookData?.items[0]?.volumeInfo?.publisher
                 const isbn = route.params.isbn
-                const genres = bookData?.items[0]?.volumeInfo?.categories
-                let mappedGenres = [{name: ""}]
-                if (genres){
-                    mappedGenres = genres.map((genre)=>{
-                        return {name: genre}
+                const categories = bookData?.items[0]?.volumeInfo?.categories
+                let mappedCategories = [{name: ""}]
+                if (categories){
+                    mappedCategories = categories.map((category)=>{
+                        return {name: category}
                     })
                 }
 
                 setData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishedDate: check(publishedDate), isbn: check(isbn), 
-                        imgURI: check(imgURI), description: check(description), genres: mappedGenres})
+                        imgURI: check(imgURI), description: check(description), categories: mappedCategories})
             })
             .catch((err) =>{
                 setData({...data, isFound: false})
@@ -102,7 +102,7 @@ export default function BookPreview(){
     return(
         <View style={{flex:1, flexDirection:"column"}}>
             {data.isFound && <View style={styles.container}>
-                <Image src={data.imgUri} style={styles.img} resizeMethod="resize" resizeMode="contain" />
+                <Image src={data.imgURI} style={styles.img} resizeMethod="resize" resizeMode="contain" />
                 <View style={{flex:1}}>
                     <Text style={styles.title} numberOfLines={2}>{data.title}</Text>
                     <Text style={styles.authors}>{authors}</Text>
@@ -118,11 +118,15 @@ export default function BookPreview(){
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Opis</Text>
                     <DescriptionPreview description={data.description}/>
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Data Publikacji</Text>
-                    <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.publishingDate}</Text>
+                    <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.publishedDate}</Text>
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>ISBN</Text>
                     <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.isbn}</Text>
                 </ScrollView>
-                <Button mode="contained" onPress={()=> setSave(true)} style={styles.saveButton}>Zapisz</Button>
+                <Divider bold={true}/>
+                <View style={styles.buttons}>
+                    <Button mode="contained" icon="check" onPress={()=> setSave(true)} style={styles.saveButton}>Zapisz</Button>
+                    <Button mode="contained" icon="square-edit-outline" onPress={()=> console.log("Efytuj")} style={styles.saveButton}>Edytuj</Button>
+                </View>
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
         </View>
@@ -158,8 +162,13 @@ const styles = StyleSheet.create({
         fontSize:15
     },
     saveButton:{
-        width:"100%",
+        width: 150,
         justifyContent:"flex-end",
         borderRadius:0
     },
+    buttons:{
+        marginTop:10,
+        flexDirection:"row",
+        justifyContent:"space-around"
+    }
 })

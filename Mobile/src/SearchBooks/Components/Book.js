@@ -9,22 +9,6 @@ export default function Book(props){
     const [img, setImg] = React.useState({backgroundColor: "#DCDCDC", uri: props.uri, isLoaded: true})
     const navigation = useNavigation()
 
-    function check(param){
-        return param ? param : 'nonPic'
-    }
-
-    // React.useEffect(()=>{
-    //     fetch("https://www.googleapis.com/books/v1/volumes?q=isbn:" + props.isbn)
-    //     .then(res => res.json())
-    //     .then((bookData) => {
-    //         const imgUri = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
-    //         setImg({...img, uri: check(imgUri), isLoaded: true})
-    //     })
-    //     .catch((err)=>{
-    //         setImg({...img, isLoaded: true})
-    //     })
-    // },[])
-
     const onPressHandle = () =>{
         navigation.navigate('bookPreview', {isbn: props.isbn})
     }
@@ -32,9 +16,9 @@ export default function Book(props){
     return(
             <View style={styles.container}>
                 <Card style={styles.cardContainer} mode="elevated" elevation={1} onPress={onPressHandle}>
-                    {img.isLoaded && <Card.Cover style={styles.cardCover} source={{ uri: img.uri }} />}
-                    {img.isLoaded === false && <Card.Cover style={[styles.cardCover, {backgroundColor:img.backgroundColor}]} />}
-                    <ActivityIndicator animating={!img.isLoaded} color={MD2Colors.black} style={styles.cardCover}/>
+                    <Card.Cover style={styles.cardCover} source={{ uri: props.uri }} />
+                    {/* {img.isLoaded === false && <Card.Cover style={[styles.cardCover, {backgroundColor:img.backgroundColor}]} />}
+                    <ActivityIndicator animating={!img.isLoaded} color={MD2Colors.black} style={styles.cardCover}/> */}
                 </Card>
             </View>
     )

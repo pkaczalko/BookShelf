@@ -5,24 +5,25 @@ import { useNavigation } from "@react-navigation/native";
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
 
 export default function Book(props){
-    const [img, setImg] = React.useState({backgroundColor: "#DCDCDC", uri:"nonPic", isLoaded: false})
+    console.log(props.uri)
+    const [img, setImg] = React.useState({backgroundColor: "#DCDCDC", uri: props.uri, isLoaded: true})
     const navigation = useNavigation()
 
     function check(param){
         return param ? param : 'nonPic'
     }
 
-    React.useEffect(()=>{
-        fetch("https://www.googleapis.com/books/v1/volumes?q=isbn:" + props.isbn)
-        .then(res => res.json())
-        .then((bookData) => {
-            const imgUri = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
-            setImg({...img, uri: check(imgUri), isLoaded: true})
-        })
-        .catch((err)=>{
-            setImg({...img, isLoaded: true})
-        })
-    },[])
+    // React.useEffect(()=>{
+    //     fetch("https://www.googleapis.com/books/v1/volumes?q=isbn:" + props.isbn)
+    //     .then(res => res.json())
+    //     .then((bookData) => {
+    //         const imgUri = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
+    //         setImg({...img, uri: check(imgUri), isLoaded: true})
+    //     })
+    //     .catch((err)=>{
+    //         setImg({...img, isLoaded: true})
+    //     })
+    // },[])
 
     const onPressHandle = () =>{
         navigation.navigate('bookPreview', {isbn: props.isbn})

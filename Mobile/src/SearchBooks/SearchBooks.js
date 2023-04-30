@@ -8,7 +8,7 @@ export default function SearchBooks(){
     const [searchQuery, setSearchQuery] = React.useState('')
 
     React.useEffect(()=>{
-        fetch('http://192.168.0.80:8081/books')
+        fetch('http://192.168.0.80:8081/books?q=')
         .then(res => res.json())
         .then((fetched_data) =>{
             const editedData = fetched_data.map(item => ({...item, isChecked: false}))
@@ -19,7 +19,7 @@ export default function SearchBooks(){
 
     const renderBooks = ({item}) =>{
         return (
-          <Book isbn={item.isbn}/>
+          <Book isbn={item.isbn} uri={item.imgURI}/>
         )
     }
 

@@ -16,7 +16,7 @@ export default function BookPreview(){
                                             publisher:"",
                                             coverType:"nie ma",
                                             volume:1,
-                                            publishingDate: "",
+                                            publishedDate: "",
                                             genres: [
                                                 {
                                                   name: ""
@@ -28,7 +28,7 @@ export default function BookPreview(){
                                                 }
                                             ],
 
-                                            imgUri: "",
+                                            imgURI: "",
                                             description: "",
                                             isFound: true})
     const [save, setSave] = React.useState(false)
@@ -50,8 +50,8 @@ export default function BookPreview(){
                         return {name: author}
                     })
                 }
-                const publishingDate = bookData?.items[0]?.volumeInfo?.publishedDate
-                const imgUri = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
+                const publishedDate = bookData?.items[0]?.volumeInfo?.publishedDate
+                const imgURI = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
                 const description = bookData?.items[0]?.volumeInfo?.description
                 const publisher = bookData?.items[0]?.volumeInfo?.publisher
                 const isbn = route.params.isbn
@@ -63,8 +63,8 @@ export default function BookPreview(){
                     })
                 }
 
-                setData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishingDate: check(publishingDate), isbn: check(isbn), 
-                        imgUri: check(imgUri), description: check(description), genres: mappedGenres})
+                setData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishedDate: check(publishedDate), isbn: check(isbn), 
+                        imgURI: check(imgURI), description: check(description), genres: mappedGenres})
             })
             .catch((err) =>{
                 setData({...data, isFound: false})
@@ -74,7 +74,7 @@ export default function BookPreview(){
 
     React.useEffect(()=>{
         if (save === true){
-            const {imgUri, description, isFound, ...toSendData} = data
+            const {description, isFound, ...toSendData} = data
             fetch('http://192.168.0.80:8081/books', {
                 method: 'POST',
                 headers: {

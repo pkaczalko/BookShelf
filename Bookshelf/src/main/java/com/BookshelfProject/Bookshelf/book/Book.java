@@ -37,7 +37,7 @@ public class Book {
     private String publisher;
     private String coverType;
     private Integer volume;
-    private LocalDate publishedDate;
+    private String publishedDate;
 
     @ManyToOne
     @JoinColumn(name = "shelf_id")

@@ -3,14 +3,12 @@ import { Card } from "react-native-paper";
 import { Text, StyleSheet, View, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
-import BookPreview from "../BookPreview";
 
 export default function Book(props){
-    console.log(props.uri)
-    const [isPreview, setIsPreview] = React.useState(false)
-
+    const navigation = useNavigation()
+    
     const onPressHandle = () =>{
-        setIsPreview(!isPreview)
+        navigation.navigate('bookPreview', {screen: 'bookPreviewInfo', params:{isbn: props.isbn}})
     }
 
     return(
@@ -20,9 +18,6 @@ export default function Book(props){
                     {/* {img.isLoaded === false && <Card.Cover style={[styles.cardCover, {backgroundColor:img.backgroundColor}]} />}
                     <ActivityIndicator animating={!img.isLoaded} color={MD2Colors.black} style={styles.cardCover}/> */}
                 </Card>
-                <Modal visible={isPreview} onRequestClose={onPressHandle} statusBarTranslucent={true}>
-                    <BookPreview isbn={props.isbn} onPressHandle={onPressHandle}/>
-                </Modal>
             </View>
     )
 }

@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Modal} from "react-native";
 import { Searchbar, Divider } from "react-native-paper";
 import Book from "./Components/Book";
 import { NativeViewGestureHandler, FlatList } from "react-native-gesture-handler";
-import BookPreview from "./BookPreview";
 
 export default function SearchBooks(){
     const [data, setData] = React.useState("")

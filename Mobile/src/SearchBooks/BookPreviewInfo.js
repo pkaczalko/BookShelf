@@ -2,7 +2,7 @@ import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
 import { Divider, Button, Appbar } from "react-native-paper"
-import DescriptionPreview from "../Components/DescriptionPreview"
+import DescriptionPreview from "../Add/AddBook/Components/DescriptionPreview"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 
 export default function BookPreviewInfo(props){
@@ -121,7 +121,6 @@ export default function BookPreviewInfo(props){
                 </ScrollView>
                 <Divider bold={true}/>
                 <View style={styles.buttons}>
-                    <Button mode="contained" icon="check" onPress={()=> setSave(true)} style={styles.saveButton}>Zapisz</Button>
                     <Button mode="contained" icon="square-edit-outline" onPress={()=> console.log("Efytuj")} style={styles.saveButton}>Edytuj</Button>
                 </View>
             </View>}

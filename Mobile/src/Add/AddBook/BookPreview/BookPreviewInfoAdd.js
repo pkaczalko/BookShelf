@@ -1,10 +1,13 @@
 import React from "react"
-import { View, StyleSheet, Text, Image, TouchableOpacity, ScrollView } from "react-native"
-import { Divider, Appbar } from "react-native-paper"
+import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar } from "react-native"
+import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
+import { Divider, Button, Appbar } from "react-native-paper"
+import DescriptionPreview from "../Components/DescriptionPreview"
 import {SafeAreaProvider} from "react-native-safe-area-context"
-import DescriptionPreview from "../Add/AddBook/Components/DescriptionPreview"
 
-export default function BookPreview(props){
+export default function BookPreviewInfoAdd(props){
+    const navigation = useNavigation()
+    const route = useRoute()
     const [data, setData] = React.useState({title: "",
                                             isbn: "",
                                             isRead: true,
@@ -29,30 +32,33 @@ export default function BookPreview(props){
                                             imgURI: "",
                                             description: "",
                                             isFound: true})
+    const [save, setSave] = React.useState(false)
                                         
     function check(param){
         return param ? param : "Brak"
     }
 
     React.useEffect(() => {
-        if (props?.isbn) {
-            fetch("http://192.168.0.80:8081/books?q=" + props.isbn) 
+        navigation.setOptions({headerShown:true})
+        if (route?.params) {
+            console.log(route.params)
+            fetch("https://www.googleapis.com/books/v1/volumes?q=isbn:" + route.params.isbn) 
             .then(res => res.json())
             .then((bookData) => {
-                const title = bookData?.[0]?.title
-                const authors = bookData?.[0]?.authors
+                const title = bookData?.items[0]?.volumeInfo?.title
+                const authors = bookData?.items[0]?.volumeInfo?.authors
                 let mappedAuthors = [{name: ""}]
                 if (authors){
                     mappedAuthors = authors.map((author)=>{
                         return {name: author}
                     })
                 }
-                const publishedDate = bookData?.[0]?.publishedDate
-                const imgURI = bookData?.[0]?.imgURI
-                const description = bookData?.[0]?.description
-                const publisher = bookData?.[0]?.publisher
-                const isbn = props.isbn
-                const categories = bookData?.[0]?.categories
+                const publishedDate = bookData?.items[0]?.volumeInfo?.publishedDate
+                const imgURI = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
+                const description = bookData?.items[0]?.volumeInfo?.description
+                const publisher = bookData?.items[0]?.volumeInfo?.publisher
+                const isbn = route.params.isbn
+                const categories = bookData?.items[0]?.volumeInfo?.categories
                 let mappedCategories = [{name: ""}]
                 if (categories){
                     mappedCategories = categories.map((category)=>{
@@ -67,7 +73,24 @@ export default function BookPreview(props){
                 setData({...data, isFound: false})
             })
         }
-    }, [props]);
+    }, [route.params]);
+
+    React.useEffect(()=>{
+        if (save === true){
+            const {description, isFound, ...toSendData} = data
+            fetch('http://192.168.0.80:8081/books', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(toSendData)
+                })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.log(err))
+            navigation.navigate('home')
+        }
+    },[save])
 
     const authors = data.authors.map((author, idx)=>{
         return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>{author.name}</Text>
@@ -75,11 +98,6 @@ export default function BookPreview(props){
 
     return(
         <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
-            <Appbar.Header style={{height: 20, backgroundColor:"white", marginBottom:13, marginLeft:-5}}>
-                <Appbar.BackAction onPress={() => {props.onPressHandle()}} />
-                <Appbar.Content style={{marginTop:-5}} title="Wróć" />
-            </Appbar.Header>
-            <Divider horizontalInset={true} />
             {data.isFound && <View style={styles.container}>
                 <Image src={data.imgURI} style={styles.img} resizeMethod="resize" resizeMode="contain" />
                 <View style={{flex:1}}>
@@ -88,7 +106,7 @@ export default function BookPreview(props){
                 </View>
             </View>}
             {data.isFound && <View style={{flex:1, marginTop:20}}>
-                <Divider horizontalInset={true}/>
+                <Divider horizontalInset={true} />
                 <ScrollView style={{flex:1}}>
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase"}]}>Tytuł</Text>
                     <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.title}</Text>
@@ -101,11 +119,11 @@ export default function BookPreview(props){
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>ISBN</Text>
                     <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.isbn}</Text>
                 </ScrollView>
-                {/* <Divider bold={true}/>
+                <Divider bold={true}/>
                 <View style={styles.buttons}>
+                    <Button mode="contained" icon="check" onPress={()=> setSave(true)} style={styles.saveButton}>Zapisz</Button>
                     <Button mode="contained" icon="square-edit-outline" onPress={()=> console.log("Efytuj")} style={styles.saveButton}>Edytuj</Button>
-                    <Button mode="contained" icon="plus-circle-outline" onPress={()=> console.log("Efytuj")} style={styles.saveButton}>Dodaj na Półkę</Button>
-                </View> */}
+                </View>
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
         </SafeAreaProvider>
@@ -126,7 +144,7 @@ const styles = StyleSheet.create({
         objectFit: "fill",
         borderRadius: 10,
         borderWidth: 1,
-        backgroundColor:"black",
+        backgroundColor:"black"
     },
     title:{
         marginLeft: 15,

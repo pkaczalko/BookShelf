@@ -2,13 +2,16 @@ import React from "react";
 import { StyleSheet, View, SafeAreaView, StatusBar, Platform, Modal } from "react-native";
 import { List } from "react-native-paper";
 import { useNavigation, useRoute } from '@react-navigation/native';
+import BarCodeScanner from "./BarCodeScanner/BarCodeScanner";
 
 export default function AddMenu({handleBottomSheetMenu}){
     const navigation = useNavigation();
 
+    const [isVisibleBarCode, setIsVisibleBarCode] = React.useState(false)
+    const barCodeScannerRef = React.useRef()
+    
     function handleISBN(){
-        navigation.navigate('add', {screen: 'addBookViaISBN'})
-        handleBottomSheetMenu(false)
+        barCodeScannerRef?.current?.turnOnBarCode()
     }
     function handleManual(){
         navigation.navigate('add', {screen: 'addBookManually'})
@@ -29,7 +32,7 @@ export default function AddMenu({handleBottomSheetMenu}){
                 <List.Item title="Dodaj nową półkę" left={()=> <List.Icon icon="bookshelf" style={styles.listIcon}/>} 
                            onPress={handleShelf}/>
             </List.Section>
-            
+            <BarCodeScanner ref={barCodeScannerRef} handleBottomSheetMenu={handleBottomSheetMenu}/>
         </SafeAreaView>    
     )
 }

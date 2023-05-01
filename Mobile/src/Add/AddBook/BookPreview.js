@@ -1,12 +1,11 @@
 import React from "react"
-import { View, StyleSheet, Text, Image, TouchableOpacity, ScrollView } from "react-native"
+import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
-import { Divider, Button } from "react-native-paper"
+import { Divider, Button, Appbar } from "react-native-paper"
 import DescriptionPreview from "./Components/DescriptionPreview"
+import {SafeAreaProvider} from "react-native-safe-area-context"
 
-export default function BookPreview(){
-    const navigation = useNavigation()
-    const route = useRoute()
+export default function BookPreview(props){
     const [data, setData] = React.useState({title: "",
                                             isbn: "",
                                             isRead: true,
@@ -38,8 +37,8 @@ export default function BookPreview(){
     }
 
     React.useEffect(() => {
-        if (route.params?.isbn) {
-            fetch("https://www.googleapis.com/books/v1/volumes?q=isbn:" + route.params.isbn) 
+        if (props?.isbn) {
+            fetch("https://www.googleapis.com/books/v1/volumes?q=isbn:" + props.isbn) 
             .then(res => res.json())
             .then((bookData) => {
                 const title = bookData?.items[0]?.volumeInfo?.title
@@ -54,7 +53,7 @@ export default function BookPreview(){
                 const imgURI = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
                 const description = bookData?.items[0]?.volumeInfo?.description
                 const publisher = bookData?.items[0]?.volumeInfo?.publisher
-                const isbn = route.params.isbn
+                const isbn = props.isbn
                 const categories = bookData?.items[0]?.volumeInfo?.categories
                 let mappedCategories = [{name: ""}]
                 if (categories){
@@ -70,7 +69,7 @@ export default function BookPreview(){
                 setData({...data, isFound: false})
             })
         }
-    }, [route.params]);
+    }, [props]);
 
     React.useEffect(()=>{
         if (save === true){
@@ -86,12 +85,13 @@ export default function BookPreview(){
             .then(data => console.log(data))
             .catch(err => console.log(err))
             
-            navigation.dispatch(
-                CommonActions.reset({
-                index: 0,
-                routes: [{ name: "catalogue" }],
-                })
-            );
+            props.handleBottomSheetMenu(false)
+            // navigation.dispatch(
+            //     CommonActions.reset({
+            //     index: 0,
+            //     routes: [{ name: "catalogue" }],
+            //     })
+            // );
         }
     },[save])
 
@@ -100,7 +100,12 @@ export default function BookPreview(){
     })
 
     return(
-        <View style={{flex:1, flexDirection:"column"}}>
+        <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
+            <Appbar.Header style={{height: 30, backgroundColor:"white", marginBottom:13, marginLeft:-5}}>
+                <Appbar.BackAction onPress={() => {props.onPressHandle()}} />
+                <Appbar.Content style={{}} title="Wróć" />
+            </Appbar.Header>
+            <Divider horizontalInset={true} />
             {data.isFound && <View style={styles.container}>
                 <Image src={data.imgURI} style={styles.img} resizeMethod="resize" resizeMode="contain" />
                 <View style={{flex:1}}>
@@ -109,7 +114,7 @@ export default function BookPreview(){
                 </View>
             </View>}
             {data.isFound && <View style={{flex:1, marginTop:20}}>
-                <Divider />
+                <Divider horizontalInset={true} />
                 <ScrollView style={{flex:1}}>
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase"}]}>Tytuł</Text>
                     <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.title}</Text>
@@ -129,13 +134,13 @@ export default function BookPreview(){
                 </View>
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
-        </View>
+        </SafeAreaProvider>
     )
 }
 
 const styles = StyleSheet.create({
     container:{
-        flex:0.4,
+        flex:0.32,
         flexDirection:"row",
         height:"50%"
     },

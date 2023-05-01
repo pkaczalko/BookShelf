@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet} from "react-native";
+import { View, Text, StyleSheet, Modal} from "react-native";
 import { Searchbar, Divider } from "react-native-paper";
 import Book from "./Components/Book";
 import { NativeViewGestureHandler, FlatList } from "react-native-gesture-handler";
+import BookPreview from "./BookPreview";
 
 export default function SearchBooks(){
     const [data, setData] = React.useState("")
@@ -17,6 +18,7 @@ export default function SearchBooks(){
         })
         .catch(err => console.log(err))
     },[])
+
 
     const renderBooks = ({item}) =>{
         return (
@@ -33,7 +35,6 @@ export default function SearchBooks(){
                             inputStyle={{marginTop:-7}}/>
                 <Divider bold={true}/>
                 <FlatList data={data} style={styles.books} renderItem={renderBooks} keyExtractor={item => item.id} numColumns={3} /> 
-                
             </View>
         </NativeViewGestureHandler>
     )

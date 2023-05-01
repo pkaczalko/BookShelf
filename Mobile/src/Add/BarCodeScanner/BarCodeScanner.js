@@ -3,16 +3,33 @@ import { Camera, RNCamera, CameraType } from 'expo-camera';
 import { StyleSheet, View, Modal, Text } from 'react-native';
 import { useNavigation,CommonActions,useRoute } from "@react-navigation/native";
 import { Dimensions } from 'react-native';
+import BookPreview from '../AddBook/BookPreview';
 
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
-export default function BarCodeScanner(){
-    const navigation = useNavigation();
-    const [isVisible, setIsVisible] = React.useState(true)
+const BarCodeScanner = React.forwardRef((props, ref) => {
+    const [isVisible, setIsVisible] = React.useState(false)
     const [hasCameraPermission, setHasCameraPermission] = React.useState();
     const [isbn, setIsbn] = React.useState();
+    const [isPreview, setIsPreview] = React.useState(false)
 
+    const onPressHandle = () =>{
+        setIsPreview(!isPreview)
+    }
+
+    const onCloseHandle = () =>{
+        props.handleBottomSheetMenu(false)
+    }
+
+    const turnOnBarCode = () =>{
+        setIsVisible(true)
+    }
+    
+    console.log(isVisible)
+
+    React.useImperativeHandle(ref, ()=>({turnOnBarCode}), [turnOnBarCode])
+    
     React.useEffect(()=>{
         (async () =>{
             const cameraPermission = await Camera.requestCameraPermissionsAsync();
@@ -27,13 +44,14 @@ export default function BarCodeScanner(){
     }
 
     function handleBackPress(){
+        props.handleBottomSheetMenu(false)
         setIsVisible(false);
-        navigation.dispatch(
-            CommonActions.reset({
-            index: 0,
-            routes: [{ name: "catalogue" }],
-            })
-        );
+        // navigation.dispatch(
+        //     CommonActions.reset({
+        //     index: 0,
+        //     routes: [{ name: "catalogue" }],
+        //     })
+        // );
     }
 
 
@@ -56,7 +74,7 @@ export default function BarCodeScanner(){
             if (scannedData.type === 32){
                 setIsbn(scannedData.data);
                 console.log(`Bar code with type ${scannedData.type} and data ${scannedData.data} has been scanned!`);
-                navigation.navigate('bookPreview', {isbn: scannedData.data})
+                onPressHandle()
                 setIsVisible(false)
             }
         }
@@ -73,10 +91,14 @@ export default function BarCodeScanner(){
                     </View>
                 </Camera>}          
             </Modal>
+            <Modal visible={isPreview} onRequestClose={onCloseHandle} statusBarTranslucent={true}>
+                    <BookPreview isbn={isbn} onPressHandle={onPressHandle} handleBottomSheetMenu={props.handleBottomSheetMenu}/>
+            </Modal>
         </View>
     )    
-}
+})
 
+export default BarCodeScanner
 const styles = StyleSheet.create({
     screen:{
         flex:1,

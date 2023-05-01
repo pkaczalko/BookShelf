@@ -1,12 +1,10 @@
 import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, ScrollView } from "react-native"
-import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
-import { Divider, Button,IconButton } from "react-native-paper"
+import { Divider, Appbar } from "react-native-paper"
+import {SafeAreaProvider} from "react-native-safe-area-context"
 import DescriptionPreview from "../Add/AddBook/Components/DescriptionPreview"
 
-export default function BookPreview(){
-    const navigation = useNavigation()
-    const route = useRoute()
+export default function BookPreview(props){
     const [data, setData] = React.useState({title: "",
                                             isbn: "",
                                             isRead: true,
@@ -37,8 +35,8 @@ export default function BookPreview(){
     }
 
     React.useEffect(() => {
-        if (route.params?.isbn) {
-            fetch("http://192.168.0.80:8081/books?q=" + route.params.isbn) 
+        if (props?.isbn) {
+            fetch("http://192.168.0.80:8081/books?q=" + props.isbn) 
             .then(res => res.json())
             .then((bookData) => {
                 const title = bookData?.[0]?.title
@@ -53,7 +51,7 @@ export default function BookPreview(){
                 const imgURI = bookData?.[0]?.imgURI
                 const description = bookData?.[0]?.description
                 const publisher = bookData?.[0]?.publisher
-                const isbn = route.params.isbn
+                const isbn = props.isbn
                 const categories = bookData?.[0]?.categories
                 let mappedCategories = [{name: ""}]
                 if (categories){
@@ -69,14 +67,19 @@ export default function BookPreview(){
                 setData({...data, isFound: false})
             })
         }
-    }, [route.params]);
+    }, [props]);
 
     const authors = data.authors.map((author, idx)=>{
         return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>{author.name}</Text>
     })
 
     return(
-        <View style={{flex:1, flexDirection:"column"}}>
+        <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
+            <Appbar.Header style={{height: 20, backgroundColor:"white", marginBottom:13, marginLeft:-5}}>
+                <Appbar.BackAction onPress={() => {props.onPressHandle()}} />
+                <Appbar.Content style={{marginTop:-5}} title="Wróć" />
+            </Appbar.Header>
+            <Divider horizontalInset={true} />
             {data.isFound && <View style={styles.container}>
                 <Image src={data.imgURI} style={styles.img} resizeMethod="resize" resizeMode="contain" />
                 <View style={{flex:1}}>
@@ -85,7 +88,7 @@ export default function BookPreview(){
                 </View>
             </View>}
             {data.isFound && <View style={{flex:1, marginTop:20}}>
-                <Divider />
+                <Divider horizontalInset={true}/>
                 <ScrollView style={{flex:1}}>
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase"}]}>Tytuł</Text>
                     <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.title}</Text>
@@ -105,13 +108,13 @@ export default function BookPreview(){
                 </View> */}
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
-        </View>
+        </SafeAreaProvider>
     )
 }
 
 const styles = StyleSheet.create({
     container:{
-        flex:0.4,
+        flex:0.32,
         flexDirection:"row",
         height:"50%"
     },
@@ -123,7 +126,7 @@ const styles = StyleSheet.create({
         objectFit: "fill",
         borderRadius: 10,
         borderWidth: 1,
-        backgroundColor:"black"
+        backgroundColor:"black",
     },
     title:{
         marginLeft: 15,

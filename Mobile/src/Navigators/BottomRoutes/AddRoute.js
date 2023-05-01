@@ -4,18 +4,31 @@ import AddMenu from "../../Add/AddMenu"
 import AddBookViaISBN from "../../Add/AddBook/AddBookViaISBN"
 import AddShelf from "../../Add/AddShelf/AddShelf"
 import MyCamera from "../../Add/Camera/MyCamera"
-import BookPreview from "../../Add/AddBook/BookPreview"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { useNavigation } from "@react-navigation/core"
 
 export default function AddRoute(){
     const Stack = createNativeStackNavigator();
-    
+    const navigation = useNavigation()
+
     const AddMenuRoute = () => <AddMenu />
     const AddByHandRoute = () => <AddBookManually />
     const AddBookViaISBNRoute = () => <AddBookViaISBN />
     const AddShelfRoute = () => <AddShelf />
     const MyCameraRoute = () => <MyCamera />
     const BookPreviewRoute = () => <BookPreview />
+
+    // React.useEffect(() => {
+    //     console.log(navigation)
+    //     navigation.setOptions({
+    //       tabBarStyle: {
+    //         display: "none"
+    //       }
+    //     });
+    //     return () => navigation.setOptions({
+    //       tabBarStyle: undefined
+    //     });
+    //   }, [navigation]);
 
     return(
         // ogarnac te screenoptions bo nie dziala
@@ -46,12 +59,7 @@ export default function AddRoute(){
                 name="myCamera"
                 component={MyCameraRoute}
                 options={{headerShown: false}}
-             /> 
-              <Stack.Screen
-                name="bookPreview"
-                component={BookPreviewRoute}
-                options={{title: 'Podgląd książki'}}
-             /> 
+             />
         </Stack.Navigator>
     )
 }

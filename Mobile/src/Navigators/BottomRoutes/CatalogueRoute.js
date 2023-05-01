@@ -1,10 +1,14 @@
 import React from "react";
-import { Appbar } from "react-native-paper";
+import { Appbar} from "react-native-paper";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SafeAreaView } from "react-native";
 import Tags from "../../Catalogue/Tags/Tags";
 import Categories from "../../Catalogue/Categories/Categories";
 import Shelves from "../../Catalogue/Shelves/Shelves";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import SetTabBar from "../Components/SetTabBar";
+
 
 export default function CatalogueRoute(){
     const TopTab = createMaterialTopTabNavigator();
@@ -23,6 +27,7 @@ export default function CatalogueRoute(){
                     <TopTab.Screen name="categories" component={CategoriesRoute} options={{title:"Kategorie"}}/>
                     <TopTab.Screen name="tags" component={TagsRoute} options={{title: "Tagi"}}/>
                 </TopTab.Navigator>
+                
             </SafeAreaView>
           );
 }

@@ -11,7 +11,8 @@ export default function AddMenu({handleBottomSheetMenu}){
     const barCodeScannerRef = React.useRef()
     
     function handleISBN(){
-        barCodeScannerRef?.current?.turnOnBarCode()
+        navigation.navigate('bookPreview', {screen:'barCodeScanner'})
+        handleBottomSheetMenu(false)
     }
     function handleManual(){
         navigation.navigate('add', {screen: 'addBookManually'})
@@ -32,7 +33,6 @@ export default function AddMenu({handleBottomSheetMenu}){
                 <List.Item title="Dodaj nową półkę" left={()=> <List.Icon icon="bookshelf" style={styles.listIcon}/>} 
                            onPress={handleShelf}/>
             </List.Section>
-            <BarCodeScanner ref={barCodeScannerRef} handleBottomSheetMenu={handleBottomSheetMenu}/>
         </SafeAreaView>    
     )
 }

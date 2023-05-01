@@ -3,12 +3,12 @@ import { Camera, RNCamera, CameraType } from 'expo-camera';
 import { StyleSheet, View, Modal, Text } from 'react-native';
 import { useNavigation,CommonActions,useRoute } from "@react-navigation/native";
 import { Dimensions } from 'react-native';
-import BookPreview from '../AddBook/BookPreview';
 
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
 const BarCodeScanner = React.forwardRef((props, ref) => {
+    const navigation = useNavigation()
     const [isVisible, setIsVisible] = React.useState(false)
     const [hasCameraPermission, setHasCameraPermission] = React.useState();
     const [isbn, setIsbn] = React.useState();
@@ -16,10 +16,6 @@ const BarCodeScanner = React.forwardRef((props, ref) => {
 
     const onPressHandle = () =>{
         setIsPreview(!isPreview)
-    }
-
-    const onCloseHandle = () =>{
-        props.handleBottomSheetMenu(false)
     }
 
     const turnOnBarCode = () =>{
@@ -41,17 +37,6 @@ const BarCodeScanner = React.forwardRef((props, ref) => {
         return <Text>Requesting Permission</Text>
     } else if(!hasCameraPermission){
         return <Text>Permission denied</Text>
-    }
-
-    function handleBackPress(){
-        props.handleBottomSheetMenu(false)
-        setIsVisible(false);
-        // navigation.dispatch(
-        //     CommonActions.reset({
-        //     index: 0,
-        //     routes: [{ name: "catalogue" }],
-        //     })
-        // );
     }
 
 
@@ -76,13 +61,13 @@ const BarCodeScanner = React.forwardRef((props, ref) => {
                 console.log(`Bar code with type ${scannedData.type} and data ${scannedData.data} has been scanned!`);
                 onPressHandle()
                 setIsVisible(false)
+                navigation.navigate('bookPreview', {screen: 'bookPreviewInfo', params:{isbn: scannedData.data}})
             }
         }
       };
 
     return(
         <View style={styles.screen}>
-            <Modal visible={isVisible} onRequestClose={handleBackPress} statusBarTranslucent={true} >
                 {isbn === undefined && <Camera style={{flex: 1}} 
                                         onBarCodeScanned={isbn ? undefined : handleBarCode}
                                         ratio='16:9'>
@@ -90,10 +75,6 @@ const BarCodeScanner = React.forwardRef((props, ref) => {
                         <View style={{height:250, width: 250, backgroundColor: "rgba(255, 255, 255, 0)", borderWidth:4, borderColor:"silver"}}/>
                     </View>
                 </Camera>}          
-            </Modal>
-            <Modal visible={isPreview} onRequestClose={onCloseHandle} statusBarTranslucent={true}>
-                    <BookPreview isbn={isbn} onPressHandle={onPressHandle} handleBottomSheetMenu={props.handleBottomSheetMenu}/>
-            </Modal>
         </View>
     )    
 })

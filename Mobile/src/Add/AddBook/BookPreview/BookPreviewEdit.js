@@ -2,10 +2,10 @@ import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
 import { Divider, Button, Appbar } from "react-native-paper"
-import DescriptionPreview from "./Components/DescriptionPreview"
+import DescriptionPreview from "../Components/DescriptionPreview"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 
-export default function BookPreview(props){
+export default function BookPreviewEdit(props){
     const [data, setData] = React.useState({title: "",
                                             isbn: "",
                                             isRead: true,
@@ -86,12 +86,6 @@ export default function BookPreview(props){
             .catch(err => console.log(err))
             
             props.handleBottomSheetMenu(false)
-            // navigation.dispatch(
-            //     CommonActions.reset({
-            //     index: 0,
-            //     routes: [{ name: "catalogue" }],
-            //     })
-            // );
         }
     },[save])
 
@@ -101,11 +95,6 @@ export default function BookPreview(props){
 
     return(
         <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
-            <Appbar.Header style={{height: 30, backgroundColor:"white", marginBottom:13, marginLeft:-5}}>
-                <Appbar.BackAction onPress={() => {props.onPressHandle()}} />
-                <Appbar.Content style={{}} title="Wróć" />
-            </Appbar.Header>
-            <Divider horizontalInset={true} />
             {data.isFound && <View style={styles.container}>
                 <Image src={data.imgURI} style={styles.img} resizeMethod="resize" resizeMode="contain" />
                 <View style={{flex:1}}>

@@ -24,7 +24,7 @@ public class BookDTO {
     private String publisher;
     private String coverType;
     private Integer volume;
-    private LocalDate publishedDate;
+    private String publishedDate;
     private Shelf shelf;
     private Set<String> categories;
     private Set<String> authors;

@@ -5,7 +5,7 @@ import { Divider, Button, Appbar } from "react-native-paper"
 import DescriptionPreview from "../Components/DescriptionPreview"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 
-export default function BookPreviewInfoAdd(props){
+export default function BookPreviewInfoAdd(){
     const navigation = useNavigation()
     const route = useRoute()
     const [data, setData] = React.useState({title: "",
@@ -40,8 +40,7 @@ export default function BookPreviewInfoAdd(props){
 
     React.useEffect(() => {
         navigation.setOptions({headerShown:true})
-        if (route?.params) {
-            console.log(route.params)
+        if (route?.params?.isbn) {
             fetch("https://www.googleapis.com/books/v1/volumes?q=isbn:" + route.params.isbn) 
             .then(res => res.json())
             .then((bookData) => {
@@ -73,6 +72,9 @@ export default function BookPreviewInfoAdd(props){
                 setData({...data, isFound: false})
             })
         }
+        else if(route?.params?.data){
+            setData({...route.params.data})
+        }
     }, [route.params]);
 
     React.useEffect(()=>{
@@ -95,6 +97,10 @@ export default function BookPreviewInfoAdd(props){
     const authors = data.authors.map((author, idx)=>{
         return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>{author.name}</Text>
     })
+
+    const EditOnPressHandle = () =>{
+        navigation.navigate('bookPreview', {screen: 'bookPreviewEditAdd', params:{data: data}})
+    }
 
     return(
         <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
@@ -122,7 +128,7 @@ export default function BookPreviewInfoAdd(props){
                 <Divider bold={true}/>
                 <View style={styles.buttons}>
                     <Button mode="contained" icon="check" onPress={()=> setSave(true)} style={styles.saveButton}>Zapisz</Button>
-                    <Button mode="contained" icon="square-edit-outline" onPress={()=> console.log("Efytuj")} style={styles.saveButton}>Edytuj</Button>
+                    <Button mode="contained" icon="square-edit-outline" onPress={EditOnPressHandle} style={styles.saveButton}>Edytuj</Button>
                 </View>
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}

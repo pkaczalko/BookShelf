@@ -79,14 +79,14 @@ export default function BookPreviewInfoAdd(){
 
     React.useEffect(()=>{
         if (save === true){
-            const {description, isFound, ...toSendData} = data
+            const {isFound, description, ...toSendData} = data
             fetch('http://192.168.0.80:8081/books', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(toSendData)
-                })
+            })
             .then(res => res.json())
             .then(data => console.log(data))
             .catch(err => console.log(err))

@@ -2,23 +2,35 @@ import React from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
 import { Card, ProgressBar, MD3Colors, IconButton } from "react-native-paper";
 
-export default function Book(){
+export default function Book(props){
+    const authors = props.authors.map((author, idx)=>{
+        if ((idx < 1) && (props.authors.length > 1)){ 
+            return <Text numberOfLines={1} key={idx} style={styles.author}>{author} {'(+' + (props.authors.length - 1) + ')'}</Text>
+        }
+        else if ((idx < 1) && (props.authors.length === 1)){
+            return <Text numberOfLines={1} key={idx} style={styles.author}>{author}</Text>
+        }
+    })
     return(
         <Card style={styles.container}>
             <Card.Content style={styles.content}>
-                <Card.Cover style={styles.imgCover} source={{ uri: 'https://picsum.photos/700' }} />
+                <Card.Cover style={styles.imgCover} source={{ uri: props.imgURI }} />
                 <View style={styles.info}>
-                    <Text style={styles.title}>Tytuł</Text>
-                    <Text style={styles.author}>Autor</Text>
-                    <View style={styles.progressContainer}>
-                        <ProgressBar style={styles.progressBar} progress={0.5} color={MD3Colors.blue} />
-                        <Text style={{fontWeight:"normal", color:"#888888"}}>0%</Text>
+                    <View style={{flex:1, justifyContent:"flex-start"}}>
+                        <Text style={styles.title}numberOfLines={2} >{props.title}</Text>
+                        {authors}
                     </View>
-                    <View style={styles.pageCounterContainer}>
-                        <IconButton style={{marginTop:-9, marginLeft: -8, marginRight: -4}} icon="book-open-page-variant" size={20} iconColor={MD3Colors.silver} />
-                        <Text style={{fontWeight:"normal", color:"#888888"}}>147/400</Text>
+                    <View style={{flex:1, justifyContent:"flex-end"}}>
+                        <View style={styles.progressContainer}>
+                            <ProgressBar style={styles.progressBar} progress={0.5} color={MD3Colors.blue} />
+                            <Text style={{fontSize:12, fontWeight:"normal", color:"#888888", marginTop:2}}>0%</Text>
+                        </View>
+                        <View style={styles.pageCounterContainer}>
+                            <IconButton style={{marginTop:-9, marginLeft: -8, marginRight: -4}} icon="book-open-page-variant" size={20} iconColor={MD3Colors.silver} />
+                            <Text style={{fontSize:12, fontWeight:"normal", color:"#888888", marginTop:2}}>147/400</Text>
+                        </View>
+                        <Text>Ocena w gwiazdkach TODO</Text>
                     </View>
-                    <Text>Ocena w gwiazdkach TODO</Text>
                 </View>
             </Card.Content>
         </Card>
@@ -32,25 +44,32 @@ const styles = StyleSheet.create({
     },
     content:{
         flex:1,
-        flexDirection:"row"
+        flexDirection:"row",
+        height:200
     },
     imgCover:{
         flex:0.5,
+        borderWidth:1,
+        borderColor:"#C8C8C8",
+        width:"30%",
+        height:"100%",
+        objectFit: "fill",
+        backgroundColor:"silver",
+        elevation: 5,
     },
     info:{
         flex:0.8,
         flexDirection:"column",
-        justifyContent:"flex-start",
-        alignItems:"flex-start",
-        marginLeft: 16
+        marginLeft: 16,
+        height:"100%"
     },
     title:{
-        fontSize:22, 
+        fontSize:17, 
         fontWeight:'bold'
     },
     author:{
         marginTop:10,
-        fontSize:15, 
+        fontSize:13, 
         fontWeight:"normal", 
         color:"#888888"
     },

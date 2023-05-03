@@ -9,24 +9,34 @@ import Book from './Components/Book'
 export default function Categories() {
   const refBottomSheet = React.useRef()
   
-  const fetchedData =[{title: "Thriller", id: 14},
-                      {title: "Horror", id: 1},
-                      {title: "Technika", id: 2},
-                      {title: "Biografia", id: 3},
-                      {title: "Poezja", id: 4},
-                      {title: "Fantasy", id: 5},
-                      {title: "Sci-Fi", id: 6},
-                      {title: "Przygodowe", id: 7},
-                      {title: "Sport", id: 8},
-                      {title: "Naukowe", id: 9},
-                      {title: "asdasd", id: 10},
-                      {title: "asdasd", id: 11},
-                      {title: "asdasd", id: 12},
-                      {title: "asdasd", id: 13}]
-  const editedData = fetchedData.map(item => ({...item, isChecked: false}))
+  // const fetchedData =[{title: "Thriller", id: 14},
+  //                     {title: "Horror", id: 1},
+  //                     {title: "Technika", id: 2},
+  //                     {title: "Biografia", id: 3},
+  //                     {title: "Poezja", id: 4},
+  //                     {title: "Fantasy", id: 5},
+  //                     {title: "Sci-Fi", id: 6},
+  //                     {title: "Przygodowe", id: 7},
+  //                     {title: "Sport", id: 8},
+  //                     {title: "Naukowe", id: 9},
+  //                     {title: "asdasd", id: 10},
+  //                     {title: "asdasd", id: 11},
+  //                     {title: "asdasd", id: 12},
+  //                     {title: "asdasd", id: 13}]
+  // const editedData = fetchedData.map(item => ({...item, isChecked: false}))
 
-  const [data, setData] = React.useState(editedData)
+  const [data, setData] = React.useState()
 
+
+  React.useEffect(()=>{
+    fetch('http://192.168.0.80:8081/books?q=')
+    .then(res => res.json())
+    .then((fetched_data) =>{
+        const editedData = fetched_data.map(item => ({...item, isChecked: false}))
+        setData(editedData)
+    })
+    .catch(err => console.log(err))
+},[])
 
   function onHandlePress(){
     const isActive = refBottomSheet?.current?.isActive()
@@ -58,7 +68,7 @@ export default function Categories() {
 
   const renderBooks = ({item}) =>{
     return (
-      <Book name={item.title}/>
+      <Book title={item.title} authors={item.authors} imgURI={item.imgURI}/>
     )
   }
   return (

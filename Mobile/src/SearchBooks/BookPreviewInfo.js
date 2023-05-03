@@ -32,7 +32,6 @@ export default function BookPreviewInfo(props){
                                             imgURI: "",
                                             description: "",
                                             isFound: true})
-    const [save, setSave] = React.useState(false)
                                         
     function check(param){
         return param ? param : "Brak"
@@ -40,62 +39,54 @@ export default function BookPreviewInfo(props){
 
     React.useEffect(() => {
         navigation.setOptions({headerShown:true})
-        if (route?.params) {
-            console.log(route.params)
-            fetch("https://www.googleapis.com/books/v1/volumes?q=isbn:" + route.params.isbn) 
+        if (route.params?.isbn) {
+            fetch("http://192.168.0.80:8081/books?q=" + route.params.isbn) 
             .then(res => res.json())
             .then((bookData) => {
-                const title = bookData?.items[0]?.volumeInfo?.title
-                const authors = bookData?.items[0]?.volumeInfo?.authors
+                const title = bookData?.[0]?.title
+                const authors = bookData?.[0]?.authors
                 let mappedAuthors = [{name: ""}]
                 if (authors){
                     mappedAuthors = authors.map((author)=>{
                         return {name: author}
                     })
                 }
-                const publishedDate = bookData?.items[0]?.volumeInfo?.publishedDate
-                const imgURI = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
-                const description = bookData?.items[0]?.volumeInfo?.description
-                const publisher = bookData?.items[0]?.volumeInfo?.publisher
-                const isbn = route.params.isbn
-                const categories = bookData?.items[0]?.volumeInfo?.categories
+
+                const publishedDate = bookData?.[0]?.publishedDate
+                const imgURI = bookData?.[0]?.imgURI
+                const description = bookData?.[0]?.description
+                const publisher = bookData?.[0]?.publisher
+                const isbn = route.params?.isbn
+                const categories = bookData?.[0]?.categories
                 let mappedCategories = [{name: ""}]
                 if (categories){
                     mappedCategories = categories.map((category)=>{
                         return {name: category}
                     })
                 }
-
                 setData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishedDate: check(publishedDate), isbn: check(isbn), 
-                        imgURI: check(imgURI), description: check(description), categories: mappedCategories})
+                    imgURI: check(imgURI), description: check(description), categories: mappedCategories})
+
             })
             .catch((err) =>{
                 setData({...data, isFound: false})
             })
         }
-    }, [route.params]);
-
-    React.useEffect(()=>{
-        if (save === true){
-            const {description, isFound, ...toSendData} = data
-            fetch('http://192.168.0.80:8081/books', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(toSendData)
-                })
-            .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(err => console.log(err))
-            navigation.navigate('home')
+        else if(route?.params?.data){
+            setData({...route.params.data})
         }
-    },[save])
+    }, [route.params]);
 
     const authors = data.authors.map((author, idx)=>{
         return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>{author.name}</Text>
     })
 
+    function onHandleEdit(){
+        navigation.navigate('bookPreviewEdit', {data: data})
+    }
+
+    function onHandleSave(){
+    }
     return(
         <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
             {data.isFound && <View style={styles.container}>
@@ -121,7 +112,8 @@ export default function BookPreviewInfo(props){
                 </ScrollView>
                 <Divider bold={true}/>
                 <View style={styles.buttons}>
-                    <Button mode="contained" icon="square-edit-outline" onPress={()=> console.log("Efytuj")} style={styles.saveButton}>Edytuj</Button>
+                    <Button mode="contained" icon="square-edit-outline" onPress={onHandleSave} style={styles.saveButton}>Dodaj na półkę</Button>
+                    <Button mode="contained" icon="square-edit-outline" onPress={onHandleEdit} style={styles.saveButton}>Edytuj</Button>
                 </View>
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}

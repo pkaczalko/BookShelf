@@ -1,7 +1,7 @@
 import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, BackHandler } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
-import { Divider, Button, Appbar, TextInput, IconButton, List } from "react-native-paper"
+import { Divider, Button, Appbar, TextInput, IconButton, List, Dialog } from "react-native-paper"
 import DescriptionPreview from "../Add/AddBook/Components/DescriptionPreview"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 import _ from 'lodash'
@@ -45,6 +45,7 @@ export default function BookPreviewEdit(props){
                                             isFound: true})
     const [sourceData, setSourceData] = React.useState({...data})     
     const [save, setSave] = React.useState(false)
+    const [alertShow, setAlertShow] = React.useState(false)                                    
 
     React.useEffect(() => {
         const backHandler = BackHandler.addEventListener(
@@ -53,12 +54,11 @@ export default function BookPreviewEdit(props){
         );
 
         return () => backHandler.remove();
-    }, [sourceData]);
+    }, [sourceData, isSaved]);
 
     React.useEffect(() => {
         navigation.setOptions({headerShown:true})
         if (route.params?.data) {
-            console.log(route.params.data)
             setData({...route.params.data})
             setSourceData({...route.params.data})
         }
@@ -76,7 +76,6 @@ export default function BookPreviewEdit(props){
     React.useEffect(()=>{
         if (save === true){
             const {isFound, description, ...toSendData} = data
-            console.log(toSendData)
             fetch("https://bookshelf-java.azurewebsites.net/books?isbn=" + data.isbn, {
                 method: "PUT",
                 headers: {
@@ -153,21 +152,32 @@ export default function BookPreviewEdit(props){
 
     function handleOnSave(){
         setSourceData({...data})
-        console.log(sourceData)
         setIsSaved(true)
         setSave(!save)
     }
 
     const handleBackPress = () => {
-        navigation.navigate('bookPreviewInfo', {data: sourceData})
+        if(isSaved === false){
+            setAlertShow(true)
+        }
+        else{
+            navigation.navigate('bookPreviewInfo', {data: sourceData})
+        }
         return true
     };
 
+    const handleConfirm = () =>{
+        navigation.navigate('bookPreviewInfo', {data: sourceData})
+    }
+    
+    const handleAbort = () =>{
+        setAlertShow(false)
+    }
+
     return(
         <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
-            {data.isFound && <View style={{flex:1, marginTop:20}}>
-                <Divider horizontalInset={true} />
-                <ScrollView style={{flex:1, margin:10}}>
+            {data.isFound && <View style={{flex:1}}>
+                <ScrollView style={{flex:1, marginLeft:10, marginRight:10}}>
                     <List.Section>
                         <TextInput mode="outlined" label = "ISBN(opcjonalny)" value={data.isbn} 
                                 onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput}/>
@@ -195,13 +205,21 @@ export default function BookPreviewEdit(props){
                                 onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
                     </List.Section>
                 </ScrollView>
-                <Divider bold={true}/>
                 <View style={styles.buttons}>
                     <Button mode="contained" icon="check" onPress={handleOnSave} 
                             style={styles.saveButton} disabled={isSaved}>
                         Zapisz
                     </Button>
                 </View>
+                <Dialog visible={alertShow} style={{justifyContent:"center", marginTop:-25, backgroundColor:"white"}} dismissable={false}>
+                    <Dialog.Content>
+                        <Text style={{fontSize:16}}>Twoje zmiany nie zostaną zapisane. Czy chcesz kontynuuować?</Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={handleAbort}>Nie</Button>
+                        <Button onPress={handleConfirm}>Tak</Button>
+                    </Dialog.Actions>
+                </Dialog>
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
         </SafeAreaProvider>
@@ -269,6 +287,5 @@ const styles = StyleSheet.create({
         borderRadius:0
     },
     buttons:{
-        marginTop:10,
     }
 })

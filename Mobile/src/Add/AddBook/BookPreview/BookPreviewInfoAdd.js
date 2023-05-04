@@ -1,5 +1,5 @@
 import React from "react"
-import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar } from "react-native"
+import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, BackHandler } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
 import { Divider, Button, Appbar } from "react-native-paper"
 import DescriptionPreview from "../Components/DescriptionPreview"

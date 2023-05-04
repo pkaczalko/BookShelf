@@ -1,12 +1,12 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy JAR app to Azure Web App - bookshelf-java
+name: Build and deploy JAR app to Azure Web App - Bookshelf-java-srv
 
 on:
   push:
     branches:
-      - back
+      - main
   workflow_dispatch:
 
 jobs:
@@ -22,13 +22,13 @@ jobs:
           java-version: '17'
 
       - name: Build with Maven
-        run: mvn clean install
+        run: mvn -f Bookshelf/pom.xml clean install
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: '${{ github.workspace }}/Bookshelf/target/*.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'bookshelf-java'
+          app-name: 'Bookshelf-java-srv'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F3781FF85BC246CFA2F16D080245F7F1 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_EAC936B331AD4F02A9AFDBDE8688A377 }}
           package: '*.jar'

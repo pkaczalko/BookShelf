@@ -29,7 +29,7 @@ export default function Categories() {
 
 
   React.useEffect(()=>{
-    fetch('http://192.168.0.80:8081/books?q=')
+    fetch('https://bookshelf-java.azurewebsites.net/books?q=')
     .then(res => res.json())
     .then((fetched_data) =>{
         const editedData = fetched_data.map(item => ({...item, isChecked: false}))
@@ -91,7 +91,6 @@ export default function Categories() {
 
 const styles = StyleSheet.create({
   container:{
-    flex:1,
     flexDirection:"column"
   },
   filterButton:{

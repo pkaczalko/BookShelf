@@ -77,7 +77,7 @@ export default function BookPreviewEdit(props){
         if (save === true){
             const {isFound, description, ...toSendData} = data
             console.log(toSendData)
-            fetch("http://192.168.0.80:8081/books?isbn=" + data.isbn, {
+            fetch("https://bookshelf-java.azurewebsites.net/books?isbn=" + data.isbn, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"

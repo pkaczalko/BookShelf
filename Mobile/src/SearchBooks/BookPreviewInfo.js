@@ -40,7 +40,7 @@ export default function BookPreviewInfo(props){
     React.useEffect(() => {
         navigation.setOptions({headerShown:true})
         if (route.params?.isbn) {
-            fetch("http://192.168.0.80:8081/books?q=" + route.params.isbn) 
+            fetch("https://bookshelf-java.azurewebsites.net/books?q=" + route.params.isbn) 
             .then(res => res.json())
             .then((bookData) => {
                 const title = bookData?.[0]?.title

@@ -1,7 +1,7 @@
 import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, BackHandler } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
-import { Divider, Button, Appbar, TextInput, IconButton, List, Dialog } from "react-native-paper"
+import { Divider, Button, Appbar, TextInput, IconButton, List, Dialog, Portal } from "react-native-paper"
 import DescriptionPreview from "../Add/AddBook/Components/DescriptionPreview"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 import _ from 'lodash'
@@ -64,6 +64,7 @@ export default function BookPreviewEdit(props){
         }
     }, [route.params]);
 
+
     React.useEffect(()=>{
         if (_.isEqual(sourceData, data)){
             setIsSaved(true)
@@ -71,11 +72,26 @@ export default function BookPreviewEdit(props){
         else{
             setIsSaved(false)
         }
-    },[data, sourceData])
+        navigation.setOptions({headerLeft: () =>{
+            return(
+            <IconButton
+            icon="arrow-left"
+            style={{marginLeft:-9}}
+            onPress={() => {
+                if(isSaved === false){
+                    setAlertShow(true)
+                }
+                else{
+                    navigation.navigate('bookPreviewInfo', {data: sourceData})
+                }
+            }}
+          />)
+        }})
+    },[data, sourceData, isSaved])
 
     React.useEffect(()=>{
         if (save === true){
-            const {isFound, description, ...toSendData} = data
+            const {isFound, description, ...toSendData} = sourceData
             fetch("https://bookshelf-java.azurewebsites.net/books?isbn=" + data.isbn, {
                 method: "PUT",
                 headers: {
@@ -211,15 +227,17 @@ export default function BookPreviewEdit(props){
                         Zapisz
                     </Button>
                 </View>
-                <Dialog visible={alertShow} style={{justifyContent:"center", marginTop:-25, backgroundColor:"white"}} dismissable={false}>
-                    <Dialog.Content>
-                        <Text style={{fontSize:16}}>Twoje zmiany nie zostaną zapisane. Czy chcesz kontynuuować?</Text>
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button onPress={handleAbort}>Nie</Button>
-                        <Button onPress={handleConfirm}>Tak</Button>
-                    </Dialog.Actions>
-                </Dialog>
+                <Portal>
+                    <Dialog visible={alertShow} style={{justifyContent:"center", backgroundColor:"white"}} dismissable={false}>
+                        <Dialog.Content>
+                            <Text style={{fontSize:16}}>Twoje zmiany nie zostaną zapisane. Czy chcesz kontynuuować?</Text>
+                        </Dialog.Content>
+                        <Dialog.Actions>
+                            <Button onPress={handleAbort}>Nie</Button>
+                            <Button onPress={handleConfirm}>Tak</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
         </SafeAreaProvider>

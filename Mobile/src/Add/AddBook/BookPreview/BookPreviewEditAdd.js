@@ -1,7 +1,7 @@
 import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, BackHandler } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
-import { Divider, Button, Appbar, TextInput, List, IconButton, Dialog } from "react-native-paper"
+import { Divider, Button, Appbar, TextInput, List, IconButton, Dialog, Portal, Provider } from "react-native-paper"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 import _ from 'lodash'
 
@@ -71,7 +71,22 @@ export default function BookPreviewEditAdd(){
         else{
             setIsSaved(false)
         }
-    },[data, sourceData])
+        navigation.setOptions({headerLeft: () =>{
+            return(
+            <IconButton
+            icon="arrow-left"
+            style={{marginLeft:-9}}
+            onPress={() => {
+                if(isSaved === false){
+                    setAlertShow(true)
+                }
+                else{
+                    navigation.navigate('bookPreviewInfoAdd', {data: sourceData})
+                }
+            }}
+          />)
+        }})
+    },[data, sourceData, isSaved])
 
     const authors = data.authors.map((author, idx)=>{
         return idx === 0 ?
@@ -196,15 +211,17 @@ export default function BookPreviewEditAdd(){
                         Zapisz
                     </Button>
                 </View>
-                <Dialog visible={alertShow} style={{justifyContent:"center", marginTop:-25, backgroundColor:"white"}} dismissable={false}>
-                    <Dialog.Content>
-                        <Text style={{fontSize:16}}>Twoje zmiany nie zostaną zapisane. Czy chcesz kontynuuować?</Text>
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button onPress={handleAbort}>Nie</Button>
-                        <Button onPress={handleConfirm}>Tak</Button>
-                    </Dialog.Actions>
-                </Dialog>
+                <Portal>
+                    <Dialog visible={alertShow} style={{justifyContent:"center", backgroundColor:"white"}} dismissable={false}>
+                        <Dialog.Content>
+                            <Text style={{fontSize:16}}>Twoje zmiany nie zostaną zapisane. Czy chcesz kontynuuować?</Text>
+                        </Dialog.Content>
+                        <Dialog.Actions>
+                            <Button onPress={handleAbort}>Nie</Button>
+                            <Button onPress={handleConfirm}>Tak</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
         </SafeAreaProvider>

@@ -74,18 +74,18 @@ export default function BookPreviewEdit(props){
         }
         navigation.setOptions({headerLeft: () =>{
             return(
-            <IconButton
-            icon="arrow-left"
-            style={{marginLeft:-9}}
-            onPress={() => {
-                if(isSaved === false){
-                    setAlertShow(true)
-                }
-                else{
-                    navigation.navigate('bookPreviewInfo', {data: sourceData})
-                }
-            }}
-          />)
+                <IconButton
+                icon="arrow-left"
+                style={{marginLeft:-9}}
+                onPress={() => {
+                    if(isSaved === false){
+                        setAlertShow(true)
+                    }
+                    else{
+                        navigation.navigate('bookPreviewInfo', {data: sourceData})
+                    }
+                }}
+            />)
         }})
     },[data, sourceData, isSaved])
 

@@ -80,6 +80,7 @@ export default function BookPreviewInfoAdd(){
     React.useEffect(()=>{
         if (save === true){
             const {isFound, description, ...toSendData} = data
+            console.log(toSendData)
             fetch('https://bookshelf-java.azurewebsites.net/books', {
                 method: 'POST',
                 headers: {

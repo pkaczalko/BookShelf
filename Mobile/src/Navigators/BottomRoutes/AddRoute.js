@@ -7,7 +7,7 @@ import MyCamera from "../../Add/Camera/MyCamera"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { useNavigation } from "@react-navigation/core"
 
-export default function AddRoute(){
+export default function Add(){
     const Stack = createNativeStackNavigator();
     const navigation = useNavigation()
 
@@ -16,7 +16,6 @@ export default function AddRoute(){
     const AddBookViaISBNRoute = () => <AddBookViaISBN />
     const AddShelfRoute = () => <AddShelf />
     const MyCameraRoute = () => <MyCamera />
-    const BookPreviewRoute = () => <BookPreview />
 
     // React.useEffect(() => {
     //     console.log(navigation)

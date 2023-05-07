@@ -19,25 +19,6 @@ export default function AddShelf(){
         }
     }, [route.params]);
 
-    React.useEffect(() => {
-        const backHandler = BackHandler.addEventListener(
-            'hardwareBackPress',
-            handleBackPress
-        );
-
-        return () => backHandler.remove();
-    }, []);
-
-    const handleBackPress = () => {
-        navigation.dispatch(
-            CommonActions.reset({
-            index: 0,
-            routes: [{ name: "catalogue" }],
-            })
-        );
-        return true
-    };
-
     const [data, setData] = React.useState({
         name: "",
     })

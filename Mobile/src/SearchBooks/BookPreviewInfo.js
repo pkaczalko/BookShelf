@@ -1,9 +1,10 @@
 import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
-import { Divider, Button, Appbar } from "react-native-paper"
+import { Divider, Button, Appbar, IconButton, List } from "react-native-paper"
 import DescriptionPreview from "../Add/AddBook/Components/DescriptionPreview"
 import {SafeAreaProvider} from "react-native-safe-area-context"
+import BottomSheet from "../Components/BottomSheet"
 
 export default function BookPreviewInfo(props){
     const navigation = useNavigation()
@@ -33,6 +34,9 @@ export default function BookPreviewInfo(props){
                                             description: "",
                                             isFound: true})
                                         
+    const [bottomSheetVisible, setBottomSheetVisible] = React.useState(false)
+    const refBottomSheet = React.useRef()
+
     function check(param){
         return param ? param : "Brak"
     }
@@ -77,6 +81,20 @@ export default function BookPreviewInfo(props){
         }
     }, [route.params]);
 
+    React.useEffect(()=>{
+        navigation.setOptions({headerRight: () =>{
+            return(
+                <IconButton
+                icon="dots-vertical"
+                style={{marginRight:-9}}
+                onPress={() => {
+                    console.log("options")
+                    onHandlePress()
+                }}
+            />)
+        }})
+    },[])
+
     const authors = data.authors.map((author, idx)=>{
         return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>{author.name}</Text>
     })
@@ -85,8 +103,16 @@ export default function BookPreviewInfo(props){
         navigation.navigate('bookPreviewEdit', {data: data})
     }
 
-    function onHandleSave(){
+    function onHandlePress(){
+        const isActive = refBottomSheet?.current?.isActive()
+        isActive ? refBottomSheet?.current?.scrollTo(0) : refBottomSheet?.current?.scrollTo(-250)
+        refBottomSheet?.current?.setIsVisible(true);
     }
+    
+    function onHandleSave(){
+
+    }
+
     return(
         <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
             {data.isFound && <View style={styles.container}>
@@ -117,6 +143,14 @@ export default function BookPreviewInfo(props){
                 </View>
             </View>}
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
+           <BottomSheet ref={refBottomSheet} scale={3}>
+                <List.Section style={styles.listContainer}>
+                    <List.Item title="Dodaj do WishListy" left={()=> <List.Icon icon="heart" style={styles.listIcon}/>}
+                            onPress={()=>console.log("wishlisted")}/>
+                    <List.Item title="Usuń" left={()=> <List.Icon icon="delete" style={styles.listIcon}/>}
+                            onPress={()=>console.log("deleted")}/>
+                </List.Section>
+            </BottomSheet>
         </SafeAreaProvider>
     )
 }
@@ -158,5 +192,15 @@ const styles = StyleSheet.create({
         marginTop:10,
         flexDirection:"row",
         justifyContent:"space-around"
+    },
+    listContainer: {
+        width: "auto",
+        marginTop:0
+    },
+    listIcon:{
+        paddingLeft: 15
+    },
+    listItem:{
+
     }
 })

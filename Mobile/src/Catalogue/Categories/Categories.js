@@ -2,31 +2,13 @@ import React from 'react'
 import { View, Text, StyleSheet} from 'react-native'
 import { FlatList, NativeViewGestureHandler, ScrollView } from 'react-native-gesture-handler'
 import BottomSheet from '../../Components/BottomSheet'
-import { IconButton, Chip, Button, Divider, Card } from 'react-native-paper'
+import { IconButton, Chip, Button, Divider, Card, ActivityIndicator, MD2Colors } from 'react-native-paper'
 import CategoryCheckBox from './Components/CategoryCheckBox'
 import Book from './Components/Book'
 
 export default function Categories() {
   const refBottomSheet = React.useRef()
-  
-  // const fetchedData =[{title: "Thriller", id: 14},
-  //                     {title: "Horror", id: 1},
-  //                     {title: "Technika", id: 2},
-  //                     {title: "Biografia", id: 3},
-  //                     {title: "Poezja", id: 4},
-  //                     {title: "Fantasy", id: 5},
-  //                     {title: "Sci-Fi", id: 6},
-  //                     {title: "Przygodowe", id: 7},
-  //                     {title: "Sport", id: 8},
-  //                     {title: "Naukowe", id: 9},
-  //                     {title: "asdasd", id: 10},
-  //                     {title: "asdasd", id: 11},
-  //                     {title: "asdasd", id: 12},
-  //                     {title: "asdasd", id: 13}]
-  // const editedData = fetchedData.map(item => ({...item, isChecked: false}))
-
   const [data, setData] = React.useState()
-
 
   React.useEffect(()=>{
     fetch('https://bookshelf-java.azurewebsites.net/books?q=')
@@ -36,7 +18,7 @@ export default function Categories() {
         setData(editedData)
     })
     .catch(err => console.log(err))
-},[])
+  },[])
 
   function onHandlePress(){
     const isActive = refBottomSheet?.current?.isActive()
@@ -71,9 +53,10 @@ export default function Categories() {
       <Book title={item.title} authors={item.authors} imgURI={item.imgURI}/>
     )
   }
+
   return (
     <NativeViewGestureHandler>
-      <View style={styles.container}>
+      <View style={[styles.container, {flex: data?.length > 1 ? 1 : 0}]}>
         <Button icon="filter" mode='contained-tonal' elevated={true} elevation={4} 
                 onPress={onHandlePress} style={styles.filterButton}>Filtruj</Button>
         <FlatList data={data} renderItem={renderFilterChip} keyExtractor={item => item.id} horizontal={true}/>
@@ -91,6 +74,7 @@ export default function Categories() {
 
 const styles = StyleSheet.create({
   container:{
+
     flexDirection:"column"
   },
   filterButton:{

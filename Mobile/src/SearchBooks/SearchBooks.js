@@ -7,16 +7,19 @@ import { NativeViewGestureHandler, FlatList } from "react-native-gesture-handler
 export default function SearchBooks(){
     const [data, setData] = React.useState("")
     const [searchQuery, setSearchQuery] = React.useState('')
-
+    const [isLoaded, setIsLoaded] = React.useState(false)
+    
     React.useEffect(()=>{
-        fetch('https://bookshelf-java.azurewebsites.net/books?q=')
+        setIsLoaded(false)
+        fetch('https://bookshelf-java.azurewebsites.net/books?q=' + searchQuery)
         .then(res => res.json())
         .then((fetched_data) =>{
             const editedData = fetched_data.map(item => ({...item, isChecked: false}))
             setData(editedData)
+            setIsLoaded(true)
         })
         .catch(err => console.log(err))
-    },[])
+    },[searchQuery])
 
 
     const renderBooks = ({item}) =>{
@@ -28,7 +31,7 @@ export default function SearchBooks(){
     return(
         <NativeViewGestureHandler>
             <View style={{flex:1}}>
-                <Searchbar elevation={2} placeholder='Szukaj'  
+                <Searchbar elevation={2} placeholder='Szukaj' loading={!isLoaded}
                             onChangeText={(query) => setSearchQuery(query)} value={searchQuery}
                             style={{backgroundColor:"white", height:40, alignItems:"center", margin: 10}}
                             inputStyle={{marginTop:-7}}/>

@@ -10,7 +10,7 @@ import SetTabBar from './Components/SetTabBar';
 import SettingsRoute from './BottomRoutes/SettingsRoute';
 import WishListRoute from './BottomRoutes/WishListRoute';
 import SearchRoute from './BottomRoutes/SearchRoute';
-import AddRoute from './BottomRoutes/AddRoute';
+import Add from './BottomRoutes/AddRoute';
 import HomeRoute from './BottomRoutes/HomeRoute';
 import BookPreview from './BottomRoutes/BookPreviewRoute';
 
@@ -21,16 +21,21 @@ export default function BottomNavbar(){
         <NavigationContainer>
 
             <Stack.Navigator>
-            <Stack.Screen
-                name="home"
-                component={HomeRoute}
-                options={{headerShown: false}}
-            />
-             <Stack.Screen
-                name="bookPreview"
-                component={BookPreview}
-                options={{title: 'Podgląd', headerShown: false}}
-            />
+                <Stack.Screen
+                    name="home"
+                    component={HomeRoute}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="bookPreview"
+                    component={BookPreview}
+                    options={{title: 'Podgląd', headerShown: false}}
+                />
+                <Stack.Screen
+                    name="add"
+                    component={Add}
+                    options={{title: 'Dodawanie', headerShown: false}}
+                />
             </Stack.Navigator>
         </NavigationContainer>
 )}

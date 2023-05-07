@@ -1,19 +1,42 @@
 import React from "react";
-import { StyleSheet, View, Dimensions, BackHandler} from "react-native";
-import { TextInput, Button } from "react-native-paper";
+import { StyleSheet, View, Dimensions, BackHandler, ScrollView, Text} from "react-native";
+import { Divider, Button, Appbar, TextInput, List, IconButton, Dialog, Portal, Provider } from "react-native-paper"
 import { useNavigation, CommonActions } from "@react-navigation/native";
+import {SafeAreaProvider} from "react-native-safe-area-context"
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window')
 
 export default function AddBookManually(){
     const navigation = useNavigation()
+
+    const [expandIconAuthors, setExpandIconAuthors] = React.useState('chevron-right')
+    const [expandedAuthors, setExpandedAuthors] = React.useState(false)
+
+    const [expandedDescription, setExpandedDescription] = React.useState(false)
+    const [expandIconDescription, setExpandIconDescription] = React.useState('chevron-right')
+
+    const [descriptionNumOfLines, setDescriptionNumOfLines] = React.useState(1)
+    const [isSaved, setIsSaved] = React.useState(false)
+
     const [data, setData] = React.useState({
-        isbn: "",
-        title: "",
-        author: "",
-        category: "",
-        descript: ""
-    })
+                                            isbn: "",
+                                            title: "",
+                                            authors: [
+                                                {name:""}
+                                            ],
+                                            category:[
+                                                {name:""}
+                                            ],
+                                            description: "",
+                                            publishedDate: ""
+                                            })
+
+    React.useEffect(()=>{
+        if (isSaved === true){
+            console.log("saved")
+            navigation.navigate('home')
+        }
+    },[isSaved])
 
     function handleChange(name, value){
         setData(prevData => ({
@@ -22,36 +45,106 @@ export default function AddBookManually(){
         }))
     }
 
-    React.useEffect(() => {
-        const backHandler = BackHandler.addEventListener(
-            'hardwareBackPress',
-            handleBackPress
-        );
-
-        return () => backHandler.remove();
-    }, []);
-
-    const handleBackPress = () => {
-        navigation.dispatch(
-            CommonActions.reset({
-            index: 0,
-            routes: [{ name: "catalogue" }],
-            })
-        );
-        return true
-    };
-
-    return(
-        <View style={styles.formsContainer}>
-            <View style={styles.textContainer}>
-                <TextInput mode="outlined" label = "ISBN(optional)" value={data.isbn} onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput}/>
-                <TextInput mode="outlined" label = "Title" value={data.title} onChangeText={(value) => handleChange("title", value)} style={styles.textInput}/>
-                <TextInput mode="outlined" label = "Author" value={data.author} onChangeText={(value) => handleChange("author", value)} style={styles.textInput}/>
-                <TextInput mode="outlined" label = "Kategoria" value={data.category} onChangeText={(value) => handleChange("category", value)} style={styles.textInput}/>
-                <TextInput mode="outlined" label = "Opis" value={data.descript} onChangeText={(value) => handleChange("descript", value)} style={styles.textInput}/>
-            </View>
-            <Button mode="contained" onPress={()=>console.log("Zrobić POSTa")} style={styles.saveButton}>Save</Button>
+    const authors = data.authors.map((author, idx)=>{
+        return idx === 0 ?
+        <View style={styles.authorContainer} key={idx}>
+            <TextInput mode="outlined" value={author.name} onChangeText={(value) => handleAuthorChange(value, idx)}
+                       style={[styles.textInput, {marginTop:13}]} label={"Autor " + (idx + 1)}/>
+            <IconButton icon="close" iconColor="black" size={25} onPress={() => handleAuthorDelete(idx)} style={styles.authorExit} />
         </View>
+        :
+        <View style={styles.authorContainer} key={idx}>
+            <TextInput mode="outlined" value={author.name} onChangeText={(value) => handleAuthorChange(value, idx)}
+                       style={styles.textInput} label={"Autor " + (idx + 1)}  />
+            <IconButton icon="close" iconColor="black" size={25} onPress={() => handleAuthorDelete(idx)} style={styles.authorExit}  />
+        </View>
+    })
+
+    function handleAuthorDelete(idx){
+        setData(prevData => ({
+            ...prevData,
+            authors: prevData.authors.filter((author, index) => index !== idx)
+        }))
+    }
+
+    function handleAuthorChange(value, idx){
+        setData(prevData => ({
+            ...prevData,
+            authors: prevData.authors.map((author, i) => {
+                if (i === idx) {
+                    return {...author, name: value};
+                }
+                return author;
+            })
+        }))
+    }
+    function handleChange(name, value){
+        setData(prevData => ({
+            ...prevData,
+            [name]: value
+        }))
+    }
+
+    function handleOnExpandAuthors(){
+        setExpandedAuthors(!expandedAuthors)
+        if (expandIconAuthors === "chevron-right") setExpandIconAuthors("chevron-down")
+        if (expandIconAuthors === "chevron-down") setExpandIconAuthors("chevron-right")
+
+    }
+
+    function handleOnExpandDescription(){
+        setExpandedDescription(!expandedDescription)
+        if (expandIconDescription === "chevron-right") setExpandIconDescription("chevron-down")
+        if (expandIconDescription === "chevron-down") setExpandIconDescription("chevron-right")
+
+    }
+
+    function handleOnAdd(){
+        setData(prevData => ({
+            ...prevData,
+            authors: [...prevData.authors, {name:""}]
+        }))
+    }
+    
+    return(
+        <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
+            <View style={{flex:1}}>
+                <ScrollView style={{flex:1, marginLeft:10, marginRight:10}}>
+                    <List.Section>
+                        <TextInput mode="outlined" label = "ISBN(opcjonalny)" value={data.isbn} 
+                                onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput} />
+                        <TextInput mode="outlined" label = "Tytuł" value={data.title} 
+                                onChangeText={(value) => handleChange("title", value)} style={[styles.textInput, {marginTop:-4}]} />
+                        <List.Accordion title="Autorzy" right={() => <List.Icon icon={expandIconAuthors} />} 
+                                        style={styles.authorsButton} expanded={expandedAuthors} onPress={handleOnExpandAuthors}>
+                            {authors}
+                            <Button mode="contained-tonal" icon="plus" iconColor="silver" 
+                                    style={[styles.addAuthorsButton, {marginTop: data.authors.length > 0 ? -9 : 2 }]}
+                                    onPress={handleOnAdd}>Dodaj autora</Button>
+                        </List.Accordion>
+                        <Divider style={{marginTop:13}}/>
+                        <List.Accordion title="Opis" right={() => <List.Icon icon={expandIconDescription}/>} 
+                                        style={styles.descriptionButton} expanded={expandedDescription} 
+                                        onPress={handleOnExpandDescription}>
+                            <TextInput mode="outlined" label = "Opis" value={data.description} 
+                                        onChangeText={(value) => handleChange("description", value)} 
+                                        style={[styles.textInput, {marginTop:8}]} 
+                                        multiline={true} numberOfLines={descriptionNumOfLines} onContentSizeChange={(e) => {
+                                        setDescriptionNumOfLines(e.nativeEvent.contentSize.height / 18)
+                                        }}/>
+                        </List.Accordion>
+                        <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} 
+                                   onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
+                    </List.Section>
+                </ScrollView>
+                <View style={styles.buttons}>
+                    <Button mode="contained" icon="check" onPress={() => setIsSaved(true)} 
+                            style={styles.saveButton}>
+                        Dodaj
+                    </Button>
+                </View>
+            </View>
+        </SafeAreaProvider>
     )
 }
 
@@ -77,4 +170,65 @@ const styles = StyleSheet.create({
         width:"100%",
         justifyContent:"flex-end",
     },
+    container:{
+        flex:0.32,
+        flexDirection:"row",
+        height:"50%"
+    },
+    img:{
+        width:"30%",
+        height:"100%",
+        marginLeft: 10,
+        marginTop: 10,
+        objectFit: "fill",
+        borderRadius: 10,
+        borderWidth: 1,
+        backgroundColor:"black"
+    },
+    title:{
+        marginLeft: 15,
+        marginTop:10,
+        fontWeight:"bold",
+        fontSize:20,
+        maxWidth:"100%",
+    },
+    authorContainer:{
+        flexDirection:"row"
+    },
+    authorExit:{
+        alignSelf:"center"
+    },
+    authors:{
+        marginLeft: 15,
+        marginTop: 10,
+        fontSize: 15
+    },
+    authorsButton:{
+        backgroundColor:"white",
+        borderWidth:1,
+        borderRadius: 4,
+        borderColor: '#808080',
+    },
+    addAuthorsButton:{
+        backgroundColor:"transparent",
+        alignSelf:"flex-start",
+        borderRadius:0,
+        marginLeft: -8,
+    },
+    descriptionButton:{
+        backgroundColor:"white",
+        borderWidth:1,
+        borderRadius: 4,
+        borderColor: '#808080',
+    },
+    textInput:{
+        flex: 1,
+        backgroundColor: "white",
+        marginBottom: 12,
+    },
+    saveButton:{
+        borderRadius:0
+    },
+    buttons:{
+    }
 })

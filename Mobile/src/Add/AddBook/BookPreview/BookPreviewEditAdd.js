@@ -90,16 +90,16 @@ export default function BookPreviewEditAdd(){
 
     const authors = data.authors.map((author, idx)=>{
         return idx === 0 ?
-        <View style={styles.authorContainer}>
+        <View style={styles.authorContainer}  key={idx}>
             <TextInput mode="outlined" value={author.name} onChangeText={(value) => handleAuthorChange(value, idx)}
-                       style={[styles.textInput, {marginTop:13}]} label={"Autor " + (idx + 1)} key={idx}/>
-            <IconButton icon="close" iconColor="black" size={25} onPress={() => handleAuthorDelete(idx)} style={styles.authorExit} key={idx+1}/>
+                       style={[styles.textInput, {marginTop:13}]} label={"Autor " + (idx + 1)} />
+            <IconButton icon="close" iconColor="black" size={25} onPress={() => handleAuthorDelete(idx)} style={styles.authorExit}/>
         </View>
         :
-        <View style={styles.authorContainer}>
+        <View style={styles.authorContainer}  key={idx}>
             <TextInput mode="outlined" value={author.name} onChangeText={(value) => handleAuthorChange(value, idx)}
-                       style={styles.textInput} label={"Autor " + (idx + 1)} key={idx}/>
-            <IconButton icon="close" iconColor="black" size={25} onPress={() => handleAuthorDelete(idx)} style={styles.authorExit} key={idx+1}/>
+                       style={styles.textInput} label={"Autor " + (idx + 1)} />
+            <IconButton icon="close" iconColor="black" size={25} onPress={() => handleAuthorDelete(idx)} style={styles.authorExit}/>
         </View>
 
     })

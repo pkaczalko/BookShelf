@@ -86,15 +86,6 @@ export default function BookPreviewEdit(props){
                     }
                 }}
             />)
-        },headerRight: () =>{
-            return(
-                <IconButton
-                icon="dots-vertical"
-                style={{marginRight:-9}}
-                onPress={() => {
-                    console.log("options")
-                }}
-            />)
         }})
     },[data, sourceData, isSaved])
 

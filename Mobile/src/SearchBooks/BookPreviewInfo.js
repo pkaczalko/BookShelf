@@ -1,7 +1,7 @@
 import React from "react"
-import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar } from "react-native"
+import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, Modal as RNModal } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
-import { Divider, Button, Appbar, IconButton, List } from "react-native-paper"
+import { Divider, Button, Appbar, IconButton, List, Portal, Dialog } from "react-native-paper"
 import DescriptionPreview from "../Add/AddBook/Components/DescriptionPreview"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 import BottomSheet from "../Components/BottomSheet"
@@ -35,6 +35,8 @@ export default function BookPreviewInfo(props){
                                             isFound: true})
                                         
     const [bottomSheetVisible, setBottomSheetVisible] = React.useState(false)
+    const [isDeleted, setIsDeleted] = React.useState(false)
+    const [alertVisible, setAlertVisible] = React.useState(false)
     const refBottomSheet = React.useRef()
 
     function check(param){
@@ -95,6 +97,15 @@ export default function BookPreviewInfo(props){
         }})
     },[])
 
+    React.useEffect(()=>{
+        if(isDeleted === true){
+            fetch('https://bookshelf-java.azurewebsites.net/books?isbn=' + data.isbn, {
+                method: 'DELETE',
+            })
+            navigation.goBack()
+        }
+    },[isDeleted])
+
     const authors = data.authors.map((author, idx)=>{
         return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>{author.name}</Text>
     })
@@ -111,6 +122,18 @@ export default function BookPreviewInfo(props){
     
     function onHandleSave(){
 
+    }
+
+    function onDeleteHandle(){
+        setAlertVisible(true)
+    }
+
+    function handleConfirm(){
+        setIsDeleted(true)
+    }
+
+    function handleAbort(){
+        setAlertVisible(false)
     }
 
     return(
@@ -148,9 +171,22 @@ export default function BookPreviewInfo(props){
                     <List.Item title="Dodaj do WishListy" left={()=> <List.Icon icon="heart" style={styles.listIcon}/>}
                             onPress={()=>console.log("wishlisted")}/>
                     <List.Item title="Usuń" left={()=> <List.Icon icon="delete" style={styles.listIcon}/>}
-                            onPress={()=>console.log("deleted")}/>
+                            onPress={onDeleteHandle}/>
                 </List.Section>
             </BottomSheet>
+            <Portal>
+            <RNModal visible={alertVisible} transparent={true}>
+                <Dialog visible={alertVisible} style={{justifyContent:"center", backgroundColor:"white"}} dismissable={false}>
+                    <Dialog.Content>
+                        <Text style={{fontSize:16}}>Czy napewno chcesz usunąć książkę?</Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={handleAbort}>Nie</Button>
+                        <Button onPress={handleConfirm}>Tak</Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </RNModal>
+            </Portal>
         </SafeAreaProvider>
     )
 }

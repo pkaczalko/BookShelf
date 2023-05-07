@@ -18,25 +18,56 @@ export default function AddBookManually(){
     const [descriptionNumOfLines, setDescriptionNumOfLines] = React.useState(1)
     const [isSaved, setIsSaved] = React.useState(false)
 
-    const [data, setData] = React.useState({
+    const [data, setData] = React.useState({title: "",
                                             isbn: "",
-                                            title: "",
-                                            authors: [
-                                                {name:""}
+                                            isRead: true,
+                                            favorite: true,
+                                            borrower: "John Smith",
+                                            wishList: false,
+                                            publisher:"",
+                                            coverType:"nie ma",
+                                            volume:1,
+                                            publishedDate: "",
+                                            categories: [
+                                                {
+                                                  name: ""
+                                                }
                                             ],
-                                            category:[
-                                                {name:""}
+                                            authors:[
+                                                {
+                                                    name: ""
+                                                }
                                             ],
-                                            description: "",
-                                            publishedDate: ""
-                                            })
 
+                                            imgURI: "",
+                                            description: ""})
+    
+    const [isSavedDisabled, setIsSaveDisabled] = React.useState(true)
     React.useEffect(()=>{
         if (isSaved === true){
-            console.log("saved")
+            const {description, ...toSendData} = data
+            fetch('https://bookshelf-java.azurewebsites.net/books', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(toSendData)
+            })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.log(err))
             navigation.navigate('home')
         }
     },[isSaved])
+
+    React.useEffect(()=>{
+        if(data.title.length > 0){
+            setIsSaveDisabled(false)
+        }
+        if (data.title.length === 0){
+            setIsSaveDisabled(true)
+        }
+    },[data])
 
     function handleChange(name, value){
         setData(prevData => ({
@@ -112,7 +143,7 @@ export default function AddBookManually(){
                 <ScrollView style={{flex:1, marginLeft:10, marginRight:10}}>
                     <List.Section>
                         <TextInput mode="outlined" label = "ISBN(opcjonalny)" value={data.isbn} 
-                                onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput} />
+                                onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput}/>
                         <TextInput mode="outlined" label = "Tytuł" value={data.title} 
                                 onChangeText={(value) => handleChange("title", value)} style={[styles.textInput, {marginTop:-4}]} />
                         <List.Accordion title="Autorzy" right={() => <List.Icon icon={expandIconAuthors} />} 
@@ -139,7 +170,7 @@ export default function AddBookManually(){
                 </ScrollView>
                 <View style={styles.buttons}>
                     <Button mode="contained" icon="check" onPress={() => setIsSaved(true)} 
-                            style={styles.saveButton}>
+                            style={styles.saveButton} disabled={isSavedDisabled}>
                         Dodaj
                     </Button>
                 </View>

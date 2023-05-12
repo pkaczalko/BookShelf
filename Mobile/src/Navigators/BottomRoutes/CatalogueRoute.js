@@ -9,13 +9,12 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SetTabBar from "../Components/SetTabBar";
 
+const TopTab = createMaterialTopTabNavigator();
+const TagsRoute = () => <Tags />
+const CategoriesRoute = () => <Categories />    
+const ShelvesRoute = () => <Shelves />
 
 export default function CatalogueRoute(){
-    const TopTab = createMaterialTopTabNavigator();
-
-    const TagsRoute = () => <Tags />
-    const CategoriesRoute = () => <Categories />    
-    const ShelvesRoute = () => <Shelves />
         return (
             <SafeAreaView style={{flex:1}}>
                 <Appbar.Header style={{height:60, backgroundColor:"white"}} >
@@ -24,8 +23,8 @@ export default function CatalogueRoute(){
 
                 <TopTab.Navigator>
                     <TopTab.Screen name="shelves" component={ShelvesRoute} options={{title:"Półki"}}/>
-                    <TopTab.Screen name="categories" component={CategoriesRoute} options={{title:"Kategorie"}}/>
-                    <TopTab.Screen name="tags" component={TagsRoute} options={{title: "Tagi"}}/>
+                    <TopTab.Screen name="categories" component={CategoriesRoute} options={{title:"Książki"}}/>
+                    {/* <TopTab.Screen name="tags" component={TagsRoute} options={{title: "Tagi"}}/> */}
                 </TopTab.Navigator>
                 
             </SafeAreaView>

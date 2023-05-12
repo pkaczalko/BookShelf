@@ -4,11 +4,13 @@ import { FlatList, NativeViewGestureHandler, ScrollView } from 'react-native-ges
 import BottomSheet from '../../Components/BottomSheet'
 import { IconButton, Chip, Button, Divider, Card, ActivityIndicator, MD2Colors } from 'react-native-paper'
 import CategoryCheckBox from './Components/CategoryCheckBox'
-import Book from './Components/Book'
+import DetailedView from './Components/DetailedView'
+import SimpleView from './Components/SimpleView'
 
 export default function Categories() {
   const refBottomSheet = React.useRef()
   const [data, setData] = React.useState()
+  const [viewType, setViewType] = React.useState({type:'detailed', icon:'view-comfy'})
 
   React.useEffect(()=>{
     fetch('https://bookshelf-java.azurewebsites.net/books?q=')
@@ -48,20 +50,29 @@ export default function Categories() {
     }
   }
 
-  const renderBooks = ({item}) =>{
-    return (
-      <Book title={item.title} authors={item.authors} imgURI={item.imgURI}/>
-    )
+  const handelOnViewChange = () =>{
+    if (viewType.type === 'detailed'){
+      setViewType({type:'simple', icon:'view-column'})
+    }
+    else if (viewType.type === 'simple'){
+      setViewType({type:'detailed', icon:'view-comfy'})
+    }
   }
 
   return (
     <NativeViewGestureHandler>
-      <View style={[styles.container, {flex: data?.length > 1 ? 1 : 0}]}>
-        <Button icon="filter" mode='contained-tonal' elevated={true} elevation={4} 
-                onPress={onHandlePress} style={styles.filterButton}>Filtruj</Button>
+      <View style={[styles.container, {flex: (data?.length > 1 && viewType.type === "detailed") ? 1 : 0}]}>
+        <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+          <Button icon="filter" mode='contained-tonal' elevated={true} elevation={4} 
+                  onPress={onHandlePress} style={styles.filterButton}>Filtruj</Button>
+          <IconButton icon={viewType.icon} size={20} onPress={handelOnViewChange}/>
+        </View>
         <FlatList data={data} renderItem={renderFilterChip} keyExtractor={item => item.id} horizontal={true}/>
         <Divider bold={true}/>  
-        <FlatList data={data} renderItem={renderBooks} keyExtractor={item => item.id} numColumns={1} /> 
+
+        {viewType.type === "detailed" ? <DetailedView data={data}/>
+        : <SimpleView data={data}/>}
+
         <BottomSheet ref={refBottomSheet} scale={1.09}>
           <Divider bold={true}/>
           <Text style={styles.categoryTitle}>Kategorie</Text>

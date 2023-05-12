@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Modal} from "react-native";
 import { Searchbar, Divider } from "react-native-paper";
-import Book from "./Components/Book";
+import Book from "../Catalogue/Categories/Components/BookSimple";
 import { NativeViewGestureHandler, FlatList } from "react-native-gesture-handler";
 
 export default function SearchBooks(){

@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
 import { Card, ProgressBar, MD3Colors, IconButton } from "react-native-paper";
 
-export default function Book(props){
+export default function BookDetailed(props){
     const authors = props.authors.map((author, idx)=>{
         if ((idx < 1) && (props.authors.length > 1)){ 
             return <Text numberOfLines={1} key={idx} style={styles.author}>{author} {'(+' + (props.authors.length - 1) + ')'}</Text>

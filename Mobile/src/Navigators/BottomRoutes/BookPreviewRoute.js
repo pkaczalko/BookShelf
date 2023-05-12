@@ -4,17 +4,18 @@ import { IconButton } from "react-native-paper";
 import BookPreviewEditAdd from "../../Add/AddBook/BookPreview/BookPreviewEditAdd";
 import BookPreviewInfoAdd from "../../Add/AddBook/BookPreview/BookPreviewInfoAdd";
 import BarCodeScanner from "../../Add/BarCodeScanner/BarCodeScanner";
-import BookPreviewInfo from "../../SearchBooks/BookPreviewInfo";
-import BookPreviewEdit from "../../SearchBooks/BookPreviewEdit";
+import BookPreviewInfo from "../../Catalogue/BookPreviewInfo";
+import BookPreviewEdit from "../../Catalogue/BookPreviewEdit";
+
+const Stack = createNativeStackNavigator();
+
+const BarCodeScannerRoute = () => <BarCodeScanner />
+const BookPreviewInfoRoute = () => <BookPreviewInfo />
+const BookPreviewEditAddRoute = () => <BookPreviewEditAdd />
+const BookPreviewInfoAddRoute = () => <BookPreviewInfoAdd />
+const BookPreviewEditRoute = () => <BookPreviewEdit />
 
 export default function BookPreview(props){
-    const Stack = createNativeStackNavigator();
-
-    const BarCodeScannerRoute = () => <BarCodeScanner />
-    const BookPreviewInfoRoute = () => <BookPreviewInfo />
-    const BookPreviewEditAddRoute = () => <BookPreviewEditAdd />
-    const BookPreviewInfoAddRoute = () => <BookPreviewInfoAdd />
-    const BookPreviewEditRoute = () => <BookPreviewEdit />
     return(
         <Stack.Navigator screenOptions={{gestureEnabled:false}} initialRouteName="bookPreviewInfo"
                         headerMode="float" animation="fade"> 

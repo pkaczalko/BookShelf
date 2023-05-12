@@ -2,11 +2,16 @@ import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, Modal as RNModal } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
 import { Divider, Button, Appbar, IconButton, List, Portal, Dialog } from "react-native-paper"
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import DescriptionPreview from "../Add/AddBook/Components/DescriptionPreview"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 import BottomSheet from "../Components/BottomSheet"
+import SimpleInfo from "./Categories/SimpleInfo";
+import DetailedInfo from "./Categories/DetailedInfo";
 
 export default function BookPreviewInfo(props){
+    const TopTab = createMaterialTopTabNavigator();
+
     const navigation = useNavigation()
     const route = useRoute()
     const [data, setData] = React.useState({title: "",
@@ -81,7 +86,7 @@ export default function BookPreviewInfo(props){
         else if(route?.params?.data){
             setData({...route.params.data})
         }
-    }, [route.params]);
+    }, [route?.params?.data, route?.params?.isbn]);
 
     React.useEffect(()=>{
         navigation.setOptions({headerRight: () =>{
@@ -110,18 +115,10 @@ export default function BookPreviewInfo(props){
         return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>{author.name}</Text>
     })
 
-    function onHandleEdit(){
-        navigation.navigate('bookPreviewEdit', {data: data})
-    }
-
     function onHandlePress(){
         const isActive = refBottomSheet?.current?.isActive()
         isActive ? refBottomSheet?.current?.scrollTo(0) : refBottomSheet?.current?.scrollTo(-250)
         refBottomSheet?.current?.setIsVisible(true);
-    }
-    
-    function onHandleSave(){
-
     }
 
     function onDeleteHandle(){
@@ -136,6 +133,9 @@ export default function BookPreviewInfo(props){
         setAlertVisible(false)
     }
 
+    const SimpleInfoRoute = () => <SimpleInfo data={data} />
+    const DetailedInfoRoute = () => <DetailedInfo />
+
     return(
         <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
             {data.isFound && <View style={styles.container}>
@@ -145,26 +145,10 @@ export default function BookPreviewInfo(props){
                     <Text style={styles.authors}>{authors}</Text>
                 </View>
             </View>}
-            {data.isFound && <View style={{flex:1, marginTop:20}}>
-                <Divider horizontalInset={true} />
-                <ScrollView style={{flex:1}}>
-                    <Text style={[styles.title, {fontSize:12, textTransform:"uppercase"}]}>Tytuł</Text>
-                    <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.title}</Text>
-                    <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Autor</Text>
-                    {authors}
-                    <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Opis</Text>
-                    <DescriptionPreview description={data.description}/>
-                    <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Data Publikacji</Text>
-                    <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.publishedDate}</Text>
-                    <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>ISBN</Text>
-                    <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.isbn}</Text>
-                </ScrollView>
-                <Divider bold={true}/>
-                <View style={styles.buttons}>
-                    <Button mode="contained" icon="square-edit-outline" onPress={onHandleSave} style={styles.saveButton}>Dodaj na półkę</Button>
-                    <Button mode="contained" icon="square-edit-outline" onPress={onHandleEdit} style={styles.saveButton}>Edytuj</Button>
-                </View>
-            </View>}
+            <TopTab.Navigator>
+                <TopTab.Screen name="simpleInfo" component={SimpleInfoRoute} options={{title:"Informacje"}}/>
+                <TopTab.Screen name="detailedInfo" component={DetailedInfoRoute} options={{title:"Szczegóły"}}/>
+            </TopTab.Navigator>
             {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
            <BottomSheet ref={refBottomSheet} scale={3}>
                 <List.Section style={styles.listContainer}>
@@ -195,11 +179,12 @@ const styles = StyleSheet.create({
     container:{
         flex:0.32,
         flexDirection:"row",
-        height:"50%"
+        height:"50%",
+        backgroundColor:'white'
     },
     img:{
         width:"30%",
-        height:"100%",
+        height:"95%",
         marginLeft: 10,
         marginTop: 10,
         objectFit: "fill",

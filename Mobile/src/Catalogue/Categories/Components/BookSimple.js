@@ -4,7 +4,7 @@ import { Text, StyleSheet, View, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
 
-export default function Book(props){
+export default function BookSimple(props){
     const navigation = useNavigation()
     
     const onPressHandle = () =>{

@@ -14,18 +14,7 @@ export default function BookPreviewInfo(props){
 
     const navigation = useNavigation()
     const route = useRoute()
-    const [data, setData] = React.useState({id: 0,
-                                            title: "",
-                                            isbn: "",
-                                            isRead: true,
-                                            favorite: true,
-                                            borrower: "John Smith",
-                                            wishList: false,
-                                            publisher:"",
-                                            coverType:"nie ma",
-                                            volume:1,
-                                            publishedDate: "",
-                                            categories: [
+    const [data, setData] = React.useState({categories: [
                                                 {
                                                   name: ""
                                                 }
@@ -34,11 +23,7 @@ export default function BookPreviewInfo(props){
                                                 {
                                                     name: ""
                                                 }
-                                            ],
-
-                                            imgURI: "",
-                                            description: "",
-                                            isFound: true})
+                                            ]})
                                         
     const [bottomSheetVisible, setBottomSheetVisible] = React.useState(false)
     const [isDeleted, setIsDeleted] = React.useState(false)
@@ -55,7 +40,6 @@ export default function BookPreviewInfo(props){
             fetch("https://bookshelf-java.azurewebsites.net/books?q=" + route.params.isbn) 
             .then(res => res.json())
             .then((bookData) => {
-                const title = bookData?.[0]?.title
                 const authors = bookData?.[0]?.authors
                 let mappedAuthors = [{name: ""}]
                 if (authors){
@@ -63,12 +47,6 @@ export default function BookPreviewInfo(props){
                         return {name: author}
                     })
                 }
-                const id = bookData?.[0]?.id
-                const publishedDate = bookData?.[0]?.publishedDate
-                const imgURI = bookData?.[0]?.imgURI
-                const description = bookData?.[0]?.description
-                const publisher = bookData?.[0]?.publisher
-                const isbn = route.params?.isbn
                 const categories = bookData?.[0]?.categories
                 let mappedCategories = [{name: ""}]
                 if (categories){
@@ -76,9 +54,8 @@ export default function BookPreviewInfo(props){
                         return {name: category}
                     })
                 }
-                setData({...data, id: check(id), title: check(title), authors: mappedAuthors, publisher: check(publisher), publishedDate: check(publishedDate), isbn: check(isbn), 
-                    imgURI: check(imgURI), description: check(description), categories: mappedCategories})
-
+                const toSetData = {...bookData[0], authors: mappedAuthors, categories: mappedCategories}
+                setData(toSetData)
             })
             .catch((err) =>{
                 setData({...data, isFound: false})
@@ -106,7 +83,7 @@ export default function BookPreviewInfo(props){
     React.useEffect(()=>{
         if(isDeleted === true){
             console.log(data.id)
-            fetch('https://bookshelf-java.azurewebsites.net/books?isbn=' + data.isbn, {
+            fetch('https://bookshelf-java.azurewebsites.net/books?id=' + data.id, {
                 method: 'DELETE',
             })
             .catch(err => console.log(err))
@@ -136,23 +113,37 @@ export default function BookPreviewInfo(props){
         setAlertVisible(false)
     }
 
+    
+    function onHandleSave(){
+
+    }
+
+    function onHandleEdit(){
+        console.log(data)
+        navigation.navigate('bookPreviewEdit', {data: data})
+    }
+
     const SimpleInfoRoute = () => <SimpleInfo data={data} />
-    const DetailedInfoRoute = () => <DetailedInfo />
+    const DetailedInfoRoute = () => <DetailedInfo data={data}/>
 
     return(
         <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
-            {data.isFound && <View style={styles.container}>
+            <View style={styles.container}>
                 <Image src={data.imgURI} style={styles.img} resizeMethod="resize" resizeMode="contain" />
                 <View style={{flex:1}}>
                     <Text style={styles.title} numberOfLines={2}>{data.title}</Text>
                     <Text style={styles.authors}>{authors}</Text>
                 </View>
-            </View>}
+            </View>
             <TopTab.Navigator>
                 <TopTab.Screen name="simpleInfo" component={SimpleInfoRoute} options={{title:"Informacje"}}/>
                 <TopTab.Screen name="detailedInfo" component={DetailedInfoRoute} options={{title:"Szczegóły"}}/>
             </TopTab.Navigator>
-            {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
+            <Divider bold={true}/>
+            <View style={styles.buttons}>
+                <Button mode="contained" icon="square-edit-outline" onPress={onHandleSave} style={styles.saveButton}>Dodaj na półkę</Button>
+                <Button mode="contained" icon="square-edit-outline" onPress={onHandleEdit} style={styles.saveButton}>Edytuj</Button>
+            </View>
            <BottomSheet ref={refBottomSheet} scale={3}>
                 <List.Section style={styles.listContainer}>
                     <List.Item title="Dodaj do WishListy" left={()=> <List.Icon icon="heart" style={styles.listIcon}/>}

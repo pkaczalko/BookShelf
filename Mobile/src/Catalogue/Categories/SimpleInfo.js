@@ -10,14 +10,6 @@ export default function SimpleInfo({data}){
         return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>{author.name}</Text>
     })
 
-    function onHandleSave(){
-
-    }
-
-    function onHandleEdit(){
-        navigation.navigate('bookPreviewEdit', {data: data})
-    }
-
     return(
         <View style={{flex:1}}>
             <Divider horizontalInset={true} />
@@ -26,18 +18,17 @@ export default function SimpleInfo({data}){
                 <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.title}</Text>
                 <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Autor</Text>
                 {authors}
+                <Text style={[styles.title, {fontSize:12, textTransform:"uppercase"}]}>Język</Text>
+                <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.language}</Text>
                 <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Opis</Text>
                 <DescriptionPreview description={data.description}/>
                 <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Data Publikacji</Text>
                 <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.publishedDate}</Text>
+                <Text style={[styles.title, {fontSize:12, textTransform:"uppercase"}]}>Liczba Stron</Text>
+                <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.pageCount}</Text>
                 <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>ISBN</Text>
                 <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.isbn}</Text>
             </ScrollView>
-            <Divider bold={true}/>
-            <View style={styles.buttons}>
-                <Button mode="contained" icon="square-edit-outline" onPress={onHandleSave} style={styles.saveButton}>Dodaj na półkę</Button>
-                <Button mode="contained" icon="square-edit-outline" onPress={onHandleEdit} style={styles.saveButton}>Edytuj</Button>
-            </View>
         </View>
     )
 }

@@ -40,7 +40,6 @@ export default function BookPreviewEditAdd(){
                                                     name: ""
                                                 }
                                             ],
-
                                             imgURI: "",
                                             description: "",
                                             isFound: true})

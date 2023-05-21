@@ -19,30 +19,16 @@ export default function BookPreviewEdit(props){
     const [descriptionNumOfLines, setDescriptionNumOfLines] = React.useState(1)
 
     const [isSaved, setIsSaved] = React.useState(false)
-    const [data, setData] = React.useState({title: "",
-                                            isbn: "",
-                                            isRead: true,
-                                            favorite: true,
-                                            borrower: "John Smith",
-                                            wishList: false,
-                                            publisher:"",
-                                            coverType:"nie ma",
-                                            volume:1,
-                                            publishedDate: "",
-                                            categories: [
+    const [data, setData] = React.useState({categories: [
                                                 {
-                                                  name: ""
+                                                name: ""
                                                 }
                                             ],
                                             authors:[
                                                 {
                                                     name: ""
                                                 }
-                                            ],
-
-                                            imgURI: "",
-                                            description: "",
-                                            isFound: true})
+                                            ]})
     const [sourceData, setSourceData] = React.useState({...data})     
     const [save, setSave] = React.useState(false)
     const [alertShow, setAlertShow] = React.useState(false)                                    
@@ -59,7 +45,7 @@ export default function BookPreviewEdit(props){
     React.useEffect(() => {
         navigation.setOptions({headerShown:true})
         if (route.params?.data) {
-            setData({...route.params.data})
+            setData(route.params.data)
             setSourceData({...route.params.data})
         }
     }, [route.params]);
@@ -92,7 +78,7 @@ export default function BookPreviewEdit(props){
     React.useEffect(()=>{
         if (save === true){
             const {isFound, description, ...toSendData} = sourceData
-            fetch("https://bookshelf-java.azurewebsites.net/books?isbn=" + data.isbn, {
+            fetch("https://bookshelf-java.azurewebsites.net/books?id=" + data.id, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -192,7 +178,7 @@ export default function BookPreviewEdit(props){
 
     return(
         <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
-            {data.isFound && <View style={{flex:1}}>
+            <View style={{flex:1}}>
                 <ScrollView style={{flex:1, marginLeft:10, marginRight:10}}>
                     <List.Section>
                         <TextInput mode="outlined" label = "ISBN(opcjonalny)" value={data.isbn} 
@@ -238,8 +224,7 @@ export default function BookPreviewEdit(props){
                         </Dialog.Actions>
                     </Dialog>
                 </Portal>
-            </View>}
-            {data.isFound === false && <Text>Nie rozpoznano książki</Text>}
+            </View>
         </SafeAreaProvider>
     )
 }

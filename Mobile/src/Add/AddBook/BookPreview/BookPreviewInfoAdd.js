@@ -13,6 +13,7 @@ export default function BookPreviewInfoAdd(){
                                             isRead: true,
                                             favorite: true,
                                             borrower: "John Smith",
+                                            language: "",
                                             wishList: false,
                                             publisher:"",
                                             coverType:"nie ma",
@@ -28,7 +29,9 @@ export default function BookPreviewInfoAdd(){
                                                     name: ""
                                                 }
                                             ],
-
+                                            rating: 0,
+                                            currentPage: 0,
+                                            pageCount: 0,
                                             imgURI: "",
                                             description: "",
                                             isFound: true})
@@ -52,6 +55,8 @@ export default function BookPreviewInfoAdd(){
                         return {name: author}
                     })
                 }
+                const language = bookData?.items[0]?.volumeInfo?.language
+                const pageCount = bookData?.items[0]?.volumeInfo?.pageCount
                 const publishedDate = bookData?.items[0]?.volumeInfo?.publishedDate
                 const imgURI = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
                 const description = bookData?.items[0]?.volumeInfo?.description
@@ -65,8 +70,9 @@ export default function BookPreviewInfoAdd(){
                     })
                 }
 
-                setData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishedDate: check(publishedDate), isbn: check(isbn), 
-                        imgURI: check(imgURI), description: check(description), categories: mappedCategories})
+                setData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishedDate: check(publishedDate),
+                        isbn: check(isbn), imgURI: check(imgURI), description: check(description), categories: mappedCategories, 
+                        language: check(language), pageCount: check(pageCount)})
             })
             .catch((err) =>{
                 setData({...data, isFound: false})
@@ -79,7 +85,8 @@ export default function BookPreviewInfoAdd(){
 
     React.useEffect(()=>{
         if (save === true){
-            const {isFound, description, ...toSendData} = data
+            const {isFound, ...toSendData} = data
+            console.log(toSendData)
             fetch('https://bookshelf-java.azurewebsites.net/books', {
                 method: 'POST',
                 headers: {
@@ -118,10 +125,14 @@ export default function BookPreviewInfoAdd(){
                     <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.title}</Text>
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Autor</Text>
                     {authors}
+                    <Text style={[styles.title, {fontSize:12, textTransform:"uppercase"}]}>Język</Text>
+                    <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.language}</Text>
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Opis</Text>
                     <DescriptionPreview description={data.description}/>
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Data Publikacji</Text>
                     <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.publishedDate}</Text>
+                    <Text style={[styles.title, {fontSize:12, textTransform:"uppercase"}]}>Liczba Stron</Text>
+                    <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.pageCount}</Text>
                     <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>ISBN</Text>
                     <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.isbn}</Text>
                 </ScrollView>

@@ -14,7 +14,8 @@ export default function BookPreviewInfo(props){
 
     const navigation = useNavigation()
     const route = useRoute()
-    const [data, setData] = React.useState({title: "",
+    const [data, setData] = React.useState({id: 0,
+                                            title: "",
                                             isbn: "",
                                             isRead: true,
                                             favorite: true,
@@ -62,7 +63,7 @@ export default function BookPreviewInfo(props){
                         return {name: author}
                     })
                 }
-
+                const id = bookData?.[0]?.id
                 const publishedDate = bookData?.[0]?.publishedDate
                 const imgURI = bookData?.[0]?.imgURI
                 const description = bookData?.[0]?.description
@@ -75,7 +76,7 @@ export default function BookPreviewInfo(props){
                         return {name: category}
                     })
                 }
-                setData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishedDate: check(publishedDate), isbn: check(isbn), 
+                setData({...data, id: check(id), title: check(title), authors: mappedAuthors, publisher: check(publisher), publishedDate: check(publishedDate), isbn: check(isbn), 
                     imgURI: check(imgURI), description: check(description), categories: mappedCategories})
 
             })
@@ -104,9 +105,11 @@ export default function BookPreviewInfo(props){
 
     React.useEffect(()=>{
         if(isDeleted === true){
+            console.log(data.id)
             fetch('https://bookshelf-java.azurewebsites.net/books?isbn=' + data.isbn, {
                 method: 'DELETE',
             })
+            .catch(err => console.log(err))
             navigation.goBack()
         }
     },[isDeleted])

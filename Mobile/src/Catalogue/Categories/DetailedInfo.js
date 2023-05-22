@@ -1,33 +1,31 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ScrollView } from "react-native";
 import { Modal, Portal, PaperProvider, Divider, Button } from "react-native-paper";
 import { Rating} from 'react-native-elements';
 import { Slider } from 'react-native-elements';
 import ScrollPicker from 'react-native-wheel-scrollview-picker';
+import _ from 'lodash'
 
 
 export default function DetailedInfo({isbn, data}){
-    const [currentPage, setCurrentPage] = React.useState(data.currentPage)
     const [pickerVisible, setPickerVisible] = React.useState(false)
-    const [slidedPageNumber, setSlidedPageNumber] = React.useState(currentPage)
+    const [slidedPageNumber, setSlidedPageNumber] = React.useState(data.currentPage)
     const [renderedItems, setRenderedItems] = React.useState([]);
+    const [isSaved, setIsSaved] = React.useState(true)
+    const [editableData, setEditableData] = React.useState(data)
+    const [save, setSave] = React.useState(false)
     const pageList = Array.from({ length: data.pageCount }, (_, index) => index + 1)
 
     function ratingCompleted(rating){
         console.log(rating)
     }
 
-    function pageSlide(value){
-        setCurrentPage(value)
-    }
-
     function onPageChange(page){
-        console.log(pickerVisible)
-        setCurrentPage(page)
+        setEditableData({...editableData, currentPage: page})
     }
 
     function onPageButtonPress(){
-        setCurrentPage(slidedPageNumber)
+        setEditableData({...editableData, currentPage: slidedPageNumber})
         setPickerVisible(false)
     }
 
@@ -40,20 +38,57 @@ export default function DetailedInfo({isbn, data}){
         setRenderedItems(items);
     };
 
+
+    function onHandleSave(){
+        setSave(true)
+        setIsSaved(true)
+    }
+
+    React.useEffect(()=>{
+        if (save === true){
+            fetch("https://bookshelf-java.azurewebsites.net/books?id=" + data.id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(editableData)
+            })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.log(err))
+            setSave(false)
+        }
+    },[save])
+
     React.useEffect(()=>{
         renderItemsOnce()
     },[])
 
+    React.useEffect(()=>{
+        if (_.isEqual(editableData, data)){
+            setIsSaved(true)
+        }
+        else{
+            setIsSaved(false)
+        }
+    },[editableData])
+
     return(
-        <View>
-            <Text style={styles.ratingTitle}>Ocena</Text>
-            <Rating imageSize={40} startingValue={data.rating} style={styles.rating} tintColor="rgb(240,242,240)" onFinishRating={ratingCompleted}/>
-            <Text style={[styles.ratingTitle, {marginBottom:-5}]}>Przeczytane Strony</Text>
-            <View style={styles.pageContainer}>
-                <Slider value={currentPage} onValueChange={pageSlide} thumbStyle={{ height: 20, width: 7, backgroundColor: '#606060', borderRadius: 0}}
-                        trackStyle={{ height: 7, backgroundColor: 'transparent' }} style={styles.currentPageProgress} 
-                        minimumValue={0} maximumValue={data.pageCount} step={1}/>
-                <Text style={styles.pageText} onPress={() => setPickerVisible(true)}>{currentPage}/{data.pageCount}</Text>
+        <View style={{flex:1}}>
+            <ScrollView style={{flex:1}}>
+                <Text style={styles.ratingTitle}>Ocena</Text>
+                <Rating imageSize={40} startingValue={editableData.rating} style={styles.rating} tintColor="rgb(240,242,240)" onFinishRating={ratingCompleted}/>
+                <Text style={[styles.ratingTitle, {marginBottom:-5}]}>Przeczytane Strony</Text>
+                <View style={styles.pageContainer}>
+                    <Slider value={editableData.currentPage} thumbStyle={{ height: 20, width: 7, backgroundColor: '#606060', borderRadius: 0}}
+                            trackStyle={{ height: 7, backgroundColor: 'transparent' }} style={styles.currentPageProgress} 
+                            minimumValue={0} maximumValue={editableData.pageCount} step={1} onSlidingComplete={onPageChange}/>
+                    <Text style={styles.pageText} onPress={() => setPickerVisible(true)}>{editableData.currentPage}/{editableData.pageCount}</Text>
+                </View>
+            </ScrollView>
+            <Divider bold={true}/>
+            <View style={[styles.buttons]}>
+                <Button disabled={isSaved} mode="contained" icon="square-edit-outline" onPress={onHandleSave} style={styles.saveButton}>Zapisz</Button>
             </View>
             <Portal>
                 <Modal contentContainerStyle={styles.pageModal} visible={pickerVisible} onDismiss={() => setPickerVisible(false)}>
@@ -62,7 +97,7 @@ export default function DetailedInfo({isbn, data}){
                         <Divider bold={true}/>
                         <ScrollPicker style={{alignSelf:"center", flex:0.6}} 
                                             dataSource={pageList}
-                                            selectedIndex={slidedPageNumber}
+                                            selectedIndex={editableData.currentPage}
                                             renderItem={(data, index) => {
                                                 return renderedItems[index]
                                             }}
@@ -118,5 +153,14 @@ const styles = StyleSheet.create({
         alignItems:"center",
         alignSelf:"center",
         backgroundColor:"white"
-    }
+    },
+    buttons:{
+        flexDirection:"row",
+        justifyContent:"space-around"
+    },
+    saveButton:{
+        width: "100%",
+        justifyContent:"flex-end",
+        borderRadius:0
+    },
 })

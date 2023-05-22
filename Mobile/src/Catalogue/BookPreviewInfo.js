@@ -113,18 +113,8 @@ export default function BookPreviewInfo(props){
         setAlertVisible(false)
     }
 
-    
-    function onHandleSave(){
-
-    }
-
-    function onHandleEdit(){
-        console.log(data)
-        navigation.navigate('bookPreviewEdit', {data: data})
-    }
-
-    const SimpleInfoRoute = () => <SimpleInfo data={data} />
-    const DetailedInfoRoute = () => <DetailedInfo data={data}/>
+    const SimpleInfoRoute = () => <SimpleInfo data={data}  />
+    const DetailedInfoRoute = () => <DetailedInfo data={data} />
 
     return(
         <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
@@ -136,14 +126,9 @@ export default function BookPreviewInfo(props){
                 </View>
             </View>
             <TopTab.Navigator>
-                <TopTab.Screen name="simpleInfo" component={SimpleInfoRoute} options={{title:"Informacje"}}/>
                 <TopTab.Screen name="detailedInfo" component={DetailedInfoRoute} options={{title:"Szczegóły"}}/>
+                <TopTab.Screen name="simpleInfo" component={SimpleInfoRoute} options={{title:"Informacje"}}/>
             </TopTab.Navigator>
-            <Divider bold={true}/>
-            <View style={styles.buttons}>
-                <Button mode="contained" icon="square-edit-outline" onPress={onHandleSave} style={styles.saveButton}>Dodaj na półkę</Button>
-                <Button mode="contained" icon="square-edit-outline" onPress={onHandleEdit} style={styles.saveButton}>Edytuj</Button>
-            </View>
            <BottomSheet ref={refBottomSheet} scale={3}>
                 <List.Section style={styles.listContainer}>
                     <List.Item title="Dodaj do WishListy" left={()=> <List.Icon icon="heart" style={styles.listIcon}/>}

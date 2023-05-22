@@ -77,7 +77,7 @@ export default function BookPreviewEdit(props){
 
     React.useEffect(()=>{
         if (save === true){
-            const {isFound, description, ...toSendData} = sourceData
+            const {isFound, ...toSendData} = sourceData
             fetch("https://bookshelf-java.azurewebsites.net/books?id=" + data.id, {
                 method: "PUT",
                 headers: {

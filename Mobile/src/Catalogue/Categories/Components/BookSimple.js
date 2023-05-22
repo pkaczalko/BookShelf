@@ -18,6 +18,7 @@ export default function BookSimple(props){
                     {/* {img.isLoaded === false && <Card.Cover style={[styles.cardCover, {backgroundColor:img.backgroundColor}]} />}
                     <ActivityIndicator animating={!img.isLoaded} color={MD2Colors.black} style={styles.cardCover}/> */}
                 </Card>
+                <Text style={{width:105}} numberOfLines={1}>{props.title}</Text>
             </View>
     )
 }

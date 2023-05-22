@@ -6,7 +6,8 @@ export default function DetailedView(props){
 
     const renderBooks = ({item}) =>{
         return (
-          <BookDetailed title={item.title} authors={item.authors} imgURI={item.imgURI}/>
+          <BookDetailed title={item.title} authors={item.authors} imgURI={item.imgURI} 
+                        isbn={item.isbn} currentPage={item.currentPage} pageCount={item.pageCount}/>
         )
     }
 

@@ -40,6 +40,7 @@ public class Book {
     private Integer rating;
     private String publishedDate;
     @Lob
+    @Column(columnDefinition="TEXT")
     private String description;
     private String language;
     private @NotNull int pageCount;

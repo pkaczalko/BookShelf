@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class BookService{
-        private final BookRepository bookRepository;
-        private final CategoryRepository categoryRepository;
-        private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
+    private final AuthorRepository authorRepository;
 
-@Autowired
-public BookService(BookRepository bookRepository,CategoryRepository categoryRepository,AuthorRepository authorRepository){
+    @Autowired
+    public BookService(BookRepository bookRepository,CategoryRepository categoryRepository,AuthorRepository authorRepository){
         this.bookRepository=bookRepository;
         this.categoryRepository=categoryRepository;
         this.authorRepository=authorRepository;
@@ -35,20 +35,20 @@ public BookService(BookRepository bookRepository,CategoryRepository categoryRepo
     public Book addBook(Book book){
         Set<Category> categories = new HashSet<>();
         for(Category category : book.getCategories()){
-            Optional<Category>existingCategory=categoryRepository.findByName(category.getName());
+            Optional<Category> existingCategory=categoryRepository.findByName(category.getName());
             if(existingCategory.isPresent()){
-            categories.add(existingCategory.get());
+                categories.add(existingCategory.get());
             }else{
                 categories.add(category);
             }
         }
         book.setCategories(categories);
 
-    Set<Author>authors=new HashSet<>();
+        Set<Author>authors=new HashSet<>();
         for(Author author:book.getAuthors()){
             Optional<Author>existingAuthor=authorRepository.findByName(author.getName());
             if(existingAuthor.isPresent()){
-            authors.add(existingAuthor.get());
+                authors.add(existingAuthor.get());
             }else{
                 authors.add(author);
             }
@@ -72,6 +72,7 @@ public BookService(BookRepository bookRepository,CategoryRepository categoryRepo
         book.setVolume(bookDetails.getVolume());
         book.setPublishedDate(bookDetails.getPublishedDate());
         book.setDescription(bookDetails.getDescription());
+        book.setRating(bookDetails.getRating());
         book.setLanguage(bookDetails.getLanguage());
         book.setPageCount(bookDetails.getPageCount());
         book.setCurrentPage(bookDetails.getCurrentPage());

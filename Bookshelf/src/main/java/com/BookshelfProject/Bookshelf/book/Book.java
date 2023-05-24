@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,7 +37,9 @@ public class Book {
     private String publisher;
     private String coverType;
     private Integer volume;
+    private Integer rating;
     private String publishedDate;
+    @Lob
     private String description;
     private String language;
     private @NotNull int pageCount;
@@ -52,7 +53,7 @@ public class Book {
     @JoinTable(name="book_category",
             joinColumns=@JoinColumn(name="book_id"),
             inverseJoinColumns=@JoinColumn(name="category_id"))
-    private Set<Category>categories=new HashSet<>();
+    private Set<Category> categories=new HashSet<>();
 
     @ManyToMany(cascade={CascadeType.PERSIST,CascadeType.MERGE})
     @JoinTable(name="book_author",

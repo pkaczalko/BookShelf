@@ -38,7 +38,7 @@ export default function BookDetailed(props){
                             <IconButton style={{marginTop:-9, marginLeft: -8, marginRight: -4}} icon="book-open-page-variant" size={20} iconColor={MD3Colors.silver} />
                             <Text style={{fontSize:12, fontWeight:"normal", color:"#888888", marginTop:2}}>{props.currentPage}/{props.pageCount}</Text>
                         </View>
-                        <Rating imageSize={25} startingValue={2} style={styles.rating} readonly={true}/>
+                        <Rating imageSize={25} startingValue={props.rating} style={styles.rating} readonly={true}/>
                     </View>
                 </View>
             </Card.Content>

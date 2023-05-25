@@ -3,24 +3,28 @@ import { View, Text, StyleSheet} from 'react-native'
 import { FlatList, NativeViewGestureHandler, ScrollView } from 'react-native-gesture-handler'
 import BottomSheet from '../../Components/BottomSheet'
 import { IconButton, Chip, Button, Divider, Card, ActivityIndicator, MD2Colors } from 'react-native-paper'
+import { useIsFocused } from '@react-navigation/native'
 import CategoryCheckBox from './Components/CategoryCheckBox'
 import DetailedView from './Components/DetailedView'
 import SimpleView from './Components/SimpleView'
 
 export default function Categories() {
   const refBottomSheet = React.useRef()
+  const isFocused = useIsFocused()
   const [data, setData] = React.useState()
   const [viewType, setViewType] = React.useState({type:'detailed', icon:'view-comfy'})
 
   React.useEffect(()=>{
-    fetch('https://bookshelf-java.azurewebsites.net/books?q=')
-    .then(res => res.json())
-    .then((fetched_data) =>{
-        const editedData = fetched_data.map(item => ({...item, isChecked: false}))
-        setData(editedData)
-    })
-    .catch(err => console.log(err))
-  },[])
+    if(isFocused){
+      fetch('https://bookshelf-java.azurewebsites.net/books?q=')
+      .then(res => res.json())
+      .then((fetched_data) =>{
+          const editedData = fetched_data.map(item => ({...item, isChecked: false}))
+          setData(editedData)
+      })
+      .catch(err => console.log(err))
+    }
+  },[isFocused])
 
   function onHandlePress(){
     const isActive = refBottomSheet?.current?.isActive()

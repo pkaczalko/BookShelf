@@ -17,11 +17,11 @@ export default function DetailedInfo({isbn, data}){
     const pageList = Array.from({ length: data.pageCount }, (_, index) => index + 1)
 
     function ratingCompleted(rating){
-        console.log(rating)
+        setEditableData((prevData)=> ({...prevData, rating: rating}))
     }
 
     function onPageChange(page){
-        setEditableData({...editableData, currentPage: page})
+        setEditableData((prevData)=> ({...prevData, currentPage: page}))
     }
 
     function onPageButtonPress(){

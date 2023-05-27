@@ -2,7 +2,7 @@ import React from "react"
 import { View,Text, StyleSheet } from "react-native"
 import { Checkbox } from "react-native-paper"
 
-export default function CategoryCheckBox(props){
+export default function ShelfCheckBox(props){
     const [checked, setChecked] = React.useState(props.isChecked)
 
     function onCheck(){
@@ -12,7 +12,7 @@ export default function CategoryCheckBox(props){
 
     return(
         <View style={styles.container}>
-            <Text style={{marginTop:8}}>{props.title}</Text>
+            <Text style={{fontSize:17, fontWeight:400, color:"#404040"}}>{props.title}</Text>
             <Checkbox status={checked ? 'checked':'unchecked'} onPress={onCheck} />
         </View>
     )
@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
         justifyContent:"space-between",
         alignItems:"flex-start",
         flexDirection:"row",
-        margin:10
+        marginLeft:10,
+        marginBottom:10,
     }
 })

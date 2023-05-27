@@ -11,7 +11,11 @@ export default function AddShelf(){
     const navigation = useNavigation()
     const route = useRoute()
 
+    const [save, setSave] = React.useState(false);
     const [img, setImg] = React.useState();
+    const [data, setData] = React.useState({
+        name: "",
+    })
 
     React.useEffect(() => {
         if (route.params?.uri) {
@@ -19,9 +23,21 @@ export default function AddShelf(){
         }
     }, [route.params]);
 
-    const [data, setData] = React.useState({
-        name: "",
-    })
+    React.useEffect(()=>{
+        if (save){
+            fetch('https://bookshelf-java.azurewebsites.net/shelves', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.log(err))
+            navigation.navigate('home')
+        }
+    }, [save])
 
     function handleChange(name, value){
         setData(prevData => ({
@@ -51,7 +67,7 @@ export default function AddShelf(){
             </View>
             <AddShelfBottomSheetPicture ref={refBottomSheet} />
 
-            <Button mode="contained" onPress={()=>console.log("Zrobić POSTa")} style={styles.saveButton}>Save</Button>
+            <Button mode="contained" onPress={()=>setSave(true)} style={styles.saveButton}>Save</Button>
 
         </View>
     )

@@ -43,6 +43,7 @@ export default function AddBookManually(){
                                             description: ""})
     
     const [isSavedDisabled, setIsSaveDisabled] = React.useState(true)
+    
     React.useEffect(()=>{
         if (isSaved === true){
             const {description, ...toSendData} = data
@@ -161,7 +162,7 @@ export default function AddBookManually(){
                                         onChangeText={(value) => handleChange("description", value)} 
                                         style={[styles.textInput, {marginTop:8}]} 
                                         multiline={true} numberOfLines={descriptionNumOfLines} onContentSizeChange={(e) => {
-                                        setDescriptionNumOfLines(e.nativeEvent.contentSize.height / 18)
+                                            setDescriptionNumOfLines(e.nativeEvent.contentSize.height / 18)
                                         }}/>
                         </List.Accordion>
                         <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} 

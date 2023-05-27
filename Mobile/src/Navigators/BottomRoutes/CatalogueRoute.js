@@ -6,10 +6,13 @@ import Tags from "../../Catalogue/Tags/Tags";
 import Categories from "../../Catalogue/Categories/Categories";
 import Shelves from "../../Catalogue/Shelves/Shelves";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SetTabBar from "../Components/SetTabBar";
 
 const TopTab = createMaterialTopTabNavigator();
+const Stack = createNativeStackNavigator();
+
 const TagsRoute = () => <Tags />
 const CategoriesRoute = () => <Categories />    
 const ShelvesRoute = () => <Shelves />
@@ -17,15 +20,15 @@ const ShelvesRoute = () => <Shelves />
 export default function CatalogueRoute(){
         return (
             <SafeAreaView style={{flex:1}}>
-                <Appbar.Header style={{height:60, backgroundColor:"white"}} >
-                    <Appbar.Content title="Moje Książki" titleStyle={{fontSize: 20, fontFamily:"sans-serif-medium"}}/>
-                </Appbar.Header>
-
-                <TopTab.Navigator>
-                    <TopTab.Screen name="shelves" component={ShelvesRoute} options={{title:"Półki"}}/>
-                    <TopTab.Screen name="categories" component={CategoriesRoute} options={{title:"Książki"}}/>
+                <Stack.Navigator>
+                    {/* <TopTab.Screen name="shelves" component={ShelvesRoute} options={{title:"Półki"}}/> */}
+                    <Stack.Screen
+                        name="categories" 
+                        component={CategoriesRoute}
+                        options={{title:"Książki"}}
+                     />
                     {/* <TopTab.Screen name="tags" component={TagsRoute} options={{title: "Tagi"}}/> */}
-                </TopTab.Navigator>
+                </Stack.Navigator>
                 
             </SafeAreaView>
           );

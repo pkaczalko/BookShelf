@@ -1,18 +1,22 @@
 import React from 'react'
-import { View, Text, StyleSheet} from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity} from 'react-native'
 import { FlatList, NativeViewGestureHandler, ScrollView } from 'react-native-gesture-handler'
 import BottomSheet from '../../Components/BottomSheet'
 import { IconButton, Chip, Button, Divider, Card, ActivityIndicator, MD2Colors } from 'react-native-paper'
 import { useIsFocused } from '@react-navigation/native'
-import CategoryCheckBox from './Components/CategoryCheckBox'
+import ShelfCheckBox from './Components/ShelfCheckBox'
 import DetailedView from './Components/DetailedView'
 import SimpleView from './Components/SimpleView'
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function Categories() {
   const refBottomSheet = React.useRef()
   const isFocused = useIsFocused()
+
   const [data, setData] = React.useState()
+  const [shelves, setShelves] = React.useState([])
   const [viewType, setViewType] = React.useState({type:'detailed', icon:'view-comfy'})
+  const [showMore, setShowMore] = React.useState(false)
 
   React.useEffect(()=>{
     if(isFocused){
@@ -21,6 +25,14 @@ export default function Categories() {
       .then((fetched_data) =>{
           const editedData = fetched_data.map(item => ({...item, isChecked: false}))
           setData(editedData)
+      })
+      .catch(err => console.log(err))
+
+      fetch('https://bookshelf-java.azurewebsites.net/shelves')
+      .then(res => res.json())
+      .then((fetched_data) =>{
+          const editedData = fetched_data.map(item => ({...item, isChecked: false}))
+          setShelves(editedData)
       })
       .catch(err => console.log(err))
     }
@@ -33,24 +45,24 @@ export default function Categories() {
   }
 
   const handleCheck = (id) => {
-    const updatedData = data.map(item => {
+    const updatedData = shelves.map(item => {
       if (item.id === id) {
         return {...item, isChecked: !item.isChecked};
       }
       return item;
     });
-    setData(updatedData)
+    setShelves(updatedData)
   }
 
-  const renderCategoryCheckbox = ({item}) => {
-    return <CategoryCheckBox title={item.title} isChecked={item.isChecked} onChecked={() => handleCheck(item.id)} />
+  const renderShelvesCheckbox= ({item}) => {
+   return <ShelfCheckBox title={item.name} isChecked={item.isChecked} onChecked={() => handleCheck(item.id)} />
   }
 
   const renderFilterChip = ({item}) =>{
     if (item.isChecked === true){
       return <Chip icon="check" mode="flat" elevated={true} elevation={1}
                   style={styles.chipContainer} onClose={() => handleCheck(item.id)} 
-                  onPress={()=>{console.log("pressed")}}>{item.title}</Chip>
+                  onPress={()=>{console.log("pressed")}}>{item.name}</Chip>
     }
   }
 
@@ -71,7 +83,7 @@ export default function Categories() {
                   onPress={onHandlePress} style={styles.filterButton}>Filtruj</Button>
           <IconButton icon={viewType.icon} size={20} onPress={handelOnViewChange}/>
         </View>
-        <FlatList data={data} renderItem={renderFilterChip} keyExtractor={item => item.id} horizontal={true}/>
+        <FlatList data={shelves} renderItem={renderFilterChip} keyExtractor={item => item.id} horizontal={true}/>
         <Divider bold={true}/>  
 
         {viewType.type === "detailed" ? <DetailedView data={data}/>
@@ -79,8 +91,18 @@ export default function Categories() {
 
         <BottomSheet ref={refBottomSheet} scale={1.09}>
           <Divider bold={true}/>
-          <Text style={styles.categoryTitle}>Kategorie</Text>
-          <FlatList data={data} renderItem={renderCategoryCheckbox} keyExtractor={item => item.id}/>
+          <Text style={styles.categoryTitle}>Półki</Text>
+
+          {shelves.length < 4 ? <FlatList data={shelves} renderItem={renderShelvesCheckbox} keyExtractor={item => item.id}/>
+          : <View> 
+              <FlatList data={showMore ? shelves : shelves.slice(0,5)} renderItem={renderShelvesCheckbox} keyExtractor={item => item.id}/>
+              <TouchableOpacity style={{flexDirection:"row"}} onPress={() => setShowMore(!showMore)}>
+                  <Text style={styles.showMore}>{showMore ? 'Pokaż mniej' : 'Pokaż więcej'}</Text>
+                  <Icon name={showMore ? "expand-less" : "expand-more"} size={20} style={{alignSelf:"center"}} color="black"></Icon>
+              </TouchableOpacity>
+            </View>}
+            <Divider style={{marginTop:20}} bold={true}/>
+
         </BottomSheet>
       </View>
     </NativeViewGestureHandler>
@@ -89,7 +111,6 @@ export default function Categories() {
 
 const styles = StyleSheet.create({
   container:{
-
     flexDirection:"column"
   },
   filterButton:{
@@ -99,17 +120,28 @@ const styles = StyleSheet.create({
     borderColor:"black",
     backgroundColor:"white"
   },
+  showMore:{
+    justifyContent:"space-between",
+    alignItems:"flex-start",
+    flexDirection:"row",
+    marginLeft:10,
+    marginBottom:5,
+    fontSize:17,
+    fontWeight:500,
+    textDecorationLine: "underline"
+  },
   chipContainer:{
     marginLeft:10,
     marginBottom:18,
     alignSelf:"flex-start", 
     height:35, 
     width:"auto",
-    backgroundColor:"white"
+    backgroundColor:"white",
   },  
   categoryTitle:{
-    fontSize:20,
+    fontSize:18,
     fontWeight:"bold",
-    margin:10
+    margin:10,
+    fontWeight:600,
   }
 })

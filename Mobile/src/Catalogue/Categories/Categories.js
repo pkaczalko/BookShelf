@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity} from 'react-native'
 import { FlatList, NativeViewGestureHandler, ScrollView } from 'react-native-gesture-handler'
 import BottomSheet from '../../Components/BottomSheet'
-import { IconButton, Chip, Button, Divider, Card, ActivityIndicator, MD2Colors } from 'react-native-paper'
+import { Searchbar, IconButton, Chip, Button, Divider, Card, ActivityIndicator, MD2Colors } from 'react-native-paper'
 import { useIsFocused } from '@react-navigation/native'
 import ShelfCheckBox from './Components/ShelfCheckBox'
 import DetailedView from './Components/DetailedView'
@@ -14,17 +14,21 @@ export default function Categories() {
   const isFocused = useIsFocused()
 
   const [data, setData] = React.useState()
+  const [searchQuery, setSearchQuery] = React.useState('')
+  const [isLoaded, setIsLoaded] = React.useState(true)
   const [shelves, setShelves] = React.useState([])
   const [viewType, setViewType] = React.useState({type:'detailed', icon:'view-comfy'})
   const [showMore, setShowMore] = React.useState(false)
 
   React.useEffect(()=>{
     if(isFocused){
-      fetch('https://bookshelf-java.azurewebsites.net/books?q=')
+      setIsLoaded(true)
+      fetch('https://bookshelf-java.azurewebsites.net/books?q=' + searchQuery)
       .then(res => res.json())
       .then((fetched_data) =>{
           const editedData = fetched_data.map(item => ({...item, isChecked: false}))
           setData(editedData)
+          setIsLoaded(false)
       })
       .catch(err => console.log(err))
 
@@ -36,7 +40,8 @@ export default function Categories() {
       })
       .catch(err => console.log(err))
     }
-  },[isFocused])
+  },[isFocused, searchQuery])
+
 
   function onHandlePress(){
     const isActive = refBottomSheet?.current?.isActive()
@@ -79,9 +84,12 @@ export default function Categories() {
     <NativeViewGestureHandler>
       <View style={[styles.container, {flex: (data?.length > 1 && viewType.type === "detailed") ? 1 : 0}]}>
         <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-          <Button icon="filter" mode='contained-tonal' elevated={true} elevation={4} 
-                  onPress={onHandlePress} style={styles.filterButton}>Filtruj</Button>
-          <IconButton icon={viewType.icon} size={20} onPress={handelOnViewChange}/>
+         <Searchbar elevation={1} placeholder='Szukaj' onChangeText={(query) => setSearchQuery(query)} value={searchQuery}
+                     style={{ flex:0.9, backgroundColor:"white", height:40, alignItems:"center", margin: 10, borderWidth:0.5}}
+                     inputStyle={{marginTop:-7}} right={()=>{ 
+                     return <IconButton icon="tune" size={20} mode='contained-tonal' onPress={onHandlePress} 
+                                        style={{backgroundColor:'white'}}/>}}/>
+          <IconButton icon={viewType.icon} size={20} onPress={handelOnViewChange} style={{flex:0.1}}/>
         </View>
         <FlatList data={shelves} renderItem={renderFilterChip} keyExtractor={item => item.id} horizontal={true}/>
         <Divider bold={true}/>  
@@ -116,9 +124,9 @@ const styles = StyleSheet.create({
   filterButton:{
     alignSelf:"flex-start",
     margin:10,
+    backgroundColor:"white",
+    marginTop:0,
     borderWidth:0.5,
-    borderColor:"black",
-    backgroundColor:"white"
   },
   showMore:{
     justifyContent:"space-between",

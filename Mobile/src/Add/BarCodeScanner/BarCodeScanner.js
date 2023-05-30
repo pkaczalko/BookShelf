@@ -61,7 +61,7 @@ const BarCodeScanner = React.forwardRef((props, ref) => {
                 console.log(`Bar code with type ${scannedData.type} and data ${scannedData.data} has been scanned!`);
                 onPressHandle()
                 setIsVisible(false)
-                navigation.navigate('bookPreview', {screen: 'bookPreviewInfoAdd', params:{isbn: scannedData.data}})
+                navigation.navigate('bookPreview', {screen: 'bookPreviewEditAdd', params:{isbn: scannedData.data}})
             }
         }
       };

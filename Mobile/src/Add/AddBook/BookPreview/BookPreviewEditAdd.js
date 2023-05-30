@@ -18,6 +18,7 @@ export default function BookPreviewEditAdd(){
 
     const [descriptionNumOfLines, setDescriptionNumOfLines] = React.useState(1)
 
+    const [confirmed, setConfirmed] = React.useState(false)
     const [isSaved, setIsSaved] = React.useState(false)
     const [color, setColor] = React.useState("transparent")
     const [data, setData] = React.useState({title: "",
@@ -55,21 +56,72 @@ export default function BookPreviewEditAdd(){
         return () => backHandler.remove();
     }, [sourceData, isSaved]);
 
+    React.useEffect(()=>{
+        if (isSaved === true){
+            const {isFound, ...toSendData} = data
+            console.log(toSendData)
+            fetch('https://bookshelf-java.azurewebsites.net/books', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(toSendData)
+            })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.log(err))
+            navigation.navigate('home')
+        }
+    },[isSaved])
+
+    function check(param){
+        return param ? param : "Brak"
+    }
+
     React.useEffect(() => {
         navigation.setOptions({headerShown:true})
-        if (route.params?.data) {
-            setData({...route.params.data})
-            setSourceData({...route.params.data})
+        if (route?.params?.isbn) {
+            fetch("https://www.googleapis.com/books/v1/volumes?q=isbn:" + route.params.isbn) 
+            .then(res => res.json())
+            .then((bookData) => {
+                const title = bookData?.items[0]?.volumeInfo?.title
+                const authors = bookData?.items[0]?.volumeInfo?.authors
+                let mappedAuthors = [{name: ""}]
+                if (authors){
+                    mappedAuthors = authors.map((author)=>{
+                        return {name: author}
+                    })
+                }
+                const language = bookData?.items[0]?.volumeInfo?.language
+                const pageCount = bookData?.items[0]?.volumeInfo?.pageCount
+                const publishedDate = bookData?.items[0]?.volumeInfo?.publishedDate
+                const imgURI = bookData?.items[0]?.volumeInfo?.imageLinks?.thumbnail 
+                const description = bookData?.items[0]?.volumeInfo?.description
+                const publisher = bookData?.items[0]?.volumeInfo?.publisher
+                const isbn = route.params.isbn
+                const categories = bookData?.items[0]?.volumeInfo?.categories
+                let mappedCategories = [{name: ""}]
+                if (categories){
+                    mappedCategories = categories.map((category)=>{
+                        return {name: category}
+                    })
+                }
+
+                setData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishedDate: check(publishedDate),
+                        isbn: check(isbn), imgURI: check(imgURI), description: check(description), categories: mappedCategories, 
+                        language: check(language), pageCount: check(pageCount)})
+                setSourceData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishedDate: check(publishedDate),
+                        isbn: check(isbn), imgURI: check(imgURI), description: check(description), categories: mappedCategories, 
+                        language: check(language), pageCount: check(pageCount)})
+            })
+            .catch((err) =>{
+                console.log(err)
+                setData({...data, isFound: false})
+            })
         }
     }, [route.params]);
 
     React.useEffect(()=>{
-        if (_.isEqual(sourceData, data)){
-            setIsSaved(true)
-        }
-        else{
-            setIsSaved(false)
-        }
         navigation.setOptions({headerLeft: () =>{
             return(
             <IconButton
@@ -80,7 +132,7 @@ export default function BookPreviewEditAdd(){
                     setAlertShow(true)
                 }
                 else{
-                    navigation.navigate('bookPreviewInfoAdd', {data: sourceData})
+                    navigation.navigate('home')
                 }
             }}
           />)
@@ -159,14 +211,14 @@ export default function BookPreviewEditAdd(){
             setAlertShow(true)
         }
         else{
-            navigation.navigate('bookPreviewInfoAdd', {data: sourceData})
+            navigation.navigate('home')
         }
         return true
 
     };
 
     const handleConfirm = () =>{
-        navigation.navigate('bookPreviewInfoAdd', {data: sourceData})
+        navigation.navigate('home')
     }
     
     const handleAbort = () =>{
@@ -206,7 +258,7 @@ export default function BookPreviewEditAdd(){
                 </ScrollView>
                 <View style={styles.buttons}>
                     <Button mode="contained" icon="check" onPress={handleOnSave} 
-                            style={styles.saveButton} disabled={isSaved}>
+                            style={styles.saveButton}>
                         Zapisz
                     </Button>
                 </View>

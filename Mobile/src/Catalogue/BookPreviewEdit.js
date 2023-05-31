@@ -2,6 +2,7 @@ import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, BackHandler } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
 import { Divider, Button, Appbar, TextInput, IconButton, List, Dialog, Portal } from "react-native-paper"
+import { Keyboard } from 'react-native';
 import DescriptionPreview from "../Add/AddBook/Components/DescriptionPreview"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 import _ from 'lodash'
@@ -32,6 +33,31 @@ export default function BookPreviewEdit(props){
     const [sourceData, setSourceData] = React.useState({...data})     
     const [save, setSave] = React.useState(false)
     const [alertShow, setAlertShow] = React.useState(false)                                    
+
+    const [focused, setFocused] = React.useState(false)
+    const descriptionRef = React.useRef(null)
+    const [keyboardVisible, setKeyboardVisible] = React.useState(false);
+
+    React.useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+          'keyboardDidShow',
+          () => {
+            setKeyboardVisible(true);
+          }
+        );
+        const keyboardDidHideListener = Keyboard.addListener(
+          'keyboardDidHide',
+          () => {
+            setKeyboardVisible(false);
+                descriptionRef?.current.blur();
+          }
+        );
+      
+        return () => {
+          keyboardDidShowListener.remove();
+          keyboardDidHideListener.remove();
+        };
+      }, []);
 
     React.useEffect(() => {
         const backHandler = BackHandler.addEventListener(
@@ -131,20 +157,6 @@ export default function BookPreviewEdit(props){
         }))
     }
 
-    function handleOnExpandAuthors(){
-        setExpandedAuthors(!expandedAuthors)
-        if (expandIconAuthors === "chevron-right") setExpandIconAuthors("chevron-down")
-        if (expandIconAuthors === "chevron-down") setExpandIconAuthors("chevron-right")
-
-    }
-
-    function handleOnExpandDescription(){
-        setExpandedDescription(!expandedDescription)
-        if (expandIconDescription === "chevron-right") setExpandIconDescription("chevron-down")
-        if (expandIconDescription === "chevron-down") setExpandIconDescription("chevron-right")
-
-    }
-
     function handleOnAdd(){
         setData(prevData => ({
             ...prevData,
@@ -185,24 +197,25 @@ export default function BookPreviewEdit(props){
                                 onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput}/>
                         <TextInput mode="outlined" label = "Tytuł" value={data.title} 
                                 onChangeText={(value) => handleChange("title", value)} style={[styles.textInput, {marginTop:-4}]}/>
-                        <List.Accordion title="Autorzy" right={() => <List.Icon icon={expandIconAuthors} />} 
-                                        style={styles.authorsButton} expanded={expandedAuthors} onPress={handleOnExpandAuthors}>
                             {authors}
                             <Button mode="contained-tonal" icon="plus" iconColor="silver" 
                                     style={[styles.addAuthorsButton, {marginTop: data.authors.length > 0 ? -9 : 2 }]}
                                     onPress={handleOnAdd}>Dodaj autora</Button>
-                        </List.Accordion>
                         <Divider style={{marginTop:13}}/>
-                        <List.Accordion title="Opis" right={() => <List.Icon icon={expandIconDescription}/>} 
-                                        style={styles.descriptionButton} expanded={expandedDescription} 
-                                        onPress={handleOnExpandDescription}>
-                            <TextInput mode="outlined" label = "Opis" value={data.description} 
+                            <TextInput mode="outlined" label = "Opis" value={data.description} ref={descriptionRef}
                                         onChangeText={(value) => handleChange("description", value)} 
                                         style={[styles.textInput, {marginTop:8}]} 
-                                        multiline={true} numberOfLines={descriptionNumOfLines} onContentSizeChange={(e) => {
-                                        setDescriptionNumOfLines(e.nativeEvent.contentSize.height / 18)
-                                    }}/>
-                        </List.Accordion>
+                                        multiline={descriptionNumOfLines > 1 || focused === true ? true : false} numberOfLines={descriptionNumOfLines} 
+                                        onContentSizeChange={(e) => {
+                                            setDescriptionNumOfLines(e.nativeEvent.contentSize < 40 || focused === false ? 1 : e.nativeEvent.contentSize.height / 18)
+                                        }}  
+                                        onFocus={()=>setFocused(true)}
+                                        onBlur={()=>{
+                                            setFocused(false)
+                                            setDescriptionNumOfLines(1)
+                                            }
+                                        }
+                            />
                         <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} 
                                 onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
                     </List.Section>

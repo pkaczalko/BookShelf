@@ -1,6 +1,7 @@
 import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, BackHandler } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
+import { Keyboard } from 'react-native';
 import { Divider, Button, Appbar, TextInput, List, IconButton, Dialog, Portal, Provider } from "react-native-paper"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 import _ from 'lodash'
@@ -46,6 +47,31 @@ export default function BookPreviewEditAdd(){
                                             isFound: true})
     const [sourceData, setSourceData] = React.useState({...data})     
     const [alertShow, setAlertShow] = React.useState(false)                                    
+
+    const [focused, setFocused] = React.useState(false)
+    const descriptionRef = React.useRef(null)
+    const [keyboardVisible, setKeyboardVisible] = React.useState(false);
+
+    React.useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+          'keyboardDidShow',
+          () => {
+            setKeyboardVisible(true);
+          }
+        );
+        const keyboardDidHideListener = Keyboard.addListener(
+          'keyboardDidHide',
+          () => {
+            setKeyboardVisible(false);
+                descriptionRef?.current.blur();
+          }
+        );
+      
+        return () => {
+          keyboardDidShowListener.remove();
+          keyboardDidHideListener.remove();
+        };
+      }, []);
 
     React.useEffect(() => {
         const backHandler = BackHandler.addEventListener(
@@ -173,6 +199,7 @@ export default function BookPreviewEditAdd(){
             })
         }))
     }
+    
     function handleChange(name, value){
         setData(prevData => ({
             ...prevData,
@@ -234,24 +261,25 @@ export default function BookPreviewEditAdd(){
                                 onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput}/>
                         <TextInput mode="outlined" label = "Tytuł" value={data.title} 
                                 onChangeText={(value) => handleChange("title", value)} style={[styles.textInput, {marginTop:-4}]}/>
-                        <List.Accordion title="Autorzy" right={() => <List.Icon icon={expandIconAuthors} />} 
-                                        style={styles.authorsButton} expanded={expandedAuthors} onPress={handleOnExpandAuthors}>
-                            {authors}
-                            <Button mode="contained-tonal" icon="plus" iconColor="silver" 
-                                    style={[styles.addAuthorsButton, {marginTop: data.authors.length > 0 ? -9 : 2 }]}
-                                    onPress={handleOnAdd}>Dodaj autora</Button>
-                        </List.Accordion>
+                        {authors}
+                        <Button mode="contained-tonal" icon="plus" iconColor="silver" 
+                                style={[styles.addAuthorsButton, {marginTop: data.authors.length > 0 ? -9 : 2 }]}
+                                onPress={handleOnAdd}>Dodaj autora</Button>
                         <Divider style={{marginTop:13}}/>
-                        <List.Accordion title="Opis" right={() => <List.Icon icon={expandIconDescription}/>} 
-                                        style={styles.descriptionButton} expanded={expandedDescription} 
-                                        onPress={handleOnExpandDescription}>
-                            <TextInput mode="outlined" label = "Opis" value={data.description} 
+                        <TextInput mode="outlined" label = "Opis" value={data.description} ref={descriptionRef}
                                         onChangeText={(value) => handleChange("description", value)} 
                                         style={[styles.textInput, {marginTop:8}]} 
-                                        multiline={true} numberOfLines={descriptionNumOfLines} onContentSizeChange={(e) => {
-                                        setDescriptionNumOfLines(e.nativeEvent.contentSize.height / 18)
-                                    }}/>
-                        </List.Accordion>
+                                        multiline={descriptionNumOfLines > 1 || focused === true ? true : false} numberOfLines={descriptionNumOfLines} 
+                                        onContentSizeChange={(e) => {
+                                            setDescriptionNumOfLines(e.nativeEvent.contentSize < 40 || focused === false ? 1 : e.nativeEvent.contentSize.height / 18)
+                                        }}  
+                                        onFocus={()=>setFocused(true)}
+                                        onBlur={()=>{
+                                            setFocused(false)
+                                            setDescriptionNumOfLines(1)
+                                            }
+                                        }
+                            />
                         <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} 
                                 onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
                     </List.Section>

@@ -16,11 +16,11 @@ export default function DetailedInfo({isbn, data}){
     const [save, setSave] = React.useState(false)
     const pageList = Array.from({ length: data.pageCount }, (_, index) => index + 1)
 
-    function ratingCompleted(rating){
+    function ratingOnFinishHandle(rating){
         setEditableData((prevData)=> ({...prevData, rating: rating}))
     }
 
-    function onPageChange(page){
+    function onSliderChangeHandle(page){
         setEditableData((prevData)=> ({...prevData, currentPage: page}))
     }
 
@@ -77,12 +77,12 @@ export default function DetailedInfo({isbn, data}){
         <View style={{flex:1}}>
             <ScrollView style={{flex:1}}>
                 <Text style={styles.ratingTitle}>Ocena</Text>
-                <Rating imageSize={40} startingValue={editableData.rating} style={styles.rating} tintColor="rgb(240,242,240)" onFinishRating={ratingCompleted}/>
+                <Rating imageSize={40} startingValue={editableData.rating} style={styles.rating} tintColor="rgb(240,242,240)" onFinishRating={ratingOnFinishHandle}/>
                 <Text style={[styles.ratingTitle, {marginBottom:-5}]}>Przeczytane Strony</Text>
                 <View style={styles.pageContainer}>
                     <Slider value={editableData.currentPage} thumbStyle={{ height: 20, width: 7, backgroundColor: '#606060', borderRadius: 0}}
                             trackStyle={{ height: 7, backgroundColor: 'transparent' }} style={styles.currentPageProgress} 
-                            minimumValue={0} maximumValue={editableData.pageCount} step={1} onSlidingComplete={onPageChange}/>
+                            minimumValue={0} maximumValue={editableData.pageCount} step={1} onValueChange={onSliderChangeHandle}/>
                     <Text style={styles.pageText} onPress={() => setPickerVisible(true)}>{editableData.currentPage}/{editableData.pageCount}</Text>
                 </View>
             </ScrollView>

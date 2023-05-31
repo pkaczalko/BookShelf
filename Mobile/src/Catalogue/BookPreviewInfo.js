@@ -126,8 +126,8 @@ export default function BookPreviewInfo(props){
                 </View>
             </View>
             <TopTab.Navigator>
-                <TopTab.Screen name="detailedInfo" component={DetailedInfoRoute} options={{title:"Szczegóły"}}/>
-                <TopTab.Screen name="simpleInfo" component={SimpleInfoRoute} options={{title:"Informacje"}}/>
+                <TopTab.Screen name="detailedInfo" component={DetailedInfoRoute} options={{title:"Szczegóły",swipeEnabled: false}}/>
+                <TopTab.Screen name="simpleInfo" component={SimpleInfoRoute} options={{title:"Informacje",swipeEnabled: false}}/>
             </TopTab.Navigator>
            <BottomSheet ref={refBottomSheet} scale={3}>
                 <List.Section style={styles.listContainer}>

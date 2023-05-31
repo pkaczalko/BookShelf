@@ -30,6 +30,7 @@ export function Main(){
         <CatalogueNavbar data={data}/>
         <Container className="d-flex flex-column" style={{marginLeft: "-12px"}}>
             <CategoryCardsDB name="Moje Książki" />
+            
         </Container>
     </Container>
 )

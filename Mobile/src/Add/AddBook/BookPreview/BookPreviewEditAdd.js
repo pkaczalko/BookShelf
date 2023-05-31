@@ -101,7 +101,7 @@ export default function BookPreviewEditAdd(){
     },[isSaved])
 
     function check(param){
-        return param ? param : "Brak"
+        return param ? param : ""
     }
 
     React.useEffect(() => {
@@ -205,20 +205,6 @@ export default function BookPreviewEditAdd(){
             ...prevData,
             [name]: value
         }))
-    }
-
-    function handleOnExpandAuthors(){
-        setExpandedAuthors(!expandedAuthors)
-        if (expandIconAuthors === "chevron-right") setExpandIconAuthors("chevron-down")
-        if (expandIconAuthors === "chevron-down") setExpandIconAuthors("chevron-right")
-
-    }
-
-    function handleOnExpandDescription(){
-        setExpandedDescription(!expandedDescription)
-        if (expandIconDescription === "chevron-right") setExpandIconDescription("chevron-down")
-        if (expandIconDescription === "chevron-down") setExpandIconDescription("chevron-right")
-
     }
 
     function handleOnAdd(){

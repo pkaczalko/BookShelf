@@ -24,13 +24,17 @@ export function Main(){
                   {category: "etc6", id:12}]
 
     const isbn = "diune"
+    function getCookieValue(cookie, name) {
+        const match = cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+        return match ? match[2] : null;
+      }
 
     return(
     <Container fluid className="d-flex justify-content-start" style={mainStyle}>
         <CatalogueNavbar data={data}/>
         <Container className="d-flex flex-column" style={{marginLeft: "-12px"}}>
             <CategoryCardsDB name="Moje Książki" />
-            
+            <div style={{ marginBottom: "20px" }}>{login && <h1>Welcome, {login}</h1>}</div>
         </Container>
     </Container>
 )

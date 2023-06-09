@@ -1,42 +1,37 @@
-import React from "react";
-import {Carousel, Container, Button} from 'react-bootstrap'
+import React, { useEffect, useState } from "react";
+import { Carousel, Container, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import CatalogueNavbar from "./CatalogueNavbar";
-import BookCard from "./categoryDisplay/BookCard";
-import CategoryTitle from "./categoryDisplay/CategoryTitle";
-import CategoryCards from "./categoryDisplay/CategoryCards";
-import CategoryCardsDB from "./categoryDisplay/CategoryCardsDB";
+import { BookList } from "./BookList";
 
 
-export function Main(){
-    const mainStyle = {padding: "20px 20px 20px 20px"}
-    const data = [{category: "Horror", id:1},
-                  {category: "Thriller", id:2},
-                  {category: "Fantasy", id:3},
-                  {category: "Sci-Fi", id:4},
-                  {category: "Dokumentalne", id:5},
-                  {category: "Biograficzne", id:6},
-                  {category: "etc1", id:7},
-                  {category: "etc2", id:8},
-                  {category: "etc3", id:9},
-                  {category: "etc4", id:10},
-                  {category: "etc5", id:11},
-                  {category: "etc6", id:12}]
+export function Main() {
+  const mainStyle = { padding: "20px 20px 20px 20px" };
+  const [data, setData] = useState([]);
 
-    const isbn = "diune"
-    function getCookieValue(cookie, name) {
-        const match = cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
-        return match ? match[2] : null;
+  useEffect(() => {
+    // Fetch data from API
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:8081/categories');
+        const apiData = await response.json();
+
+        // Update the data array with API data
+        setData(apiData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
+    };
 
-    return(
+    fetchData();
+  }, []);
+
+  return (
     <Container fluid className="d-flex justify-content-start" style={mainStyle}>
-        <CatalogueNavbar data={data}/>
-        <Container className="d-flex flex-column" style={{marginLeft: "-12px"}}>
-            <CategoryCardsDB name="Moje Książki" />
-            <div style={{ marginBottom: "20px" }}>{login && <h1>Welcome, {login}</h1>}</div>
-        </Container>
+      <CatalogueNavbar data={data} />
+      <Container className="d-flex flex-column" style={{ marginLeft: "-12px" }}>
+        <BookList />
+      </Container>
     </Container>
-)
-
+  );
 }

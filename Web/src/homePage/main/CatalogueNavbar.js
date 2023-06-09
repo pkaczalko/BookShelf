@@ -2,6 +2,8 @@ import React from "react";
 import { Container, ListGroup, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
 
+import BorrowedPage from "../navbar/BorrowedPage";
+
 export default function CatalogueNavbar(props) {
   const data = props.data;
 
@@ -15,16 +17,16 @@ export default function CatalogueNavbar(props) {
   };
   const headerStyle = { textAlign: "center", fontWeight: "bold", padding: "10px" };
 
-  const items = data.map((data) => {
+  const items = data.map((category) => {
     return (
       <ListGroup.Item
         action
-        href={"#" + data.category}
+        href={"#" + category.name}
         variant="secondary"
-        key={data.id}
+        key={category.id}
         style={{ height: "42px" }}
       >
-        {data.category}
+        {category.name}
       </ListGroup.Item>
     );
   });

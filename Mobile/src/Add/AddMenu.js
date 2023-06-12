@@ -2,14 +2,10 @@ import React from "react";
 import { StyleSheet, View, SafeAreaView, StatusBar, Platform, Modal } from "react-native";
 import { List } from "react-native-paper";
 import { useNavigation, useRoute } from '@react-navigation/native';
-import BarCodeScanner from "./BarCodeScanner/BarCodeScanner";
 
 export default function AddMenu({handleBottomSheetMenu}){
     const navigation = useNavigation();
 
-    const [isVisibleBarCode, setIsVisibleBarCode] = React.useState(false)
-    const barCodeScannerRef = React.useRef()
-    
     function handleISBN(){
         navigation.navigate('bookPreview', {screen:'barCodeScanner'})
         handleBottomSheetMenu(false)

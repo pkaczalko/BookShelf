@@ -1,6 +1,7 @@
 import React from "react";
-import { StyleSheet, View, Dimensions, BackHandler, ScrollView, Text} from "react-native";
+import { StyleSheet, View, Dimensions, BackHandler, ScrollView, Text, Keyboard} from "react-native";
 import { Divider, Button, Appbar, TextInput, List, IconButton, Dialog, Portal, Provider } from "react-native-paper"
+import { Picker } from "@react-native-picker/picker";
 import { useNavigation, CommonActions } from "@react-navigation/native";
 import {SafeAreaProvider} from "react-native-safe-area-context"
 
@@ -9,14 +10,10 @@ const {width: SCREEN_WIDTH} = Dimensions.get('window')
 export default function AddBookManually(){
     const navigation = useNavigation()
 
-    const [expandIconAuthors, setExpandIconAuthors] = React.useState('chevron-right')
-    const [expandedAuthors, setExpandedAuthors] = React.useState(false)
-
-    const [expandedDescription, setExpandedDescription] = React.useState(false)
-    const [expandIconDescription, setExpandIconDescription] = React.useState('chevron-right')
-
     const [descriptionNumOfLines, setDescriptionNumOfLines] = React.useState(1)
     const [isSaved, setIsSaved] = React.useState(false)
+    const [alertShow, setAlertShow] = React.useState(false)     
+    const [keyboardVisible, setKeyboardVisible] = React.useState(false);
 
     const [data, setData] = React.useState({title: "",
                                             isbn: "",
@@ -43,7 +40,42 @@ export default function AddBookManually(){
                                             description: ""})
     
     const [isSavedDisabled, setIsSaveDisabled] = React.useState(true)
-    
+    const [shelves, setShelves] = React.useState([''])
+    const [selectedShelf, setSelectedShelf] = React.useState("Półki")
+
+    const [focused, setFocused] = React.useState(false)
+    const descriptionRef = React.useRef(null)
+
+    React.useEffect(() => {
+        const backHandler = BackHandler.addEventListener(
+            'hardwareBackPress',
+             handleBackPress
+        );
+
+        return () => backHandler.remove();
+    }, [isSaved]);
+
+    React.useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+          'keyboardDidShow',
+          () => {
+            setKeyboardVisible(true);
+          }
+        );
+        const keyboardDidHideListener = Keyboard.addListener(
+          'keyboardDidHide',
+          () => {
+            setKeyboardVisible(false);
+                descriptionRef?.current.blur();
+          }
+        );
+      
+        return () => {
+          keyboardDidShowListener.remove();
+          keyboardDidHideListener.remove();
+        };
+      }, []);
+
     React.useEffect(()=>{
         if (isSaved === true){
             const {description, ...toSendData} = data
@@ -70,6 +102,18 @@ export default function AddBookManually(){
         }
     },[data])
 
+    React.useEffect(()=>{
+        fetch("https://bookshelf-java.azurewebsites.net/shelves") 
+            .then(res => res.json())
+            .then((shelves) => {
+                setShelves(['dasdas'])
+            })
+            .catch((err) =>{
+                console.log(err)
+                setShelves(['Półki'])
+            })
+    }, [])
+
     function handleChange(name, value){
         setData(prevData => ({
             ...prevData,
@@ -90,6 +134,12 @@ export default function AddBookManually(){
                        style={styles.textInput} label={"Autor " + (idx + 1)}  />
             <IconButton icon="close" iconColor="black" size={25} onPress={() => handleAuthorDelete(idx)} style={styles.authorExit}  />
         </View>
+    })
+
+    const shelvesItems = shelves.map((shelf, idx)=>{
+        return(
+            <Picker.Item label={shelf} value={shelf} />
+        )
     })
 
     function handleAuthorDelete(idx){
@@ -117,25 +167,34 @@ export default function AddBookManually(){
         }))
     }
 
-    function handleOnExpandAuthors(){
-        setExpandedAuthors(!expandedAuthors)
-        if (expandIconAuthors === "chevron-right") setExpandIconAuthors("chevron-down")
-        if (expandIconAuthors === "chevron-down") setExpandIconAuthors("chevron-right")
-
+    const handleConfirm = () =>{
+        navigation.navigate('home')
+    }
+    
+    const handleAbort = () =>{
+        setAlertShow(false)
     }
 
-    function handleOnExpandDescription(){
-        setExpandedDescription(!expandedDescription)
-        if (expandIconDescription === "chevron-right") setExpandIconDescription("chevron-down")
-        if (expandIconDescription === "chevron-down") setExpandIconDescription("chevron-right")
+    const handleBackPress = () => {
+        if(isSaved === false){
+            setAlertShow(true)
+        }
+        else{
+            navigation.navigate('home')
+        }
+        return true
 
-    }
+    };
 
     function handleOnAdd(){
         setData(prevData => ({
             ...prevData,
             authors: [...prevData.authors, {name:""}]
         }))
+    }
+
+    function handleOnSave(){
+        setIsSaved(true)
     }
     
     return(
@@ -146,62 +205,59 @@ export default function AddBookManually(){
                         <TextInput mode="outlined" label = "ISBN(opcjonalny)" value={data.isbn} 
                                 onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput}/>
                         <TextInput mode="outlined" label = "Tytuł" value={data.title} 
-                                onChangeText={(value) => handleChange("title", value)} style={[styles.textInput, {marginTop:-4}]} />
-                        <List.Accordion title="Autorzy" right={() => <List.Icon icon={expandIconAuthors} />} 
-                                        style={styles.authorsButton} expanded={expandedAuthors} onPress={handleOnExpandAuthors}>
-                            {authors}
-                            <Button mode="contained-tonal" icon="plus" iconColor="silver" 
-                                    style={[styles.addAuthorsButton, {marginTop: data.authors.length > 0 ? -9 : 2 }]}
-                                    onPress={handleOnAdd}>Dodaj autora</Button>
-                        </List.Accordion>
+                                onChangeText={(value) => handleChange("title", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                        {authors}
+                        <Button mode="contained-tonal" icon="plus" iconColor="silver" 
+                                style={[styles.addAuthorsButton, {marginTop: data.authors.length > 0 ? -9 : 2 }]}
+                                onPress={handleOnAdd}>Dodaj autora</Button>
                         <Divider style={{marginTop:13}}/>
-                        <List.Accordion title="Opis" right={() => <List.Icon icon={expandIconDescription}/>} 
-                                        style={styles.descriptionButton} expanded={expandedDescription} 
-                                        onPress={handleOnExpandDescription}>
-                            <TextInput mode="outlined" label = "Opis" value={data.description} 
+                        <TextInput mode="outlined" label = "Opis" value={data.description} ref={descriptionRef}
                                         onChangeText={(value) => handleChange("description", value)} 
                                         style={[styles.textInput, {marginTop:8}]} 
-                                        multiline={true} numberOfLines={descriptionNumOfLines} onContentSizeChange={(e) => {
-                                            setDescriptionNumOfLines(e.nativeEvent.contentSize.height / 18)
-                                        }}/>
-                        </List.Accordion>
+                                        multiline={descriptionNumOfLines > 1 || focused === true ? true : false} numberOfLines={descriptionNumOfLines} 
+                                        onContentSizeChange={(e) => {
+                                            setDescriptionNumOfLines(e.nativeEvent.contentSize.height < 40 || focused === false ? 1 : e.nativeEvent.contentSize.height / 18)
+                                        }}  
+                                        onFocus={()=>setFocused(true)}
+                                        onBlur={()=>{
+                                            setFocused(false)
+                                            setDescriptionNumOfLines(1)
+                                            }
+                                        }
+                            />
                         <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} 
-                                   onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
+                                onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
+                        <View style={styles.picker}>
+                            <Picker selectedValue={selectedShelf}
+                                    onValueChange={(itemValue, itemIndex) => setSelectedShelf(itemValue)}>
+                                {shelvesItems}
+                            </Picker>
+                        </View>
                     </List.Section>
                 </ScrollView>
                 <View style={styles.buttons}>
-                    <Button mode="contained" icon="check" onPress={() => setIsSaved(true)} 
-                            style={styles.saveButton} disabled={isSavedDisabled}>
-                        Dodaj
+                    <Button mode="contained" icon="check" onPress={handleOnSave} 
+                            style={styles.saveButton}>
+                        Zapisz
                     </Button>
                 </View>
+                <Portal>
+                    <Dialog visible={alertShow} style={{justifyContent:"center", backgroundColor:"white"}} dismissable={false}>
+                        <Dialog.Content>
+                            <Text style={{fontSize:16}}>Twoje zmiany nie zostaną zapisane. Czy chcesz kontynuuować?</Text>
+                        </Dialog.Content>
+                        <Dialog.Actions>
+                            <Button onPress={handleAbort}>Nie</Button>
+                            <Button onPress={handleConfirm}>Tak</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
             </View>
         </SafeAreaProvider>
     )
 }
 
 const styles = StyleSheet.create({
-    formsContainer:{
-        flex:1,
-        justifyContent:"space-between",
-        alignItems: "flex-start",
-        padding:10
-    },
-    modalContent:{
-        backgroundColor: "white",
-        padding: 20
-    },
-    textContainer:{
-        width:SCREEN_WIDTH*0.9,
-        margin:5
-    },
-    textInput:{
-        marginBottom:13
-    },
-    saveButton:{
-        width:"100%",
-        justifyContent:"flex-end",
-    },
     container:{
         flex:0.32,
         flexDirection:"row",
@@ -216,6 +272,16 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         backgroundColor:"black"
+    },
+    picker:{
+        backgroundColor:"white",
+        borderWidth:1,
+        borderRadius: 4,
+        borderColor: '#808080',
+        height: 50,
+        width: 150,
+        justifyContent:"center",
+        marginTop:10
     },
     title:{
         marginLeft: 15,

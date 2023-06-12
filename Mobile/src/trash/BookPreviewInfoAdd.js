@@ -2,7 +2,7 @@ import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, BackHandler } from "react-native"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
 import { Divider, Button, Appbar } from "react-native-paper"
-import DescriptionPreview from "../Components/DescriptionPreview"
+import DescriptionPreview from "../Add/AddBook/Components/DescriptionPreview"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 
 export default function BookPreviewInfoAdd(){

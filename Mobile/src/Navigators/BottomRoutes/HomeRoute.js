@@ -12,8 +12,6 @@ import BottomSheet from "../../Components/BottomSheet";
 import AddMenu from "../../Add/AddMenu";
 
 import SettingsRoute from "./SettingsRoute";
-import WishListRoute from "./WishListRoute";
-import SearchRoute from "./SearchRoute";
 import AddRoute from "./AddRoute";
 import CatalogueRoute from "./CatalogueRoute";
 
@@ -21,9 +19,7 @@ export default function HomeRoute(){
     const Tab = createBottomTabNavigator();
 
     const routes = [{key: 'catalogue', title:"Katalog", component: CatalogueRoute, focusedIcon:"book", unfocusedIcon:"book-outline" },
-                    // {key: "search", title: "Szukaj", component: SearchRoute, focusedIcon:"magnify-plus", unfocusedIcon:"magnify-plus-outline"},
                     {key: "add", title: "Dodaj", component: AddRoute, focusedIcon: "plus-circle", unfocusedIcon: "plus-circle-outline"},
-                    // {key: "wishlist", title:"WishList", component: WishListRoute, focusedIcon:"book-plus", unfocusedIcon:"book-plus-outline"},
                     {key:'settings', title:"Ustawienia", component: SettingsRoute, focusedIcon:"account-settings",unfocusedIcon:"account-settings-outline"}]
 
 

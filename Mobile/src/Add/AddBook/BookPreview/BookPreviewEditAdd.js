@@ -1,27 +1,20 @@
 import React from "react"
-import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, BackHandler } from "react-native"
+import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, BackHandler} from "react-native"
+import {Picker} from "@react-native-picker/picker"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
 import { Keyboard } from 'react-native';
 import { Divider, Button, Appbar, TextInput, List, IconButton, Dialog, Portal, Provider } from "react-native-paper"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 import _ from 'lodash'
 
-/////////DODAĆ DIALOG POTWIERDZAJĄCY POWRÓT BEZ ZAPISU ORAZ POWRÓT NA STRZAŁCE U GÓRY ZE ZMIANĄ DATY W INFOADD ROUTCIE////////////
 export default function BookPreviewEditAdd(){
     const route = useRoute()
     const navigation = useNavigation()
-
-    const [expandIconAuthors, setExpandIconAuthors] = React.useState('chevron-right')
-    const [expandedAuthors, setExpandedAuthors] = React.useState(false)
-
-    const [expandedDescription, setExpandedDescription] = React.useState(false)
-    const [expandIconDescription, setExpandIconDescription] = React.useState('chevron-right')
 
     const [descriptionNumOfLines, setDescriptionNumOfLines] = React.useState(1)
 
     const [confirmed, setConfirmed] = React.useState(false)
     const [isSaved, setIsSaved] = React.useState(false)
-    const [color, setColor] = React.useState("transparent")
     const [data, setData] = React.useState({title: "",
                                             isbn: "",
                                             isRead: true,
@@ -45,9 +38,10 @@ export default function BookPreviewEditAdd(){
                                             imgURI: "",
                                             description: "",
                                             isFound: true})
-    const [sourceData, setSourceData] = React.useState({...data})     
     const [alertShow, setAlertShow] = React.useState(false)                                    
-
+    
+    const [shelves, setShelves] = React.useState([])
+    const [selectedShelf, setSelectedShelf] = React.useState("Półki")
     const [focused, setFocused] = React.useState(false)
     const descriptionRef = React.useRef(null)
     const [keyboardVisible, setKeyboardVisible] = React.useState(false);
@@ -80,7 +74,7 @@ export default function BookPreviewEditAdd(){
         );
 
         return () => backHandler.remove();
-    }, [sourceData, isSaved]);
+    }, [isSaved]);
 
     React.useEffect(()=>{
         if (isSaved === true){
@@ -136,9 +130,6 @@ export default function BookPreviewEditAdd(){
                 setData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishedDate: check(publishedDate),
                         isbn: check(isbn), imgURI: check(imgURI), description: check(description), categories: mappedCategories, 
                         language: check(language), pageCount: check(pageCount)})
-                setSourceData({...data, title: check(title), authors: mappedAuthors, publisher: check(publisher), publishedDate: check(publishedDate),
-                        isbn: check(isbn), imgURI: check(imgURI), description: check(description), categories: mappedCategories, 
-                        language: check(language), pageCount: check(pageCount)})
             })
             .catch((err) =>{
                 console.log(err)
@@ -146,6 +137,17 @@ export default function BookPreviewEditAdd(){
             })
         }
     }, [route.params]);
+
+    React.useEffect(()=>{
+        fetch("https://bookshelf-java.azurewebsites.net/shelves") 
+            .then(res => res.json())
+            .then((shelves) => {
+                setShelves(['dsad'])
+            })
+            .catch((err) =>{
+                console.log(err)
+            })
+    }, [])
 
     React.useEffect(()=>{
         navigation.setOptions({headerLeft: () =>{
@@ -163,7 +165,7 @@ export default function BookPreviewEditAdd(){
             }}
           />)
         }})
-    },[data, sourceData, isSaved])
+    },[data, isSaved])
 
     const authors = data.authors.map((author, idx)=>{
         return idx === 0 ?
@@ -179,6 +181,12 @@ export default function BookPreviewEditAdd(){
             <IconButton icon="close" iconColor="black" size={25} onPress={() => handleAuthorDelete(idx)} style={styles.authorExit}/>
         </View>
 
+    })
+
+    const shelvesItems = shelves.map((shelf, idx)=>{
+        return(
+            <Picker.Item label={shelf} value={shelf} />
+        )
     })
 
     function handleAuthorDelete(idx){
@@ -215,7 +223,6 @@ export default function BookPreviewEditAdd(){
     }
 
     function handleOnSave(){
-        setSourceData({...data})
         setIsSaved(true)
     }
 
@@ -257,7 +264,7 @@ export default function BookPreviewEditAdd(){
                                         style={[styles.textInput, {marginTop:8}]} 
                                         multiline={descriptionNumOfLines > 1 || focused === true ? true : false} numberOfLines={descriptionNumOfLines} 
                                         onContentSizeChange={(e) => {
-                                            setDescriptionNumOfLines(e.nativeEvent.contentSize < 40 || focused === false ? 1 : e.nativeEvent.contentSize.height / 18)
+                                            setDescriptionNumOfLines(e.nativeEvent.contentSize.height < 40 || focused === false ? 1 : e.nativeEvent.contentSize.height / 18)
                                         }}  
                                         onFocus={()=>setFocused(true)}
                                         onBlur={()=>{
@@ -268,6 +275,12 @@ export default function BookPreviewEditAdd(){
                             />
                         <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} 
                                 onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
+                        <View style={styles.picker}>
+                            <Picker selectedValue={selectedShelf}
+                                    onValueChange={(itemValue, itemIndex) => setSelectedShelf(itemValue)}>
+                                {shelvesItems}
+                            </Picker>
+                        </View>
                     </List.Section>
                 </ScrollView>
                 <View style={styles.buttons}>
@@ -308,6 +321,16 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         backgroundColor:"black"
+    },
+    picker:{
+        backgroundColor:"white",
+        borderWidth:1,
+        borderRadius: 4,
+        borderColor: '#808080',
+        height: 50,
+        width: 150,
+        justifyContent:"center",
+        marginTop:5
     },
     title:{
         marginLeft: 15,

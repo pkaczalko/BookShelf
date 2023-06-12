@@ -2,7 +2,6 @@ import React from "react"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { IconButton } from "react-native-paper";
 import BookPreviewEditAdd from "../../Add/AddBook/BookPreview/BookPreviewEditAdd";
-import BookPreviewInfoAdd from "../../Add/AddBook/BookPreview/BookPreviewInfoAdd";
 import BarCodeScanner from "../../Add/BarCodeScanner/BarCodeScanner";
 import BookPreviewInfo from "../../Catalogue/BookPreviewInfo";
 import BookPreviewEdit from "../../Catalogue/BookPreviewEdit";
@@ -12,7 +11,6 @@ const Stack = createNativeStackNavigator();
 const BarCodeScannerRoute = () => <BarCodeScanner />
 const BookPreviewInfoRoute = () => <BookPreviewInfo />
 const BookPreviewEditAddRoute = () => <BookPreviewEditAdd />
-const BookPreviewInfoAddRoute = () => <BookPreviewInfoAdd />
 const BookPreviewEditRoute = () => <BookPreviewEdit />
 
 export default function BookPreview(props){
@@ -23,11 +21,6 @@ export default function BookPreview(props){
                 name="barCodeScanner"
                 component={BarCodeScannerRoute}
                 options={{title: 'barcode', headerShown: false}}
-            />
-            <Stack.Screen
-                name="bookPreviewInfoAdd"
-                component={BookPreviewInfoAddRoute}
-                options={{title: 'Informacje', headerShown: false}}
             />
             <Stack.Screen
                 name="bookPreviewEdit"

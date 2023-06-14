@@ -10,7 +10,7 @@ export function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch('http://localhost:8081/users', {
+    fetch('https://bookshelf-java.azurewebsites.net/users', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

@@ -13,7 +13,7 @@ export function Main() {
     // Fetch data from API
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8081/categories');
+        const response = await fetch('https://bookshelf-java.azurewebsites.net/shelves');
         const apiData = await response.json();
 
         // Update the data array with API data

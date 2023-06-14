@@ -17,7 +17,7 @@ export default function BorrowedPage() {
 
   const fetchBorrowedBooks = async () => {
     try {
-      const response = await axios.get("http://localhost:8081/books?q=97");
+      const response = await axios.get("https://bookshelf-java.azurewebsites.net/books?q");
       setBorrowedBooks(response.data);
     } catch (error) {
       console.log(error);
@@ -71,7 +71,7 @@ export default function BorrowedPage() {
         authors: selectedBook.authors.map(author => ({ name: author })),
       };
 
-      await axios.put(`http://localhost:8081/books?id=${selectedBook.id}`, updatedBook);
+      await axios.put(`https://bookshelf-java.azurewebsites.net/books?id=${selectedBook.id}`, updatedBook);
 
       setBorrowedBooks(updatedBooks);
       closeModal();

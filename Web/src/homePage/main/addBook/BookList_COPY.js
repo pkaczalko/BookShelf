@@ -34,7 +34,7 @@ export function BookList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8081/books?q=97');
+        const response = await fetch('https://bookshelf-java.azurewebsites.net/books?q');
         const apiData = await response.json();
         setBooks(apiData);
       } catch (error) {

@@ -37,11 +37,12 @@ export default function BookPreviewEditAdd(){
                                             ],
                                             imgURI: "",
                                             description: "",
+                                            shelf: "",
                                             isFound: true})
     const [alertShow, setAlertShow] = React.useState(false)                                    
     
     const [shelves, setShelves] = React.useState([])
-    const [selectedShelf, setSelectedShelf] = React.useState("Półki")
+    const [selectedShelf, setSelectedShelf] = React.useState({id:10, name: "Półki"})
     const [focused, setFocused] = React.useState(false)
     const descriptionRef = React.useRef(null)
     const [keyboardVisible, setKeyboardVisible] = React.useState(false);
@@ -142,7 +143,7 @@ export default function BookPreviewEditAdd(){
         fetch("https://bookshelf-java.azurewebsites.net/shelves") 
             .then(res => res.json())
             .then((shelves) => {
-                setShelves(['dsad'])
+                setShelves(shelves)
             })
             .catch((err) =>{
                 console.log(err)
@@ -167,6 +168,10 @@ export default function BookPreviewEditAdd(){
         }})
     },[data, isSaved])
 
+    React.useEffect(()=>{
+        setData({...data, shelf: {id: selectedShelf.id, name: selectedShelf.name}})
+    },[selectedShelf])
+
     const authors = data.authors.map((author, idx)=>{
         return idx === 0 ?
         <View style={styles.authorContainer}  key={idx}>
@@ -185,7 +190,7 @@ export default function BookPreviewEditAdd(){
 
     const shelvesItems = shelves.map((shelf, idx)=>{
         return(
-            <Picker.Item label={shelf} value={shelf} />
+            <Picker.Item label={shelf.name} value={shelf.name} key={shelf.id}/>
         )
     })
 
@@ -276,8 +281,8 @@ export default function BookPreviewEditAdd(){
                         <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} 
                                 onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
                         <View style={styles.picker}>
-                            <Picker selectedValue={selectedShelf}
-                                    onValueChange={(itemValue, itemIndex) => setSelectedShelf(itemValue)}>
+                            <Picker selectedValue={selectedShelf.name}
+                                    onValueChange={(itemValue, itemIndex) => {setSelectedShelf({id: itemIndex, name: itemValue})}}>
                                 {shelvesItems}
                             </Picker>
                         </View>
@@ -328,7 +333,7 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         borderColor: '#808080',
         height: 50,
-        width: 150,
+        width: "100%",
         justifyContent:"center",
         marginTop:5
     },

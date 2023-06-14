@@ -3,17 +3,20 @@ import { Text, View, StyleSheet, ScrollView } from "react-native";
 import { Modal, Portal, PaperProvider, Divider, Button } from "react-native-paper";
 import { Rating} from 'react-native-elements';
 import { Slider } from 'react-native-elements';
+import {Picker} from "@react-native-picker/picker"
 import ScrollPicker from 'react-native-wheel-scrollview-picker';
 import _ from 'lodash'
 
 
 export default function DetailedInfo({isbn, data}){
     const [pickerVisible, setPickerVisible] = React.useState(false)
-    const [slidedPageNumber, setSlidedPageNumber] = React.useState(data.currentPage)
+    const [slidedPageNumber, setSlidedPageNumber] = React.useState(data?.currentPage)
     const [renderedItems, setRenderedItems] = React.useState([]);
     const [isSaved, setIsSaved] = React.useState(true)
     const [editableData, setEditableData] = React.useState(data)
     const [save, setSave] = React.useState(false)
+    const [shelves, setShelves] = React.useState([])
+    const [selectedShelf, setSelectedShelf] = React.useState(data?.shelf)
     const pageList = Array.from({ length: data.pageCount }, (_, index) => index + 1)
 
     function ratingOnFinishHandle(rating){
@@ -61,6 +64,17 @@ export default function DetailedInfo({isbn, data}){
     },[save])
 
     React.useEffect(()=>{
+        fetch("https://bookshelf-java.azurewebsites.net/shelves") 
+            .then(res => res.json())
+            .then((shelves) => {
+                setShelves(shelves)
+            })
+            .catch((err) =>{
+                console.log(err)
+            })
+    }, [])
+
+    React.useEffect(()=>{
         renderItemsOnce()
     },[])
 
@@ -73,6 +87,12 @@ export default function DetailedInfo({isbn, data}){
         }
     },[editableData])
 
+    const shelvesItems = shelves.map((shelf, idx)=>{
+        return(
+            <Picker.Item label={shelf?.name} value={shelf?.name} key={shelf?.id}/>
+        )
+    })
+    console.log(editableData?.shelf)
     return(
         <View style={{flex:1}}>
             <ScrollView style={{flex:1}}>
@@ -85,6 +105,12 @@ export default function DetailedInfo({isbn, data}){
                             minimumValue={0} maximumValue={editableData.pageCount} step={1} onValueChange={onSliderChangeHandle}/>
                     <Text style={styles.pageText} onPress={() => setPickerVisible(true)}>{editableData.currentPage}/{editableData.pageCount}</Text>
                 </View>
+                {editableData.shelf && <View style={styles.picker}>
+                    <Picker selectedValue={editableData.shelf.name}
+                            onValueChange={(itemValue, itemIndex) => {setEditableData({...editableData, shelf: {id: itemIndex + 1, name: itemValue}})}}>
+                        {shelvesItems}
+                    </Picker>
+                </View>}
             </ScrollView>
             <Divider bold={true}/>
             <View style={[styles.buttons]}>
@@ -137,6 +163,16 @@ const styles = StyleSheet.create({
     currentPageProgress:{
         margin:10,
         flex: 0.8
+    },
+    picker:{
+        borderWidth:1,
+        borderRadius: 4,
+        borderColor: '#808080',
+        height: 50,
+        width: "95%",
+        justifyContent:"center",
+        margin:10, 
+        marginRight:20
     },
     pageContainer:{
         flexDirection:"row",

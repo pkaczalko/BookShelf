@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Card, Modal, Button, Row, Col } from 'react-bootstrap';
 import { EditBookForm } from './EditBookForm';
+import StarRatingComp from 'react-star-rating-component';
 
 export function BookList() {
   const [books, setBooks] = useState([]);
@@ -39,7 +40,14 @@ export function BookList() {
   };
 
   const handleSaveEdit = (editedBook) => {
-    console.log("Zapisano edytowaną książkę:", editedBook);
+    // Convert categories and authors to arrays if they are not already
+    const categories = Array.isArray(editedBook.categories) ? editedBook.categories : [editedBook.categories];
+    const authors = Array.isArray(editedBook.authors) ? editedBook.authors : [editedBook.authors];
+  
+    // Update the editedBook object with the converted categories and authors
+    const updatedBook = { ...editedBook, categories, authors };
+
+    console.log("Zapisano edytowaną książkę:", updatedBook);
     setEditMode(false);
   };
 
@@ -59,6 +67,9 @@ export function BookList() {
                   <strong>Categories:</strong> {book.categories.join(", ")}<br />
                   <strong>Authors:</strong> {book.authors.join(", ")}
                 </Card.Text>
+                <div>
+                   <StarRatingComp value={book.rating} />
+                </div>
               </Card.Body>
             </Col>
           </Row>
@@ -81,7 +92,7 @@ export function BookList() {
               <strong>Authors:</strong> {selectedBook.authors.join(", ")}<br />
               <strong>Cover Type:</strong> {selectedBook.coverType}<br />
               <strong>Volume:</strong> {selectedBook.volume ? selectedBook.volume : "N/A"}<br />
-              <strong>Rating:</strong> {selectedBook.rating}<br />
+              <StarRatingComp value={selectedBook.rating} /><br />
               <strong>Published Date:</strong> {selectedBook.publishedDate}<br />
               <strong>Description:</strong> {selectedBook.description}<br />
               <strong>Language:</strong> {selectedBook.language}<br />

@@ -1,10 +1,11 @@
 import React from "react";
 import { Container, ListGroup, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
-
+import { useNavigate } from "react-router-dom";
 import BorrowedPage from "../navbar/BorrowedPage";
 
 export default function CatalogueNavbar(props) {
+  let navigate = useNavigate();
   const data = props.data;
 
   const catalogueNavbarStyle = {
@@ -21,7 +22,9 @@ export default function CatalogueNavbar(props) {
     return (
       <ListGroup.Item
         action
-        href={"#" + category.name}
+        onClick={()=>{
+          navigate(`/katalog/${category.name}`)
+        }}
         variant="secondary"
         key={category.id}
         style={{ height: "42px" }}

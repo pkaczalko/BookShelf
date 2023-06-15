@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Container, Card, Modal, Button, Row, Col } from 'react-bootstrap';
 import { EditBookForm } from './EditBookForm';
 import StarRatingComp from 'react-star-rating-component';
+import { useParams } from "react-router-dom";
 
-export function BookList() {
+export function BookListShelve() {
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  let {nazwaPolki}=useParams()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://bookshelf-java.azurewebsites.net/books?q=');
+        const response = await fetch(`https://bookshelf-java.azurewebsites.net/books?q=${nazwaPolki}`);
         const apiData = await response.json();
         setBooks(apiData);
       } catch (error) {

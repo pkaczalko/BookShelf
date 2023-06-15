@@ -1,20 +1,57 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
+import StarRatingComp from 'react-star-rating-component';// Importujemy komponent StarRating
 
 export function EditBookForm({ book, onSave, onCancel }) {
   const [editedBook, setEditedBook] = useState({});
+  const [rating, setRating] = useState(0); // Dodajemy stan rating
 
   useEffect(() => {
     setEditedBook(book);
+    setRating(book.rating);
+  
+    const authorNames = Array.isArray(book.authors)
+      ? book.authors.map((author) => ({ name: author.name }))
+      : [];
+  
+    const categoryNames = Array.isArray(book.categories)
+      ? book.categories.map((category) => ({ name: category.name }))
+      : [];
+  
+    setEditedBook((prevBook) => ({
+      ...prevBook,
+      authors: authorNames,
+      categories: categoryNames,
+    }));
   }, [book]);
+  
+  
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+    let updatedValue = value;
+  
+    if (name === 'categories') {
+      updatedValue = value.split(',').map((category) => ({
+        name: category.trim(),
+      }));
+    }
+  
+    if (name === 'authors') {
+      updatedValue = value.split(',').map((author) => ({
+        name: author.trim(),
+      }));
+    }
+  
     setEditedBook((prevBook) => ({
       ...prevBook,
-      [name]: value,
+      [name]: updatedValue,
     }));
+  };
+
+  const handleRatingChange = (newRating) => {
+    setRating(newRating); // Aktualizujemy stan rating po zmianie oceny
   };
 
   const handleSubmit = async (event) => {
@@ -25,6 +62,7 @@ export function EditBookForm({ book, onSave, onCancel }) {
 
       const updatedBook = {
         ...editedBook,
+        rating: rating, // Ustawiamy zaktualizowaną ocenę
         authors: transformedAuthors,
         categories: transformedCategories,
       };
@@ -39,7 +77,6 @@ export function EditBookForm({ book, onSave, onCancel }) {
     }
   };
   
-
   return (
     <Modal.Body>
       <form onSubmit={handleSubmit}>
@@ -107,13 +144,7 @@ export function EditBookForm({ book, onSave, onCancel }) {
           />
         </div>
         <div>
-          <label>Rating:</label>
-          <input
-            type="number"
-            name="rating"
-            value={editedBook.rating || ""}
-            onChange={handleInputChange}
-          />
+          <StarRatingComp value={rating} onStarClick={handleRatingChange} /> {/* Używamy zmienionego aliasu komponentu */}
         </div>
         <div>
           <label>Published Date:</label>

@@ -7,10 +7,10 @@ import { MyNavbar } from "./homePage/navbar/Navbar";
 import "./main.scss";
 import BorrowedPage from "./homePage/navbar/BorrowedPage";
 import { ShelfBooks } from "./homePage/main/shelfBooks";
+import "./loginPage/Login.css";
 
-
-document.body.style.background = "#E8E8E8"
-document.body.style.overflowX = "hidden";
+//document.body.style.background = "#E8E8E8"
+//document.body.style.overflowX = "hidden";
 
 function HomePage(){
     return (

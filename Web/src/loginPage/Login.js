@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import './Login.css';
+import loginBackground from './login_tlo.png';
 
 export function Login() {
   const [login, setLogin] = useState('');
@@ -22,7 +22,7 @@ export function Login() {
         if (user) {
           console.log('Login successful!');
           document.cookie = `login=${login}; path=/`;
-          setRedirectToCatalog(true); // Set the flag to trigger redirection
+          setRedirectToCatalog(true);
         } else {
           console.log('Incorrect login or password.');
           setErrorMessage('Incorrect login or password.');
@@ -34,11 +34,11 @@ export function Login() {
   };
 
   if (redirectToCatalog) {
-    return <Navigate to="/katalog" />; // Redirect to /katalog
+    return <Navigate to="/katalog" />;
   }
 
   return (
-    <div className="login-container">
+    <div style={{ backgroundImage: `url(${loginBackground})` }} className="login-container">
       <div className="bookshelf-container">
         <h2>Bookshelf</h2>
         <form onSubmit={handleSubmit} className="login-form">
@@ -46,7 +46,7 @@ export function Login() {
           <input type="text" id="login" value={login} onChange={(e) => setLogin(e.target.value)} />
           <label htmlFor="password">Password:</label>
           <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button type="submit">Submit</button>
+          <button type="submit">Login</button>
         </form>
         {errorMessage && <div className="error">{errorMessage}</div>}
       </div>

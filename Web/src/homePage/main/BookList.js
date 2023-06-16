@@ -53,27 +53,49 @@ export function BookList() {
 
   return (
     <Container className="grid-container" style={{ marginLeft: "-12px" }}>
-      {books.map((book) => (
-        <Card key={book.id} className="custom-card" onClick={() => handleBookClick(book)}>
-          <Row>
+      {books.map((book, index) => (
+        // Render two books per row
+        index % 2 === 0 && (
+          <Row key={book.id}>
             <Col xs={4} md={3} lg={2}>
               <Card.Img className="book-image" variant="top" src={book.imgURI || "https://books.google.pl/googlebooks/images/no_cover_thumb.gif"} alt="Book Cover" />
             </Col>
-            <Col xs={8} md={9} lg={10}>
-              <Card.Body>
-                <Card.Title>{book.title}</Card.Title>
-                <Card.Text>
-                  <strong>Publisher:</strong> {book.publisher}<br />
-                  <strong>Categories:</strong> {book.categories.join(", ")}<br />
-                  <strong>Authors:</strong> {book.authors.join(", ")}
-                </Card.Text>
-                <div>
-                   <StarRatingComp value={book.rating} />
-                </div>
-              </Card.Body>
+            <Col Col xs={8} md={9} lg={3}>
+              <Card className="custom-card" onClick={() => handleBookClick(book)}>
+                <Card.Body>
+                  <Card.Title>{book.title}</Card.Title>
+                  <Card.Text>
+                    <strong>Publisher:</strong> {book.publisher}<br />
+                    <strong>Categories:</strong> {book.categories.join(", ")}<br />
+                    <strong>Authors:</strong> {book.authors.join(", ")}
+                  </Card.Text>
+                  <div>
+                    <StarRatingComp value={book.rating} />
+                  </div>
+                </Card.Body>
+              </Card>
             </Col>
+            {books[index + 1] && (
+              
+              <Col xs={8} md={9} lg={3}>
+                <Card className="custom-card" onClick={() => handleBookClick(books[index + 1])}>
+                  <Card.Img className="book-image" variant="top" src={books[index + 1].imgURI || "https://books.google.pl/googlebooks/images/no_cover_thumb.gif"} alt="Book Cover" />
+                  <Card.Body>
+                    <Card.Title>{books[index + 1].title}</Card.Title>
+                    <Card.Text>
+                      <strong>Publisher:</strong> {books[index + 1].publisher}<br />
+                      <strong>Categories:</strong> {books[index + 1].categories.join(", ")}<br />
+                      <strong>Authors:</strong> {books[index + 1].authors.join(", ")}
+                    </Card.Text>
+                    <div>
+                      <StarRatingComp value={books[index + 1].rating} />
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Col>
+            )}
           </Row>
-        </Card>
+        )
       ))}
 
       {selectedBook && (

@@ -27,7 +27,7 @@ jobs:
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           app_location: "/Web" # App source code path
           api_location: "" # Api source code path - optional
-          output_location: "/build" # Built app content directory - optional (updated value)
+          output_location: "/bin/staticsites/b5b35c85-a7c3-4b07-8db8-48dc5852e94c-swa-oryx/app" # Built app content directory - optional (updated value)
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:

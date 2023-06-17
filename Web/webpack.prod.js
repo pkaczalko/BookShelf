@@ -8,7 +8,7 @@ module.exports = merge.merge(common, {
     mode: "production",
     output: {
         filename: 'main.[contenthash].js',
-        path: path.resolve(__dirname, "dist")
+        path: path.resolve(__dirname, "app/build")
     },
     plugins: [
         new MiniCssExtractPlugin({filename: "[name].[contenthash].css"}),

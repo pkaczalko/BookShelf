@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CatalogueNavbar from "./CatalogueNavbar";
 import { BookList } from "./BookList";
 import { BookListShelve } from "./BookListShelve";
+export default ShelfBooks;
 
 
 export function ShelfBooks() {

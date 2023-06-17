@@ -6,7 +6,7 @@ import { Login } from "./loginPage/Login";
 import { MyNavbar } from "./homePage/navbar/Navbar";
 import "./main.scss";
 import BorrowedPage from "./homePage/navbar/BorrowedPage";
-import { ShelfBooks } from "./homePage/main/shelfBooks";
+import { ShelfBooks } from "./homePage/main/ShelfBooks";
 import "./loginPage/Login.css";
 
 function HomePage() {

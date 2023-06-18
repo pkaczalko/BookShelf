@@ -55,7 +55,7 @@ export function EditBookForm({ book, onSave, onCancel }) {
     try {
       const transformedAuthors = editedBook.authors.map((author) => ({ name: author }));
       const transformedCategories = editedBook.categories.map((category) => ({ name: category }));
-console.log(transformedAuthors)
+
       const updatedBook = {
         ...editedBook,
         rating: rating, // Ustawiamy zaktualizowaną ocenę

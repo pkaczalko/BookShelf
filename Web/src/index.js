@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Route, Routes, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, useLocation, HashRouter } from "react-router-dom";
 import { Main } from "./homePage/main/Main";
 import { Login } from "./loginPage/Login";
 import { MyNavbar } from "./homePage/navbar/Navbar";
@@ -8,10 +8,14 @@ import "./main.scss";
 import BorrowedPage from "./homePage/navbar/BorrowedPage";
 import { ShelfBooks } from "./homePage/main/ShelfBooks";
 import "./loginPage/Login.css";
+import Logout from "./Logout";
+import PrivateRoute from "./PrivateRoute";
+
+
 
 function HomePage() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div>
         <Navbar />
         <Routes>
@@ -24,10 +28,11 @@ function HomePage() {
             <Route path="borrowed" element={<BorrowedPage />} />
             <Route path="myacc" element={<h1>My Account</h1>} />
           </Route>
-          <Route path="*" element={<Navigate to="" replace />} />
+          <Route path="logout" element={<Logout/>} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

@@ -14,6 +14,7 @@ export default function RightNavbar(){
             <Nav className="me-auto">
                 <Nav.Link as={Link} to="/borrowed">Wypożyczone</Nav.Link>
                 <Nav.Link as={Link} to="/myacc">Moje Konto</Nav.Link>
+                <Nav.Link as={Link} to="/logout">Wyloguj</Nav.Link>
             </Nav>
         </div>
     )

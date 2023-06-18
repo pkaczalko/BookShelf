@@ -1,12 +1,30 @@
-import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import loginBackground from './login_tlo.png';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export function Login() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [redirectToCatalog, setRedirectToCatalog] = useState(false);
+  const navigate = useNavigate();
+  useEffect(()=>{
+
+    
+    let x = document.cookie;
+    console.log(x)
+    x.split(";").forEach((cookie)=>{
+      console.log(cookie)
+      if(cookie.split("=")[0]=="login"){
+        navigate("katalog")
+      }
+
+    })
+   
+
+},[])
 
   const handleSubmit = (e) => {
     e.preventDefault();

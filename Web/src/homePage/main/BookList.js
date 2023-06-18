@@ -2,16 +2,35 @@ import React, { useEffect, useState } from "react";
 import { Container, Card, Modal, Button, Row, Col } from 'react-bootstrap';
 import { EditBookForm } from './EditBookForm';
 import StarRatingComp from 'react-star-rating-component';
+import { useLocation } from "react-router-dom";
 
 export function BookList() {
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
   const [editMode, setEditMode] = useState(false);
-
+  const location = useLocation();
   useEffect(() => {
+    const tmp = location.hash.split("#")[1]||""
+    
+    console.log(tmp)
     const fetchData = async () => {
       try {
-        const response = await fetch('https://bookshelf-java.azurewebsites.net/books?q=');
+        const response = await fetch(`https://bookshelf-java.azurewebsites.net/books?q=${tmp}`);
+        const apiData = await response.json();
+        setBooks(apiData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+
+  },[location]);
+  useEffect(() => {
+    const tmp = location.hash.split("#")[1]||""
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`https://bookshelf-java.azurewebsites.net/books?q=${tmp}`);
         const apiData = await response.json();
         setBooks(apiData);
       } catch (error) {

@@ -3,12 +3,21 @@ import { Container, Card, Modal, Button, Row, Col } from 'react-bootstrap';
 import { EditBookForm } from './EditBookForm';
 import StarRatingComp from 'react-star-rating-component';
 import { useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function BookListShelve() {
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const navigate = useNavigate();
   let {nazwaPolki}=useParams()
+  const location = useLocation();
+  useEffect(() => {
+    const tmp = location.hash.split("#")[1]||""
+    if(tmp) navigate(`/katalog#${tmp}`,{replace:true})
+    
+
+  },[location]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,7 +31,7 @@ export function BookListShelve() {
     };
 
     fetchData();
-  }, [nazwaPolki]);
+  }, [nazwaPolki,location]);
 
   const handleBookClick = (book) => {
     setSelectedBook(book);

@@ -10,13 +10,13 @@ export function EditBookForm({ book, onSave, onCancel }) {
   useEffect(() => {
     setEditedBook(book);
     setRating(book.rating);
-  
+  console.log(JSON.stringify(book))
     const authorNames = Array.isArray(book.authors)
-      ? book.authors.map((author) => ({ name: author.name }))
+      ? book.authors.map((author) => author)
       : [];
   
     const categoryNames = Array.isArray(book.categories)
-      ? book.categories.map((category) => ({ name: category.name }))
+      ? book.categories.map((category) => category)
       : [];
   
     setEditedBook((prevBook) => ({
@@ -33,15 +33,11 @@ export function EditBookForm({ book, onSave, onCancel }) {
     let updatedValue = value;
   
     if (name === 'categories') {
-      updatedValue = value.split(',').map((category) => ({
-        name: category.trim(),
-      }));
+      updatedValue = value.split(',').map((category) => category.trim());
     }
   
     if (name === 'authors') {
-      updatedValue = value.split(',').map((author) => ({
-        name: author.trim(),
-      }));
+      updatedValue = value.split(',').map((author) => author.trim());
     }
   
     setEditedBook((prevBook) => ({
@@ -57,9 +53,9 @@ export function EditBookForm({ book, onSave, onCancel }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const transformedAuthors = editedBook.authors.map((author) => ({ name: author.name }));
-      const transformedCategories = editedBook.categories.map((category) => ({ name: category.name }));
-
+      const transformedAuthors = editedBook.authors.map((author) => ({ name: author }));
+      const transformedCategories = editedBook.categories.map((category) => ({ name: category }));
+console.log(transformedAuthors)
       const updatedBook = {
         ...editedBook,
         rating: rating, // Ustawiamy zaktualizowaną ocenę
@@ -112,7 +108,9 @@ export function EditBookForm({ book, onSave, onCancel }) {
         <input
             type="text"
             name="categories"
-            value={editedBook.categories?.map(category => category.name).join(", ") || ""}
+            value={editedBook.categories?.map((category) => {
+              
+              return category}).join(", ") || ""}
             onChange={handleInputChange}
         />
         </div>
@@ -121,7 +119,7 @@ export function EditBookForm({ book, onSave, onCancel }) {
         <input
             type="text"
             name="authors"
-            value={editedBook.authors?.map(author => author.name).join(", ") || ""}
+            value={editedBook.authors?.map(author => author).join(", ") || ""}
             onChange={handleInputChange}
         />
         </div>

@@ -22,7 +22,7 @@ export function BookListShelve() {
     };
 
     fetchData();
-  }, []);
+  }, [nazwaPolki]);
 
   const handleBookClick = (book) => {
     setSelectedBook(book);

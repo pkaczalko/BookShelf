@@ -9,6 +9,7 @@ export function BookList() {
   const [selectedBook, setSelectedBook] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const location = useLocation();
+
   useEffect(() => {
     const tmp = location.hash.split("#")[1] || "";
 
@@ -26,22 +27,6 @@ export function BookList() {
 
     fetchData();
   }, [location]);
-  useEffect(() => {
-    const tmp = location.hash.split("#")[1] || "";
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `https://bookshelf-java.azurewebsites.net/books?q=${tmp}`
-        );
-        const apiData = await response.json();
-        setBooks(apiData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const handleBookClick = (book) => {
     setSelectedBook(book);
@@ -78,78 +63,42 @@ export function BookList() {
 
   return (
     <Container className="grid-container" style={{ marginLeft: "-12px" }}>
-      {books.map(
-        (book, index) =>
-          // Render two books per row
-          index % 2 === 0 && (
-            <Row key={book.id}>
-              <Col xs={4} md={3} lg={2}>
-                <Card.Img
-                  className="book-image"
-                  variant="top"
-                  src={
-                    book.imgURI ||
-                    "https://books.google.pl/googlebooks/images/no_cover_thumb.gif"
-                  }
-                  alt="Book Cover"
-                />
-              </Col>
-              <Col Col xs={8} md={9} lg={3}>
-                <Card
-                  className="custom-card"
-                  onClick={() => handleBookClick(book)}
-                >
-                  <Card.Body>
-                    <Card.Title>{book.title}</Card.Title>
-                    <Card.Text>
-                      <strong>Publisher:</strong> {book.publisher}
-                      <br />
-                      <strong>Categories:</strong> {book.categories.join(", ")}
-                      <br />
-                      <strong>Authors:</strong> {book.authors.join(", ")}
-                    </Card.Text>
-                    <div>
-                      <StarRatingComp value={book.rating} />
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-              {books[index + 1] && (
-                <Col xs={8} md={9} lg={3}>
-                  <Card
-                    className="custom-card"
-                    onClick={() => handleBookClick(books[index + 1])}
-                  >
-                    <Card.Img
-                      className="book-image"
-                      variant="top"
-                      src={
-                        books[index + 1].imgURI ||
-                        "https://books.google.pl/googlebooks/images/no_cover_thumb.gif"
-                      }
-                      alt="Book Cover"
-                    />
-                    <Card.Body>
-                      <Card.Title>{books[index + 1].title}</Card.Title>
-                      <Card.Text>
-                        <strong>Publisher:</strong> {books[index + 1].publisher}
-                        <br />
-                        <strong>Categories:</strong>{" "}
-                        {books[index + 1].categories.join(", ")}
-                        <br />
-                        <strong>Authors:</strong>{" "}
-                        {books[index + 1].authors.join(", ")}
-                      </Card.Text>
-                      <div>
-                        <StarRatingComp value={books[index + 1].rating} />
-                      </div>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              )}
-            </Row>
-          )
-      )}
+      <h1>Katalog</h1> {/* Heading for "Katalog" */}
+      <Row>
+        {books.map((book) => (
+          <Col key={book.id} xs={12} md={6} lg={4}>
+            <Card
+              className="custom-card"
+              onClick={() => handleBookClick(book)}
+              style={{ height: "100%" }} // Set the container height to 100%
+            >
+              <Card.Img
+                className="book-image"
+                variant="top"
+                src={
+                  book.imgURI ||
+                  "https://books.google.pl/googlebooks/images/no_cover_thumb.gif"
+                }
+                alt="Book Cover"
+                style={{ width: "75%" }} // Reduce the size of the book cover by 25%
+              />
+              <Card.Body>
+                <Card.Title>{book.title}</Card.Title>
+                <Card.Text>
+                  <strong>Publisher:</strong> {book.publisher}
+                  <br />
+                  <strong>Categories:</strong> {book.categories.join(", ")}
+                  <br />
+                  <strong>Authors:</strong> {book.authors.join(", ")}
+                </Card.Text>
+                <div>
+                  <StarRatingComp value={book.rating} />
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
 
       {selectedBook && (
         <Modal show={!!selectedBook} onHide={handleCloseModal}>
@@ -194,7 +143,8 @@ export function BookList() {
               <br />
               <strong>Favorite:</strong> {selectedBook.favorite ? "Yes" : "No"}
               <br />
-              <strong>Wish List:</strong> {selectedBook.wishList ? "Yes" : "No"}
+              <strong>Wish List:</strong>{" "}
+              {selectedBook.wishList ? "Yes" : "No"}
               <br />
               <strong>Is Read:</strong> {selectedBook.isRead ? "Yes" : "No"}
               <br />

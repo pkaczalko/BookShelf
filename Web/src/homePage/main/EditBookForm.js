@@ -1,45 +1,43 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button } from 'react-bootstrap';
-import axios from 'axios';
-import StarRatingComp from 'react-star-rating-component';// Importujemy komponent StarRating
+import { Modal, Button } from "react-bootstrap";
+import axios from "axios";
+import StarRatingComp from "react-star-rating-component";
 
 export function EditBookForm({ book, onSave, onCancel }) {
   const [editedBook, setEditedBook] = useState({});
-  const [rating, setRating] = useState(0); // Dodajemy stan rating
+  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     setEditedBook(book);
     setRating(book.rating);
-  console.log(JSON.stringify(book))
+
     const authorNames = Array.isArray(book.authors)
       ? book.authors.map((author) => author)
       : [];
-  
+
     const categoryNames = Array.isArray(book.categories)
       ? book.categories.map((category) => category)
       : [];
-  
+
     setEditedBook((prevBook) => ({
       ...prevBook,
       authors: authorNames,
       categories: categoryNames,
     }));
   }, [book]);
-  
-  
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     let updatedValue = value;
-  
-    if (name === 'categories') {
-      updatedValue = value.split(',').map((category) => category.trim());
+
+    if (name === "categories") {
+      updatedValue = value.split(",").map((category) => category.trim());
     }
-  
-    if (name === 'authors') {
-      updatedValue = value.split(',').map((author) => author.trim());
+
+    if (name === "authors") {
+      updatedValue = value.split(",").map((author) => author.trim());
     }
-  
+
     setEditedBook((prevBook) => ({
       ...prevBook,
       [name]: updatedValue,
@@ -47,7 +45,7 @@ export function EditBookForm({ book, onSave, onCancel }) {
   };
 
   const handleRatingChange = (newRating) => {
-    setRating(newRating); // Aktualizujemy stan rating po zmianie oceny
+    setRating(newRating);
   };
 
   const handleSubmit = async (event) => {
@@ -58,23 +56,22 @@ export function EditBookForm({ book, onSave, onCancel }) {
 
       const updatedBook = {
         ...editedBook,
-        rating: rating, // Ustawiamy zaktualizowaną ocenę
+        rating: rating,
         authors: transformedAuthors,
         categories: transformedCategories,
       };
 
       const response = await axios.put(
         `https://bookshelf-java.azurewebsites.net/books?id=${editedBook.id}`,
-        
         updatedBook
       );
-      console.log(updatedBook)
+
       onSave(response.data);
     } catch (error) {
       console.error("Error:", error);
     }
   };
-  
+
   return (
     <Modal.Body>
       <form onSubmit={handleSubmit}>
@@ -106,24 +103,24 @@ export function EditBookForm({ book, onSave, onCancel }) {
           />
         </div>
         <div>
-        <label>Categories:</label>
-        <input
+          <label>Categories:</label>
+          <input
             type="text"
             name="categories"
-            value={editedBook.categories?.map((category) => {
-              
-              return category}).join(", ") || ""}
+            value={
+              editedBook.categories?.map((category) => category).join(", ") || ""
+            }
             onChange={handleInputChange}
-        />
+          />
         </div>
         <div>
-        <label>Authors:</label>
-        <input
+          <label>Authors:</label>
+          <input
             type="text"
             name="authors"
-            value={editedBook.authors?.map(author => author).join(", ") || ""}
+            value={editedBook.authors?.map((author) => author).join(", ") || ""}
             onChange={handleInputChange}
-        />
+          />
         </div>
         <div>
           <label>Cover Type:</label>
@@ -144,41 +141,12 @@ export function EditBookForm({ book, onSave, onCancel }) {
           />
         </div>
         <div>
-          <StarRatingComp value={rating} onStarClick={handleRatingChange} /> {/* Używamy zmienionego aliasu komponentu */}
-        </div>
-        <div>
-          <label>Published Date:</label>
-          <input
-            type="text"
-            name="publishedDate"
-            value={editedBook.publishedDate || ""}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label>Description:</label>
-          <textarea
-            name="description"
-            value={editedBook.description || ""}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label>Language:</label>
-          <input
-            type="text"
-            name="language"
-            value={editedBook.language || ""}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
           <label>Page Count:</label>
           <input
             type="number"
             name="pageCount"
             value={editedBook.pageCount || ""}
-            onChange={handleInputChange}
+            readOnly
           />
         </div>
         <div>
@@ -251,8 +219,39 @@ export function EditBookForm({ book, onSave, onCancel }) {
           />
         </div>
         <div>
+          <label>Description:</label>
+          <textarea
+            name="description"
+            value={editedBook.description || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
+          <label>Language:</label>
+          <input
+            type="text"
+            name="language"
+            value={editedBook.language || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
+          <StarRatingComp value={rating} onStarClick={handleRatingChange} />
+        </div>
+        <div>
+          <label>Published Date:</label>
+          <input
+            type="text"
+            name="publishedDate"
+            value={editedBook.publishedDate || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
           <button type="submit">Save</button>
-          <button type="button" onClick={onCancel}>Cancel</button>
+          <button type="button" onClick={onCancel}>
+            Cancel
+          </button>
         </div>
       </form>
     </Modal.Body>

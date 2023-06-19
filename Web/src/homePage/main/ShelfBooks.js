@@ -11,7 +11,7 @@ export function ShelfBooks() {
   const mainStyle = { padding: "20px 20px 20px 20px" };
   const [data, setData] = useState([]);
     let {nazwaPolki}=useParams()
-    console.log(nazwaPolki)
+  
   useEffect(() => {
     // Fetch data from API
     const fetchData = async () => {
@@ -25,7 +25,7 @@ export function ShelfBooks() {
         console.error('Error fetching data:', error);
       }
     };
-    console.log(nazwaPolki)
+   
     fetchData();
   }, []);
 

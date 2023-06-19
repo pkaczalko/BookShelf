@@ -65,8 +65,10 @@ export function EditBookForm({ book, onSave, onCancel }) {
 
       const response = await axios.put(
         `https://bookshelf-java.azurewebsites.net/books?id=${editedBook.id}`,
+        
         updatedBook
       );
+      console.log(updatedBook)
       onSave(response.data);
     } catch (error) {
       console.error("Error:", error);

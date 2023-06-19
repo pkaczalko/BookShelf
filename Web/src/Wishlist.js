@@ -16,44 +16,23 @@ function Wishlist() {
     try {
       const response = await axios.get("https://bookshelf-java.azurewebsites.net/books?q");
       const filteredBooks = response.data.filter(book => book.wishList);
-      
-      console.log(response)
-        console.log(JSON.stringify(filteredBooks))
       setWishlistBooks(filteredBooks);
-      
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleEditWishlist = (book) => {
-    setSelectedBook(book);
-    setEditWishList(true);
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setSelectedBook(null);
-    setEditWishList(false);
-    setShowModal(false);
-  };
-
-  const saveWishlist = async () => {
+  const toggleWishlist = async (book) => {
     try {
-      const updatedBooks = wishlistBooks.map((book) => {
-        if (book.id === selectedBook.id) {
-          return {
-            ...book,
-            wishlist: editWishList,
-          };
-        }
-        return book;
-      });
+      const updatedBook = {
+        ...book,
+        authors: book.authors.map(author => ({ name: author })),
+        categories: book.categories.map(category => ({ name: category })),
+        wishList: !book.wishList // Invert the value of wishList
+      };
 
-      
-
-      setWishlistBooks(updatedBooks);
-      closeModal();
+      await axios.put(`https://bookshelf-java.azurewebsites.net/books?id=${book.id}`, updatedBook);
+      fetchWishlistBooks();
     } catch (error) {
       console.log(error);
     }
@@ -62,16 +41,13 @@ function Wishlist() {
   return (
     <div className="book-list">
       {wishlistBooks.map((book) => (
-        <div key={book.id} className="book" >
+        <div key={book.id} className="book">
           <h3>{book.title}</h3>
-          <input type="checkbox" checked={book.wishList} onChange={async(e)=>{
-            await axios.put(`https://bookshelf-java.azurewebsites.net/books?id=${book.id}`, {
-                ...book,
-                wishlist: e.target.checked,
-              });
-            fetchWishlistBooks();
-          }}/>
-          <p>Wishlist: {book.wishList ? "Yes" : "No"}</p>
+          <input
+            type="checkbox"
+            checked={book.wishList} // Use wishList for checked value
+            onChange={() => toggleWishlist(book)}
+          />
         </div>
       ))}
     </div>

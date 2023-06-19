@@ -28,7 +28,7 @@ export default function SearchBar(){
                     onFocus={handleMouseClick}
                     onChange={handleChange}
                 />
-            <Button variant="outline-light">Search</Button>
+            
             </Form>
         </div>
     )

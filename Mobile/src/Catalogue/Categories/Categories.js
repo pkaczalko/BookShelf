@@ -22,16 +22,6 @@ export default function Categories() {
 
   React.useEffect(()=>{
     if(isFocused){
-      setIsLoaded(true)
-      fetch('https://bookshelf-java.azurewebsites.net/books?q=' + searchQuery)
-      .then(res => res.json())
-      .then((fetched_data) =>{
-          const editedData = fetched_data.map(item => ({...item, isChecked: false}))
-          setData(editedData)
-          setIsLoaded(false)
-      })
-      .catch(err => console.log(err))
-
       fetch('https://bookshelf-java.azurewebsites.net/shelves')
       .then(res => res.json())
       .then((fetched_data) =>{
@@ -39,9 +29,30 @@ export default function Categories() {
           setShelves(editedData)
       })
       .catch(err => console.log(err))
-    }
-  },[isFocused, searchQuery])
 
+      setIsLoaded(true)
+    }
+  },[isFocused])
+
+  React.useEffect(()=>{
+    fetch('https://bookshelf-java.azurewebsites.net/books?q=' + searchQuery)
+    .then(res => res.json())
+    .then((fetched_data) =>{
+        const checkedShelves = shelves.filter(item => item.isChecked)
+        const editedData = fetched_data.map(item => {
+          if (checkedShelves.length > 0){
+            if (checkedShelves.filter(shelf => shelf.name === item.shelf.name).length === 1)
+              return {...item}
+          } else{
+            return {...item}
+          }
+        })
+        const filteredEditedData = editedData.filter(item => item !== undefined);
+        setData(filteredEditedData)
+        setIsLoaded(false)
+    })
+    .catch(err => console.log(err))
+  },[shelves, isFocused, searchQuery])
 
   function onHandlePress(){
     const isActive = refBottomSheet?.current?.isActive()

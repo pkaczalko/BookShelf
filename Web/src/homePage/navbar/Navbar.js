@@ -10,7 +10,7 @@ export function MyNavbar(){
     return (
         <Navbar collapseOnSelect bg="dark" variant="dark" expand="lg">
             <Container fluid style={{padding: "0px 20px 0px 20px"}}>
-                <Navbar.Brand as={Link} to="/" style={brandStyle}>BookShelf</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/katalog" style={brandStyle}>BookShelf</Navbar.Brand>
                 <SearchBar/>
                 <RightNavbar/>
             </Container>

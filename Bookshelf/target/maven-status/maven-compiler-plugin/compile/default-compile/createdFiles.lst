@@ -1,0 +1,15 @@
+com\BookshelfProject\Bookshelf\author\Author.class
+com\BookshelfProject\Bookshelf\shelf\ShelfService.class
+com\BookshelfProject\Bookshelf\user\User.class
+com\BookshelfProject\Bookshelf\book\Book.class
+com\BookshelfProject\Bookshelf\book\BookRepository.class
+com\BookshelfProject\Bookshelf\book\BookController.class
+com\BookshelfProject\Bookshelf\author\AuthorRepository.class
+com\BookshelfProject\Bookshelf\book\BookService.class
+com\BookshelfProject\Bookshelf\shelf\ShelfRepository.class
+com\BookshelfProject\Bookshelf\shelf\ShelfController.class
+com\BookshelfProject\Bookshelf\user\UserController.class
+com\BookshelfProject\Bookshelf\BookshelfApplication.class
+com\BookshelfProject\Bookshelf\shelf\Shelf.class
+com\BookshelfProject\Bookshelf\user\UserRepository.class
+com\BookshelfProject\Bookshelf\user\UserService.class

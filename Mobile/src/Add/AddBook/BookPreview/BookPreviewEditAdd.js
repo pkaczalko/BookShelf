@@ -37,7 +37,6 @@ export default function BookPreviewEditAdd(){
                                             ],
                                             imgURI: "",
                                             description: "",
-                                            shelf: "",
                                             isFound: true})
     const [alertShow, setAlertShow] = React.useState(false)                                    
     

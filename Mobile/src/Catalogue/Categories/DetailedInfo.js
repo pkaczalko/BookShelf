@@ -105,8 +105,16 @@ export default function DetailedInfo({isbn, data}){
                             minimumValue={0} maximumValue={editableData.pageCount} step={1} onValueChange={onSliderChangeHandle}/>
                     <Text style={styles.pageText} onPress={() => setPickerVisible(true)}>{editableData.currentPage}/{editableData.pageCount}</Text>
                 </View>
-                {editableData.shelf && <View style={styles.picker}>
-                    <Picker selectedValue={editableData.shelf.name}
+                {editableData.shelf ? 
+                    <View style={styles.picker}>
+                        <Picker selectedValue={editableData.shelf.name}
+                                onValueChange={(itemValue, itemIndex) => {setEditableData({...editableData, shelf: {id: itemIndex + 1, name: itemValue}})}}>
+                            {shelvesItems}
+                        </Picker>
+                    </View>
+                    :
+                    <View style={styles.picker}>
+                    <Picker selectedValue={"Półka"}
                             onValueChange={(itemValue, itemIndex) => {setEditableData({...editableData, shelf: {id: itemIndex + 1, name: itemValue}})}}>
                         {shelvesItems}
                     </Picker>

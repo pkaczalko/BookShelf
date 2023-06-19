@@ -6,7 +6,7 @@ import { Rating} from 'react-native-elements';
 
 export default function BookDetailed(props){
     const navigation = useNavigation()
-    const percantage = props.currentPage/props.pageCount
+    const percantage = props.pageCount > 0 ? props.currentPage/props.pageCount : 0
     const authors = props.authors.map((author, idx)=>{
         if ((idx < 1) && (props.authors.length > 1)){ 
             return <Text numberOfLines={1} key={idx} style={styles.author}>{author} {'(+' + (props.authors.length - 1) + ')'}</Text>
@@ -23,7 +23,7 @@ export default function BookDetailed(props){
     return(
         <Card style={styles.container} onPress={onPressHandle} elevation={1}>
             <Card.Content style={styles.content}>
-                <Card.Cover style={styles.imgCover} source={{ uri: props.imgURI }} />
+                <Card.Cover style={styles.imgCover} source={{ uri: props.imgURI ? props.imgURI : "brak" }} />
                 <View style={styles.info}>
                     <View style={{flex:1, justifyContent:"flex-start"}}>
                         <Text style={styles.title}numberOfLines={2} >{props.title}</Text>

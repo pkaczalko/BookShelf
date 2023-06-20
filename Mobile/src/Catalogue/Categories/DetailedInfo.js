@@ -1,6 +1,7 @@
 import React from "react";
 import { Text, View, StyleSheet, ScrollView } from "react-native";
-import { Modal, Portal, PaperProvider, Divider, Button } from "react-native-paper";
+import { Keyboard } from 'react-native';
+import { Modal, Portal, PaperProvider, Divider, Button, List, TextInput, IconButton } from "react-native-paper";
 import { Rating} from 'react-native-elements';
 import { Slider } from 'react-native-elements';
 import {Picker} from "@react-native-picker/picker"
@@ -16,7 +17,34 @@ export default function DetailedInfo({isbn, data}){
     const [editableData, setEditableData] = React.useState(data)
     const [save, setSave] = React.useState(false)
     const [shelves, setShelves] = React.useState([])
-    const [selectedShelf, setSelectedShelf] = React.useState(data?.shelf)
+    const [focused, setFocused] = React.useState(false)
+    const [keyboardVisible, setKeyboardVisible] = React.useState(false);
+    const [borrower, setBorrower] = React.useState("")
+    const [disableBorrower, setDisableBorrower] = React.useState(data.borrower ? true : false)
+    const [showBorrowerInput, setBorrowerInput] = React.useState(data.borrower ? true : false)
+    const borrowerRef = React.useRef(null)
+
+    React.useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+          'keyboardDidShow',
+          () => {
+            setKeyboardVisible(true);
+          }
+        );
+        const keyboardDidHideListener = Keyboard.addListener(
+          'keyboardDidHide',
+          () => {
+            setKeyboardVisible(false);
+                borrowerRef?.current.blur();
+          }
+        );
+      
+        return () => {
+          keyboardDidShowListener.remove();
+          keyboardDidHideListener.remove();
+        };
+    }, []);
+
     const pageList = Array.from({ length: data.pageCount }, (_, index) => index + 1)
 
     function ratingOnFinishHandle(rating){
@@ -92,7 +120,17 @@ export default function DetailedInfo({isbn, data}){
             <Picker.Item label={shelf?.name} value={shelf?.name} key={shelf?.id}/>
         )
     })
-    console.log(editableData?.shelf)
+
+    const handleBorrowerBtnClick = () =>{
+        setDisableBorrower(false)
+        setBorrowerInput(true)
+    }
+
+    const handleBorrowerDelete = () =>{
+        setEditableData((prevData) => ({...prevData, borrower:null}))
+        setBorrowerInput(false)
+    }
+
     return(
         <View style={{flex:1}}>
             <ScrollView style={{flex:1}}>
@@ -105,20 +143,43 @@ export default function DetailedInfo({isbn, data}){
                             minimumValue={0} maximumValue={editableData.pageCount} step={1} onValueChange={onSliderChangeHandle}/>
                     <Text style={styles.pageText} onPress={() => setPickerVisible(true)}>{editableData.currentPage}/{editableData.pageCount}</Text>
                 </View>
+                <Text style={[styles.ratingTitle, {marginBottom:2, marginTop:8}]}>Przypisanie Półki</Text>
                 {editableData.shelf ? 
-                    <View style={styles.picker}>
-                        <Picker selectedValue={editableData.shelf.name}
-                                onValueChange={(itemValue, itemIndex) => {setEditableData({...editableData, shelf: {id: itemIndex + 1, name: itemValue}})}}>
-                            {shelvesItems}
-                        </Picker>
-                    </View>
+                <View style={styles.picker}>
+                    <Picker selectedValue={editableData.shelf.name}
+                            onValueChange={(itemValue, itemIndex) => {setEditableData({...editableData, shelf: {id: itemIndex + 1, name: itemValue}})}}>
+                        {shelvesItems}
+                    </Picker>
+                </View>
                     :
-                    <View style={styles.picker}>
+                <View style={styles.picker}>
                     <Picker selectedValue={"Półka"}
                             onValueChange={(itemValue, itemIndex) => {setEditableData({...editableData, shelf: {id: itemIndex + 1, name: itemValue}})}}>
                         {shelvesItems}
                     </Picker>
                 </View>}
+                <Text style={[styles.ratingTitle, {marginBottom:-8}]}>Wypożyczenia</Text>
+                <List.Item
+                    left={() => <Button mode="outlined" textColor="black" onPress={handleBorrowerBtnClick} style={styles.borrowBtn}>
+                                   {editableData.borrower ? "Edytuj" : "Wypożycz"}
+                                </Button>}
+                    right={()=>{
+                        if (showBorrowerInput)
+                            return (
+                                <View style={{flexDirection:"row"}}>
+                                    <TextInput mode="outlined" label={editableData.borrower && focused === false ? "" : "Kto wypożycza?"} 
+                                            placeholder={data.borrower} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} 
+                                            style={{width:"65%", marginRight:0}} ref={borrowerRef} value={borrower} 
+                                            onChangeText={(value) => {
+                                                setBorrower(value)
+                                                setEditableData((prevData)=>({...prevData, borrower: value}))
+                                            }} disabled={disableBorrower}/>
+                                    <IconButton icon="close" iconColor="black" size={25} onPress={handleBorrowerDelete} 
+                                                style={[styles.authorExit]} disabled={disableBorrower}/>
+                                </View>
+                            )}
+                        }
+                />
             </ScrollView>
             <Divider bold={true}/>
             <View style={[styles.buttons]}>
@@ -159,6 +220,12 @@ const styles = StyleSheet.create({
         alignSelf:"flex-start",
         marginLeft: 15
     },
+    borrowBtn:{
+        margin:8,
+        alignContent:"center",
+        alignItems:"center",
+        justifyContent:"center"
+    },
     ratingTitle:{
         marginLeft: 20,
         marginTop:20,
@@ -197,6 +264,11 @@ const styles = StyleSheet.create({
         alignItems:"center",
         alignSelf:"center",
         backgroundColor:"white"
+    },
+    authorExit:{
+        alignSelf:"center",
+        marginTop: 10,
+        marginLeft:0
     },
     buttons:{
         flexDirection:"row",

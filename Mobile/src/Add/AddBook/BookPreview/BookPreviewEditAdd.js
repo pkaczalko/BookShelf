@@ -19,7 +19,6 @@ export default function BookPreviewEditAdd(){
                                             isbn: "",
                                             isRead: true,
                                             favorite: true,
-                                            borrower: "John Smith",
                                             wishList: false,
                                             publisher:"",
                                             coverType:"nie ma",
@@ -272,8 +271,8 @@ export default function BookPreviewEditAdd(){
                                         }}  
                                         onFocus={()=>setFocused(true)}
                                         onBlur={()=>{
-                                            setFocused(false)
-                                            setDescriptionNumOfLines(1)
+                                                setFocused(false)
+                                                setDescriptionNumOfLines(1)
                                             }
                                         }
                             />

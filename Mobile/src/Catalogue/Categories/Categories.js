@@ -19,6 +19,7 @@ export default function Categories() {
   const [shelves, setShelves] = React.useState([])
   const [viewType, setViewType] = React.useState({type:'detailed', icon:'view-comfy'})
   const [showMore, setShowMore] = React.useState(false)
+  const [showOnlyBorrowed, setShowOnlyBorrowed] = React.useState(false)
 
   React.useEffect(()=>{
     if(isFocused){
@@ -26,6 +27,7 @@ export default function Categories() {
       .then(res => res.json())
       .then((fetched_data) =>{
           const editedData = fetched_data.map(item => ({...item, isChecked: false}))
+          editedData.some(item => item.name === "Wypożyczone") ? editedData : editedData.push({id: fetched_data.length + 1, name:"Wypożyczone", isChecked: false})
           setShelves(editedData)
       })
       .catch(err => console.log(err))
@@ -41,6 +43,8 @@ export default function Categories() {
         const checkedShelves = shelves.filter(item => item.isChecked)
         const editedData = fetched_data.map(item => {
           if (checkedShelves.length > 0){
+            if (checkedShelves.filter(shelf => shelf.name === "Wypożyczone") && item.borrower)
+              return {...item}
             if (checkedShelves.filter(shelf => shelf.name === item.shelf.name).length === 1)
               return {...item}
           } else{
@@ -120,7 +124,9 @@ export default function Categories() {
                   <Icon name={showMore ? "expand-less" : "expand-more"} size={20} style={{alignSelf:"center"}} color="black"></Icon>
               </TouchableOpacity>
             </View>}
-            <Divider style={{marginTop:20}} bold={true}/>
+          <Divider style={{marginTop:20}} bold={true}/>
+
+          <ShelfCheckBox title="Wypożyczone" isChecked={shelves.find(item => item.name === "Wypożyczone")?.isChecked} onChecked={() => handleCheck(shelves.length)}/>
 
         </BottomSheet>
       </View>

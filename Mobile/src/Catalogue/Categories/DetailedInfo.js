@@ -130,7 +130,7 @@ export default function DetailedInfo({isbn, data}){
         setEditableData((prevData) => ({...prevData, borrower:null}))
         setBorrowerInput(false)
     }
-
+    console.log(editableData.shelf?.name)
     return(
         <View style={{flex:1}}>
             <ScrollView style={{flex:1}}>
@@ -153,8 +153,9 @@ export default function DetailedInfo({isbn, data}){
                 </View>
                     :
                 <View style={styles.picker}>
-                    <Picker selectedValue={"Półka"}
-                            onValueChange={(itemValue, itemIndex) => {setEditableData({...editableData, shelf: {id: itemIndex + 1, name: itemValue}})}}>
+                    <Picker selectedValue={"Nie przypisano"}
+                            onValueChange={(itemValue, itemIndex) => {setEditableData({...editableData, shelf: {id: itemIndex, name: itemValue}})}}>
+                        <Picker.Item label="Nie przypisano" value="none" />
                         {shelvesItems}
                     </Picker>
                 </View>}

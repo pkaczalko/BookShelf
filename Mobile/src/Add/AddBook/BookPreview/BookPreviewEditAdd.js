@@ -167,7 +167,7 @@ export default function BookPreviewEditAdd(){
     },[data, isSaved])
 
     React.useEffect(()=>{
-        setData({...data, shelf: {id: selectedShelf.id, name: selectedShelf.name}})
+        selectedShelf.name !== "none" ? setData({...data, shelf: {id: selectedShelf.id, name: selectedShelf.name}}) : setData({...data, shelf: null})
     },[selectedShelf])
 
     const authors = data.authors.map((author, idx)=>{
@@ -281,6 +281,7 @@ export default function BookPreviewEditAdd(){
                         <View style={styles.picker}>
                             <Picker selectedValue={selectedShelf.name}
                                     onValueChange={(itemValue, itemIndex) => {setSelectedShelf({id: itemIndex, name: itemValue})}}>
+                                <Picker.Item label="Nie przypisano" value="none" />
                                 {shelvesItems}
                             </Picker>
                         </View>

@@ -35,6 +35,7 @@ export default function DetailedInfo({isbn, data}){
           'keyboardDidHide',
           () => {
             setKeyboardVisible(false);
+            if(borrowerRef?.current !== null)
                 borrowerRef?.current.blur();
           }
         );
@@ -85,7 +86,7 @@ export default function DetailedInfo({isbn, data}){
                 body: JSON.stringify(editableData)
             })
             .then(res => res.json())
-            .then(data => console.log(data))
+            .then(data => console.log("Succeded PUT"))
             .catch(err => console.log(err))
             setSave(false)
         }
@@ -130,7 +131,7 @@ export default function DetailedInfo({isbn, data}){
         setEditableData((prevData) => ({...prevData, borrower:null}))
         setBorrowerInput(false)
     }
-    console.log(editableData.shelf?.name)
+
     return(
         <View style={{flex:1}}>
             <ScrollView style={{flex:1}}>

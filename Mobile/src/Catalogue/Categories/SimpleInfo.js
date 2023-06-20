@@ -9,10 +9,9 @@ export default function SimpleInfo({data}){
     const authors = data.authors.map((author, idx)=>{
         return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>{author.name}</Text>
     })
-
-    function onHandleSave(){
-
-    }
+    const categories = data.categories.map((category, idx)=>{
+        return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>{category.name}</Text>
+    })
 
     function onHandleEdit(){
         console.log(data)
@@ -27,13 +26,19 @@ export default function SimpleInfo({data}){
                 <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.title}</Text>
                 <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Autor</Text>
                 {authors}
-                <Text style={[styles.title, {fontSize:12, textTransform:"uppercase"}]}>Język</Text>
+                <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Kategorie</Text>
+                {categories}
+                <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Wydawca</Text>
+                <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.publisher}</Text>
+                <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Typ Okładki</Text>
+                <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.coverType}</Text>
+                <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Język</Text>
                 <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.language}</Text>
                 <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Opis</Text>
                 <DescriptionPreview description={data.description}/>
                 <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Data Publikacji</Text>
                 <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.publishedDate}</Text>
-                <Text style={[styles.title, {fontSize:12, textTransform:"uppercase"}]}>Liczba Stron</Text>
+                <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>Liczba Stron</Text>
                 <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.pageCount}</Text>
                 <Text style={[styles.title, {fontSize:12, textTransform:"uppercase", marginTop:20}]}>ISBN</Text>
                 <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]}>{data.isbn}</Text>

@@ -42,6 +42,8 @@ export default function AddBookManually(){
     const [isSavedDisabled, setIsSaveDisabled] = React.useState(true)
     const [shelves, setShelves] = React.useState([''])
     const [selectedShelf, setSelectedShelf] = React.useState("Półki")
+    const [coverType, setCoverType] = React.useState("")
+    const [coverTypes, setCoverTypes] = React.useState(['Miękka', 'Twarda'])
 
     const [focused, setFocused] = React.useState(false)
     const descriptionRef = React.useRef(null)
@@ -106,11 +108,10 @@ export default function AddBookManually(){
         fetch("https://bookshelf-java.azurewebsites.net/shelves") 
             .then(res => res.json())
             .then((shelves) => {
-                setShelves(['dasdas'])
+                setShelves(shelves)
             })
             .catch((err) =>{
                 console.log(err)
-                setShelves(['Półki'])
             })
     }, [])
 
@@ -135,12 +136,71 @@ export default function AddBookManually(){
             <IconButton icon="close" iconColor="black" size={25} onPress={() => handleAuthorDelete(idx)} style={styles.authorExit}  />
         </View>
     })
+    const categories = data.categories.map((category, idx)=>{
+        return idx === 0 ?
+        <View style={styles.authorContainer}  key={idx}>
+            <TextInput mode="outlined" value={category.name} onChangeText={(value) => handleCategoryChange(value, idx)}
+                       style={[styles.textInput, {marginTop:13}]} label={"Kategoria " + (idx + 1)} />
+            <IconButton icon="close" iconColor="black" size={25} onPress={() => handleCategoryDelete(idx)} style={styles.authorExit}/>
+        </View>
+        :
+        <View style={styles.authorContainer}  key={idx}>
+            <TextInput mode="outlined" value={category.name} onChangeText={(value) => handleCategoryChange(value, idx)}
+                       style={styles.textInput} label={"Kategoria " + (idx + 1)} />
+            <IconButton icon="close" iconColor="black" size={25} onPress={() => handleCategoryDelete(idx)} style={styles.authorExit}/>
+        </View>
+
+    })
 
     const shelvesItems = shelves.map((shelf, idx)=>{
         return(
-            <Picker.Item label={shelf} value={shelf} />
+            <Picker.Item label={shelf.name} value={shelf.name} key={shelf.id}/>
         )
     })
+
+    const coverTypesItems = coverTypes.map((item, idx)=>{
+        return(
+            <Picker.Item label={item} value={item} key={idx}/>
+        )
+    })
+
+    function handleAuthorDelete(idx){
+        setData(prevData => ({
+            ...prevData,
+            authors: prevData.authors.filter((author, index) => index !== idx)
+        }))
+    }
+
+    function handleAuthorChange(value, idx){
+        setData(prevData => ({
+            ...prevData,
+            authors: prevData.authors.map((author, i) => {
+                if (i === idx) {
+                    return {["name"]: value};
+                }
+                return author;
+            })
+        }))
+    }
+
+    function handleCategoryDelete(idx){
+        setData(prevData => ({
+            ...prevData,
+            categories: prevData.categories.filter((category, index) => index !== idx)
+        }))
+    }
+
+    function handleCategoryChange(value, idx){
+        setData(prevData => ({
+            ...prevData,
+            categories: prevData.categories.map((category, i) => {
+                if (i === idx) {
+                    return {["name"]: value};
+                }
+                return category;
+            })
+        }))
+    }
 
     function handleAuthorDelete(idx){
         setData(prevData => ({
@@ -186,10 +246,17 @@ export default function AddBookManually(){
 
     };
 
-    function handleOnAdd(){
+    function handleOnAddAuthors(){
         setData(prevData => ({
             ...prevData,
             authors: [...prevData.authors, {name:""}]
+        }))
+    }
+
+    function handleOnAddCategories(){
+        setData(prevData => ({
+            ...prevData,
+            categories: [...prevData.categories, {name:""}]
         }))
     }
 
@@ -202,14 +269,24 @@ export default function AddBookManually(){
             <View style={{flex:1}}>
                 <ScrollView style={{flex:1, marginLeft:10, marginRight:10}}>
                     <List.Section>
-                        <TextInput mode="outlined" label = "ISBN(opcjonalny)" value={data.isbn} 
+                    <TextInput mode="outlined" label = "ISBN" value={data.isbn} 
                                 onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput}/>
                         <TextInput mode="outlined" label = "Tytuł" value={data.title} 
                                 onChangeText={(value) => handleChange("title", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                        <TextInput mode="outlined" label = "Wydawca" value={data.publisher} 
+                                onChangeText={(value) => handleChange("publisher", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                        <TextInput mode="outlined" label = "Język wydania" value={data.language} 
+                                onChangeText={(value) => handleChange("language", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                        <TextInput mode="outlined" label = "Liczba stron" value={data.pageCount?.toString()} 
+                                onChangeText={(value) => handleChange("pageCount", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                        {categories}
+                        <Button mode="contained-tonal" icon="plus" iconColor="silver" 
+                                style={[styles.addAuthorsButton, {marginTop: data.categories.length > 0 ? -9 : 2 }]}
+                                onPress={handleOnAddCategories}>Dodaj kategorie</Button>
                         {authors}
                         <Button mode="contained-tonal" icon="plus" iconColor="silver" 
                                 style={[styles.addAuthorsButton, {marginTop: data.authors.length > 0 ? -9 : 2 }]}
-                                onPress={handleOnAdd}>Dodaj autora</Button>
+                                onPress={handleOnAddAuthors}>Dodaj autora</Button>
                         <Divider style={{marginTop:13}}/>
                         <TextInput mode="outlined" label = "Opis" value={data.description} ref={descriptionRef}
                                         onChangeText={(value) => handleChange("description", value)} 
@@ -227,10 +304,18 @@ export default function AddBookManually(){
                             />
                         <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} 
                                 onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
-                        <View style={styles.picker}>
-                            <Picker selectedValue={selectedShelf}
-                                    onValueChange={(itemValue, itemIndex) => setSelectedShelf(itemValue)}>
+                       <View style={styles.picker}>
+                            <Picker selectedValue={selectedShelf.name}
+                                    onValueChange={(itemValue, itemIndex) => {setSelectedShelf({id: itemIndex, name: itemValue})}}>
+                                <Picker.Item label="Półka" value="none" />
                                 {shelvesItems}
+                            </Picker>
+                        </View>
+                        <View style={styles.picker}>
+                            <Picker selectedValue={coverType}
+                                    onValueChange={(itemValue, itemIndex) => {setCoverType(itemValue)}}>
+                                <Picker.Item label="Typ Okładki" value="none" />
+                                {coverTypesItems}
                             </Picker>
                         </View>
                     </List.Section>
@@ -279,9 +364,9 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         borderColor: '#808080',
         height: 50,
-        width: 150,
+        width: "100%",
         justifyContent:"center",
-        marginTop:10
+        marginTop:5
     },
     title:{
         marginLeft: 15,

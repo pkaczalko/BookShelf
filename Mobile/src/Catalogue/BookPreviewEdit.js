@@ -1,21 +1,15 @@
 import React from "react"
 import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, BackHandler } from "react-native"
+import {Picker} from "@react-native-picker/picker"
 import { useRoute, useNavigation, CommonActions } from "@react-navigation/native"
-import { Divider, Button, Appbar, TextInput, IconButton, List, Dialog, Portal } from "react-native-paper"
 import { Keyboard } from 'react-native';
-import DescriptionPreview from "../Add/AddBook/Components/DescriptionPreview"
+import { Divider, Button, Appbar, TextInput, IconButton, List, Dialog, Portal } from "react-native-paper"
 import {SafeAreaProvider} from "react-native-safe-area-context"
 import _ from 'lodash'
 
 export default function BookPreviewEdit(props){
     const route = useRoute()
     const navigation = useNavigation()
-
-    const [expandIconAuthors, setExpandIconAuthors] = React.useState('chevron-right')
-    const [expandedAuthors, setExpandedAuthors] = React.useState(false)
-
-    const [expandedDescription, setExpandedDescription] = React.useState(false)
-    const [expandIconDescription, setExpandIconDescription] = React.useState('chevron-right')
 
     const [descriptionNumOfLines, setDescriptionNumOfLines] = React.useState(1)
 
@@ -34,9 +28,15 @@ export default function BookPreviewEdit(props){
     const [save, setSave] = React.useState(false)
     const [alertShow, setAlertShow] = React.useState(false)                                    
 
+    const [coverType, setCoverType] = React.useState("")
+    const [coverTypes, setCoverTypes] = React.useState(['Miękka', 'Twarda'])
     const [focused, setFocused] = React.useState(false)
-    const descriptionRef = React.useRef(null)
     const [keyboardVisible, setKeyboardVisible] = React.useState(false);
+    const descriptionRef = React.useRef(null)
+
+    React.useEffect(()=>{
+        coverType !== "none" ? setData({...data, coverType: coverType}) : setData({...data, coverType: null})
+    },[coverType])
 
     React.useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -49,7 +49,7 @@ export default function BookPreviewEdit(props){
           'keyboardDidHide',
           () => {
             setKeyboardVisible(false);
-                descriptionRef?.current.blur();
+            descriptionRef?.current.blur();
           }
         );
       
@@ -73,6 +73,7 @@ export default function BookPreviewEdit(props){
         if (route.params?.data) {
             setData(route.params.data)
             setSourceData({...route.params.data})
+            setCoverType(route.params.data?.coverType)
         }
     }, [route.params]);
 
@@ -112,7 +113,7 @@ export default function BookPreviewEdit(props){
                 body: JSON.stringify(toSendData)
             })
             .then(res => res.json())
-            .then(data => console.log(data))
+            .then(data => console.log("Succeded PUT"))
             .catch(err => console.log(err))
         }
     },[save, data, sourceData])
@@ -130,6 +131,28 @@ export default function BookPreviewEdit(props){
                        style={styles.textInput} label={"Autor " + (idx + 1)} />
             <IconButton icon="close" iconColor="black" size={25} onPress={() => handleAuthorDelete(idx)} style={styles.authorExit}/>
         </View>
+    })
+
+    const categories = data.categories.map((category, idx)=>{
+        return idx === 0 ?
+        <View style={styles.authorContainer}  key={idx}>
+            <TextInput mode="outlined" value={category.name} onChangeText={(value) => handleCategoryChange(value, idx)}
+                       style={[styles.textInput, {marginTop:13}]} label={"Kategoria " + (idx + 1)} />
+            <IconButton icon="close" iconColor="black" size={25} onPress={() => handleCategoryDelete(idx)} style={styles.authorExit}/>
+        </View>
+        :
+        <View style={styles.authorContainer}  key={idx}>
+            <TextInput mode="outlined" value={category.name} onChangeText={(value) => handleCategoryChange(value, idx)}
+                       style={styles.textInput} label={"Kategoria " + (idx + 1)} />
+            <IconButton icon="close" iconColor="black" size={25} onPress={() => handleCategoryDelete(idx)} style={styles.authorExit}/>
+        </View>
+
+    })
+
+    const coverTypesItems = coverTypes.map((item, idx)=>{
+        return(
+            <Picker.Item label={item} value={item} key={idx}/>
+        )
     })
 
     function handleAuthorDelete(idx){
@@ -150,6 +173,25 @@ export default function BookPreviewEdit(props){
             })
         }))
     }
+
+    function handleCategoryDelete(idx){
+        setData(prevData => ({
+            ...prevData,
+            categories: prevData.categories.filter((category, index) => index !== idx)
+        }))
+    }
+
+    function handleCategoryChange(value, idx){
+        setData(prevData => ({
+            ...prevData,
+            categories: prevData.categories.map((category, i) => {
+                if (i === idx) {
+                    return {["name"]: value};
+                }
+                return category;
+            })
+        }))
+    }
     function handleChange(name, value){
         setData(prevData => ({
             ...prevData,
@@ -157,10 +199,17 @@ export default function BookPreviewEdit(props){
         }))
     }
 
-    function handleOnAdd(){
+    function handleOnAddAuthors(){
         setData(prevData => ({
             ...prevData,
             authors: [...prevData.authors, {name:""}]
+        }))
+    }
+
+    function handleOnAddCategories(){
+        setData(prevData => ({
+            ...prevData,
+            categories: [...prevData.categories, {name:""}]
         }))
     }
 
@@ -193,31 +242,48 @@ export default function BookPreviewEdit(props){
             <View style={{flex:1}}>
                 <ScrollView style={{flex:1, marginLeft:10, marginRight:10}}>
                     <List.Section>
-                        <TextInput mode="outlined" label = "ISBN(opcjonalny)" value={data.isbn} 
+                        <TextInput mode="outlined" label = "ISBN" value={data.isbn} 
                                 onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput}/>
                         <TextInput mode="outlined" label = "Tytuł" value={data.title} 
                                 onChangeText={(value) => handleChange("title", value)} style={[styles.textInput, {marginTop:-4}]}/>
-                            {authors}
-                            <Button mode="contained-tonal" icon="plus" iconColor="silver" 
-                                    style={[styles.addAuthorsButton, {marginTop: data.authors.length > 0 ? -9 : 2 }]}
-                                    onPress={handleOnAdd}>Dodaj autora</Button>
+                        <TextInput mode="outlined" label = "Wydawca" value={data.publisher} 
+                                onChangeText={(value) => handleChange("publisher", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                        <TextInput mode="outlined" label = "Język wydania" value={data.language} 
+                                onChangeText={(value) => handleChange("language", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                        <TextInput mode="outlined" label = "Liczba stron" value={data.pageCount?.toString()} 
+                                onChangeText={(value) => handleChange("pageCount", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                        {categories}
+                        <Button mode="contained-tonal" icon="plus" iconColor="silver" 
+                                style={[styles.addAuthorsButton, {marginTop: data.categories.length > 0 ? -9 : 2 }]}
+                                onPress={handleOnAddCategories}>Dodaj kategorie</Button>
+                        {authors}
+                        <Button mode="contained-tonal" icon="plus" iconColor="silver" 
+                                style={[styles.addAuthorsButton, {marginTop: data.authors.length > 0 ? -9 : 2 }]}
+                                onPress={handleOnAddAuthors}>Dodaj autora</Button>
                         <Divider style={{marginTop:13}}/>
-                            <TextInput mode="outlined" label = "Opis" value={data.description} ref={descriptionRef}
-                                        onChangeText={(value) => handleChange("description", value)} 
-                                        style={[styles.textInput, {marginTop:8}]} 
-                                        multiline={descriptionNumOfLines > 1 || focused === true ? true : false} numberOfLines={descriptionNumOfLines} 
-                                        onContentSizeChange={(e) => {
-                                            setDescriptionNumOfLines(e.nativeEvent.contentSize < 40 || focused === false ? 1 : e.nativeEvent.contentSize.height / 18)
-                                        }}  
-                                        onFocus={()=>setFocused(true)}
-                                        onBlur={()=>{
-                                            setFocused(false)
-                                            setDescriptionNumOfLines(1)
-                                            }
+                        <TextInput mode="outlined" label = "Opis" value={data.description} ref={descriptionRef}
+                                    onChangeText={(value) => handleChange("description", value)} 
+                                    style={[styles.textInput, {marginTop:8}]} 
+                                    multiline={descriptionNumOfLines > 1 || focused === true ? true : false} numberOfLines={descriptionNumOfLines} 
+                                    onContentSizeChange={(e) => {
+                                        setDescriptionNumOfLines(e.nativeEvent.contentSize < 40 || focused === false ? 1 : e.nativeEvent.contentSize.height / 18)
+                                    }}  
+                                    onFocus={()=>setFocused(true)}
+                                    onBlur={()=>{
+                                        setFocused(false)
+                                        setDescriptionNumOfLines(1)
                                         }
-                            />
+                                    }
+                        />
                         <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} 
                                 onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
+                        <View style={styles.picker}>
+                            <Picker selectedValue={coverType}
+                                    onValueChange={(itemValue, itemIndex) => {setCoverType(itemValue)}}>
+                                {data.coverType === undefined && <Picker.Item label="Typ Okładki" value="none" />}
+                                {coverTypesItems}
+                            </Picker>
+                        </View>
                     </List.Section>
                 </ScrollView>
                 <View style={styles.buttons}>
@@ -264,6 +330,16 @@ const styles = StyleSheet.create({
         fontWeight:"bold",
         fontSize:20,
         maxWidth:"100%",
+    },
+    picker:{
+        backgroundColor:"white",
+        borderWidth:1,
+        borderRadius: 4,
+        borderColor: '#808080',
+        height: 50,
+        width: "100%",
+        justifyContent:"center",
+        marginTop:5
     },
     authorContainer:{
         flexDirection:"row"

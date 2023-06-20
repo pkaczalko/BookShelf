@@ -5,7 +5,7 @@ import { useRoute, useNavigation, CommonActions } from "@react-navigation/native
 import { Keyboard } from 'react-native';
 import { Divider, Button, Appbar, TextInput, List, IconButton, Dialog, Portal, Provider } from "react-native-paper"
 import {SafeAreaProvider} from "react-native-safe-area-context"
-import _ from 'lodash'
+import _, { rearg } from 'lodash'
 
 export default function BookPreviewEditAdd(){
     const route = useRoute()
@@ -21,7 +21,6 @@ export default function BookPreviewEditAdd(){
                                             favorite: true,
                                             wishList: false,
                                             publisher:"",
-                                            coverType:"nie ma",
                                             volume:1,
                                             publishedDate: "",
                                             categories: [
@@ -38,9 +37,14 @@ export default function BookPreviewEditAdd(){
                                             description: "",
                                             isFound: true})
     const [alertShow, setAlertShow] = React.useState(false)                                    
-    
     const [shelves, setShelves] = React.useState([])
     const [selectedShelf, setSelectedShelf] = React.useState({id:10, name: "Półki"})
+    const [coverType, setCoverType] = React.useState("")
+    const [coverTypes, setCoverTypes] = React.useState(['Miękka', 'Twarda'])
+    const languageMap = new Map([
+        ['en', 'Angielski'],
+        ['pl', 'Polski'],
+    ])
     const [focused, setFocused] = React.useState(false)
     const descriptionRef = React.useRef(null)
     const [keyboardVisible, setKeyboardVisible] = React.useState(false);
@@ -56,7 +60,7 @@ export default function BookPreviewEditAdd(){
           'keyboardDidHide',
           () => {
             setKeyboardVisible(false);
-                descriptionRef?.current.blur();
+            descriptionRef?.current.blur();
           }
         );
       
@@ -78,7 +82,6 @@ export default function BookPreviewEditAdd(){
     React.useEffect(()=>{
         if (isSaved === true){
             const {isFound, ...toSendData} = data
-            console.log(toSendData)
             fetch('https://bookshelf-java.azurewebsites.net/books', {
                 method: 'POST',
                 headers: {
@@ -87,7 +90,7 @@ export default function BookPreviewEditAdd(){
                 body: JSON.stringify(toSendData)
             })
             .then(res => res.json())
-            .then(data => console.log(data))
+            .then(data => console.log("Succeded POST"))
             .catch(err => console.log(err))
             navigation.navigate('home')
         }
@@ -170,6 +173,10 @@ export default function BookPreviewEditAdd(){
         selectedShelf.name !== "none" ? setData({...data, shelf: {id: selectedShelf.id, name: selectedShelf.name}}) : setData({...data, shelf: null})
     },[selectedShelf])
 
+    React.useEffect(()=>{
+        coverType !== "none" ? setData({...data, coverType: coverType}) : setData({...data, coverType: null})
+    },[coverType])
+
     const authors = data.authors.map((author, idx)=>{
         return idx === 0 ?
         <View style={styles.authorContainer}  key={idx}>
@@ -186,9 +193,31 @@ export default function BookPreviewEditAdd(){
 
     })
 
+    const categories = data.categories.map((category, idx)=>{
+        return idx === 0 ?
+        <View style={styles.authorContainer}  key={idx}>
+            <TextInput mode="outlined" value={category.name} onChangeText={(value) => handleCategoryChange(value, idx)}
+                       style={[styles.textInput, {marginTop:13}]} label={"Kategoria " + (idx + 1)} />
+            <IconButton icon="close" iconColor="black" size={25} onPress={() => handleCategoryDelete(idx)} style={styles.authorExit}/>
+        </View>
+        :
+        <View style={styles.authorContainer}  key={idx}>
+            <TextInput mode="outlined" value={category.name} onChangeText={(value) => handleCategoryChange(value, idx)}
+                       style={styles.textInput} label={"Kategoria " + (idx + 1)} />
+            <IconButton icon="close" iconColor="black" size={25} onPress={() => handleCategoryDelete(idx)} style={styles.authorExit}/>
+        </View>
+
+    })
+
     const shelvesItems = shelves.map((shelf, idx)=>{
         return(
             <Picker.Item label={shelf.name} value={shelf.name} key={shelf.id}/>
+        )
+    })
+
+    const coverTypesItems = coverTypes.map((item, idx)=>{
+        return(
+            <Picker.Item label={item} value={item} key={idx}/>
         )
     })
 
@@ -210,18 +239,50 @@ export default function BookPreviewEditAdd(){
             })
         }))
     }
+
+    function handleCategoryDelete(idx){
+        setData(prevData => ({
+            ...prevData,
+            categories: prevData.categories.filter((category, index) => index !== idx)
+        }))
+    }
+
+    function handleCategoryChange(value, idx){
+        setData(prevData => ({
+            ...prevData,
+            categories: prevData.categories.map((category, i) => {
+                if (i === idx) {
+                    return {["name"]: value};
+                }
+                return category;
+            })
+        }))
+    }
     
     function handleChange(name, value){
+        name === "pageCount" ? 
+        setData(prevData => ({
+            ...prevData,
+            [name]: parseInt(value)
+        }))
+        :
         setData(prevData => ({
             ...prevData,
             [name]: value
         }))
     }
 
-    function handleOnAdd(){
+    function handleOnAddAuthors(){
         setData(prevData => ({
             ...prevData,
             authors: [...prevData.authors, {name:""}]
+        }))
+    }
+
+    function handleOnAddCategories(){
+        setData(prevData => ({
+            ...prevData,
+            categories: [...prevData.categories, {name:""}]
         }))
     }
 
@@ -253,26 +314,36 @@ export default function BookPreviewEditAdd(){
             {data.isFound && <View style={{flex:1}}>
                 <ScrollView style={{flex:1, marginLeft:10, marginRight:10}}>
                     <List.Section>
-                        <TextInput mode="outlined" label = "ISBN(opcjonalny)" value={data.isbn} 
+                        <TextInput mode="outlined" label = "ISBN" value={data.isbn} 
                                 onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput}/>
                         <TextInput mode="outlined" label = "Tytuł" value={data.title} 
                                 onChangeText={(value) => handleChange("title", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                        <TextInput mode="outlined" label = "Wydawca" value={data.publisher} 
+                                onChangeText={(value) => handleChange("publisher", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                        <TextInput mode="outlined" label = "Język wydania" value={languageMap.get(data.language)} 
+                                onChangeText={(value) => handleChange("language", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                        <TextInput mode="outlined" label = "Liczba stron" value={data.pageCount?.toString()} 
+                                onChangeText={(value) => handleChange("pageCount", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                        {categories}
+                        <Button mode="contained-tonal" icon="plus" iconColor="silver" 
+                                style={[styles.addAuthorsButton, {marginTop: data.categories.length > 0 ? -9 : 2 }]}
+                                onPress={handleOnAddCategories}>Dodaj kategorie</Button>
                         {authors}
                         <Button mode="contained-tonal" icon="plus" iconColor="silver" 
                                 style={[styles.addAuthorsButton, {marginTop: data.authors.length > 0 ? -9 : 2 }]}
-                                onPress={handleOnAdd}>Dodaj autora</Button>
+                                onPress={handleOnAddAuthors}>Dodaj autora</Button>
                         <Divider style={{marginTop:13}}/>
                         <TextInput mode="outlined" label = "Opis" value={data.description} ref={descriptionRef}
                                         onChangeText={(value) => handleChange("description", value)} 
                                         style={[styles.textInput, {marginTop:8}]} 
                                         multiline={descriptionNumOfLines > 1 || focused === true ? true : false} numberOfLines={descriptionNumOfLines} 
                                         onContentSizeChange={(e) => {
-                                            setDescriptionNumOfLines(e.nativeEvent.contentSize.height < 40 || focused === false ? 1 : e.nativeEvent.contentSize.height / 18)
+                                            setDescriptionNumOfLines(e.nativeEvent.contentSize < 40 || focused === false ? 1 : e.nativeEvent.contentSize.height / 18)
                                         }}  
                                         onFocus={()=>setFocused(true)}
                                         onBlur={()=>{
-                                                setFocused(false)
-                                                setDescriptionNumOfLines(1)
+                                            setFocused(false)
+                                            setDescriptionNumOfLines(1)
                                             }
                                         }
                             />
@@ -281,8 +352,15 @@ export default function BookPreviewEditAdd(){
                         <View style={styles.picker}>
                             <Picker selectedValue={selectedShelf.name}
                                     onValueChange={(itemValue, itemIndex) => {setSelectedShelf({id: itemIndex, name: itemValue})}}>
-                                <Picker.Item label="Nie przypisano" value="none" />
+                                <Picker.Item label="Półka" value="none" />
                                 {shelvesItems}
+                            </Picker>
+                        </View>
+                        <View style={styles.picker}>
+                            <Picker selectedValue={coverType}
+                                    onValueChange={(itemValue, itemIndex) => {setCoverType(itemValue)}}>
+                                <Picker.Item label="Typ Okładki" value="none" />
+                                {coverTypesItems}
                             </Picker>
                         </View>
                     </List.Section>

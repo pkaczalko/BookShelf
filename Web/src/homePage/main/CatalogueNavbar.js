@@ -18,12 +18,16 @@ export default function CatalogueNavbar(props) {
   };
   const headerStyle = { textAlign: "center", fontWeight: "bold", padding: "10px" };
 
+  const handleCatalogueClick = () => {
+    navigate("/katalog");
+  };
+
   const items = data.map((category) => {
     return (
       <ListGroup.Item
         action
-        onClick={()=>{
-          navigate(`/katalog/${category.name}`)
+        onClick={() => {
+          navigate(`/katalog/${category.name}`);
         }}
         variant="secondary"
         key={category.id}
@@ -36,9 +40,14 @@ export default function CatalogueNavbar(props) {
 
   return (
     <Container fluid style={catalogueNavbarStyle}>
-      <h1 style={headerStyle}>Katalog</h1>
+      <Button
+        variant="link"
+        onClick={handleCatalogueClick}
+        style={{ color: "black", textDecoration: "none" }}
+      >
+        <h1 style={headerStyle}>Katalog</h1>
+      </Button>
       <ListGroup>{items}</ListGroup>
-      
     </Container>
   );
 }

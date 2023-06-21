@@ -40,19 +40,30 @@ export default function Categories() {
     fetch('https://bookshelf-java.azurewebsites.net/books?q=' + searchQuery)
     .then(res => res.json())
     .then((fetched_data) =>{
+        let borrowedData = [...fetched_data]
+        let editedData = [...fetched_data]
         const checkedShelves = shelves.filter(item => item.isChecked)
-        const editedData = fetched_data.map(item => {
-          if (checkedShelves.length > 0){
-            if (checkedShelves.filter(shelf => shelf.name === "Wypożyczone") && item.borrower)
-              return {...item}
-            if (checkedShelves.filter(shelf => shelf.name === item.shelf.name).length === 1)
-              return {...item}
-          } else{
-            return {...item}
+        if (checkedShelves.length > 0){
+          if (checkedShelves.filter(shelf => shelf.name === "Wypożyczone").length === 1){
+            checkedShelves.pop()
+            borrowedData = fetched_data.filter(item => item.borrower !== null)
           }
-        })
-        const filteredEditedData = editedData.filter(item => item !== undefined);
-        setData(filteredEditedData)
+          
+          if(checkedShelves.length > 0){
+            editedData = borrowedData.map(item => {
+              if (checkedShelves.filter(shelf => shelf.name === item.shelf.name).length === 1){
+                  return {...item}
+              }
+            })
+          } else {
+            editedData = [...borrowedData]
+          }
+
+          const filteredEditedData = editedData.filter(item => item !== undefined);
+          setData(filteredEditedData)
+        }else{
+          setData(fetched_data)
+        }
         setIsLoaded(false)
     })
     .catch(err => console.log(err))
@@ -118,7 +129,7 @@ export default function Categories() {
 
           {shelves.length < 4 ? <FlatList data={shelves} renderItem={renderShelvesCheckbox} keyExtractor={item => item.id}/>
           : <View> 
-              <FlatList data={showMore ? shelves : shelves.slice(0,5)} renderItem={renderShelvesCheckbox} keyExtractor={item => item.id}/>
+              <FlatList data={showMore ? shelves.slice(0, -1) : shelves.slice(0,5)} renderItem={renderShelvesCheckbox} keyExtractor={item => item.id}/>
               <TouchableOpacity style={{flexDirection:"row"}} onPress={() => setShowMore(!showMore)}>
                   <Text style={styles.showMore}>{showMore ? 'Pokaż mniej' : 'Pokaż więcej'}</Text>
                   <Icon name={showMore ? "expand-less" : "expand-more"} size={20} style={{alignSelf:"center"}} color="black"></Icon>

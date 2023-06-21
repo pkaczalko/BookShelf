@@ -87,6 +87,8 @@ export default function BookPreviewInfo(props){
                 method: 'DELETE',
             })
             .catch(err => console.log(err))
+            refBottomSheet?.current?.setIsVisible(false);
+            setAlertVisible(false)
             navigation.goBack()
         }
     },[isDeleted])
@@ -104,6 +106,21 @@ export default function BookPreviewInfo(props){
     function onDeleteHandle(){
         setAlertVisible(true)
     }
+
+    const onWishListAddHandle = React.useCallback(()=>{
+        fetch("https://bookshelf-java.azurewebsites.net/books?id=" + data.id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({...data, wishList: !data.wishList})
+            })
+            .then(res => res.json())
+            .then(data => console.log("Succeded PUT"))
+            .catch(err => console.log(err))
+            refBottomSheet?.current?.setIsVisible(false);
+            navigation.goBack()
+    })
 
     function handleConfirm(){
         setIsDeleted(true)
@@ -131,8 +148,8 @@ export default function BookPreviewInfo(props){
             </TopTab.Navigator>
            <BottomSheet ref={refBottomSheet} scale={3}>
                 <List.Section style={styles.listContainer}>
-                    <List.Item title="Dodaj do WishListy" left={()=> <List.Icon icon="heart" style={styles.listIcon}/>}
-                            onPress={()=>console.log("wishlisted")}/>
+                    <List.Item title={data.wishList ? "Usuń z WishListy" : "Dodaj do WishListy"} 
+                            left={()=> <List.Icon icon="heart" style={styles.listIcon}/>} onPress={onWishListAddHandle}/>
                     <List.Item title="Usuń" left={()=> <List.Icon icon="delete" style={styles.listIcon}/>}
                             onPress={onDeleteHandle}/>
                 </List.Section>

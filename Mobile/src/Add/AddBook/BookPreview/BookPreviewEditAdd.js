@@ -38,7 +38,7 @@ export default function BookPreviewEditAdd(){
                                             isFound: true})
     const [alertShow, setAlertShow] = React.useState(false)                                    
     const [shelves, setShelves] = React.useState([])
-    const [selectedShelf, setSelectedShelf] = React.useState({id:10, name: "Półki"})
+    const [selectedShelf, setSelectedShelf] = React.useState("")
     const [coverType, setCoverType] = React.useState("")
     const [coverTypes, setCoverTypes] = React.useState(['Miękka', 'Twarda'])
     const languageMap = new Map([
@@ -46,7 +46,16 @@ export default function BookPreviewEditAdd(){
         ['pl', 'Polski'],
     ])
     const [focused, setFocused] = React.useState(false)
+    const [ISBNfocused, setISBNFocused] = React.useState(false)
     const descriptionRef = React.useRef(null)
+    const isbnRef = React.useRef(null)
+    const titleRef = React.useRef(null)
+    const publisherRef = React.useRef(null)
+    const languageRef = React.useRef(null)
+    const pageCountRef = React.useRef(null)
+    const authorRef = React.useRef(null)
+    const categoryRef = React.useRef(null)
+    const publishedDateRef = React.useRef(null)
     const [keyboardVisible, setKeyboardVisible] = React.useState(false);
 
     React.useEffect(() => {
@@ -60,7 +69,15 @@ export default function BookPreviewEditAdd(){
           'keyboardDidHide',
           () => {
             setKeyboardVisible(false);
+            isbnRef?.current.blur();
             descriptionRef?.current.blur();
+            titleRef?.current.blur();
+            publisherRef?.current.blur();
+            languageRef?.current.blur();
+            pageCountRef?.current.blur();
+            authorRef?.current.blur();
+            categoryRef?.current.blur();
+            publishedDateRef?.current.blur();
           }
         );
       
@@ -181,13 +198,13 @@ export default function BookPreviewEditAdd(){
         return idx === 0 ?
         <View style={styles.authorContainer}  key={idx}>
             <TextInput mode="outlined" value={author.name} onChangeText={(value) => handleAuthorChange(value, idx)}
-                       style={[styles.textInput, {marginTop:13}]} label={"Autor " + (idx + 1)} />
+                       style={[styles.textInput, {marginTop:13}]} label={"Autor " + (idx + 1)} ref={authorRef}/>
             <IconButton icon="close" iconColor="black" size={25} onPress={() => handleAuthorDelete(idx)} style={styles.authorExit}/>
         </View>
         :
         <View style={styles.authorContainer}  key={idx}>
             <TextInput mode="outlined" value={author.name} onChangeText={(value) => handleAuthorChange(value, idx)}
-                       style={styles.textInput} label={"Autor " + (idx + 1)} />
+                       style={styles.textInput} label={"Autor " + (idx + 1)} ref={authorRef}/>
             <IconButton icon="close" iconColor="black" size={25} onPress={() => handleAuthorDelete(idx)} style={styles.authorExit}/>
         </View>
 
@@ -197,13 +214,13 @@ export default function BookPreviewEditAdd(){
         return idx === 0 ?
         <View style={styles.authorContainer}  key={idx}>
             <TextInput mode="outlined" value={category.name} onChangeText={(value) => handleCategoryChange(value, idx)}
-                       style={[styles.textInput, {marginTop:13}]} label={"Kategoria " + (idx + 1)} />
+                       style={[styles.textInput, {marginTop:13}]} label={"Kategoria " + (idx + 1)} ref={categoryRef}/>
             <IconButton icon="close" iconColor="black" size={25} onPress={() => handleCategoryDelete(idx)} style={styles.authorExit}/>
         </View>
         :
         <View style={styles.authorContainer}  key={idx}>
             <TextInput mode="outlined" value={category.name} onChangeText={(value) => handleCategoryChange(value, idx)}
-                       style={styles.textInput} label={"Kategoria " + (idx + 1)} />
+                       style={styles.textInput} label={"Kategoria " + (idx + 1)} ref={categoryRef}/>
             <IconButton icon="close" iconColor="black" size={25} onPress={() => handleCategoryDelete(idx)} style={styles.authorExit}/>
         </View>
 
@@ -314,16 +331,19 @@ export default function BookPreviewEditAdd(){
             {data.isFound && <View style={{flex:1}}>
                 <ScrollView style={{flex:1, marginLeft:10, marginRight:10}}>
                     <List.Section>
-                        <TextInput mode="outlined" label = "ISBN" value={data.isbn} 
-                                onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput}/>
+                        <TextInput mode="outlined" label = "ISBN" value={data.isbn} maxLength={13} keyboardType="numeric"
+                                onChangeText={(value) => handleChange("isbn", value)} style={styles.textInput} 
+                                error={(data.isbn.length != 13 && ISBNfocused) ? true : false} ref={isbnRef}
+                                onFocus={()=>setISBNFocused(true)}
+                                onBlur={()=>setISBNFocused(false)}/>
                         <TextInput mode="outlined" label = "Tytuł" value={data.title} 
-                                onChangeText={(value) => handleChange("title", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                                onChangeText={(value) => handleChange("title", value)} style={[styles.textInput, {marginTop:-4}]} ref={titleRef} />
                         <TextInput mode="outlined" label = "Wydawca" value={data.publisher} 
-                                onChangeText={(value) => handleChange("publisher", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                                onChangeText={(value) => handleChange("publisher", value)} style={[styles.textInput, {marginTop:-4}]} ref={publisherRef}/>
                         <TextInput mode="outlined" label = "Język wydania" value={languageMap.get(data.language)} 
-                                onChangeText={(value) => handleChange("language", value)} style={[styles.textInput, {marginTop:-4}]}/>
-                        <TextInput mode="outlined" label = "Liczba stron" value={data.pageCount?.toString()} 
-                                onChangeText={(value) => handleChange("pageCount", value)} style={[styles.textInput, {marginTop:-4}]}/>
+                                onChangeText={(value) => handleChange("language", value)} style={[styles.textInput, {marginTop:-4}]} ref={languageRef}/>
+                        <TextInput mode="outlined" label = "Liczba stron" value={data.pageCount?.toString()} maxLength={5} keyboardType="numeric"
+                                onChangeText={(value) => handleChange("pageCount", value)} style={[styles.textInput, {marginTop:-4}]} ref={pageCountRef}/>
                         {categories}
                         <Button mode="contained-tonal" icon="plus" iconColor="silver" 
                                 style={[styles.addAuthorsButton, {marginTop: data.categories.length > 0 ? -9 : 2 }]}
@@ -347,19 +367,19 @@ export default function BookPreviewEditAdd(){
                                             }
                                         }
                             />
-                        <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} 
-                                onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
+                        <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} ref={publishedDateRef} maxLength={10}
+                                onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]} keyboardType="numeric"/>
                         <View style={styles.picker}>
                             <Picker selectedValue={selectedShelf.name}
                                     onValueChange={(itemValue, itemIndex) => {setSelectedShelf({id: itemIndex, name: itemValue})}}>
-                                <Picker.Item label="Półka" value="none" />
+                                {selectedShelf === "" && <Picker.Item label="Półka" value="none" />}
                                 {shelvesItems}
                             </Picker>
                         </View>
                         <View style={styles.picker}>
                             <Picker selectedValue={coverType}
                                     onValueChange={(itemValue, itemIndex) => {setCoverType(itemValue)}}>
-                                <Picker.Item label="Typ Okładki" value="none" />
+                                {coverType === "" && <Picker.Item label="Typ Okładki" value="none" />}
                                 {coverTypesItems}
                             </Picker>
                         </View>

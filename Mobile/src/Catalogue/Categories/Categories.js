@@ -21,7 +21,7 @@ export default function Categories() {
   const [showMore, setShowMore] = React.useState(false)
 
   React.useEffect(()=>{
-    if(isFocused){
+    // if(isFocused){
       fetch('https://bookshelf-java.azurewebsites.net/shelves')
       .then(res => res.json())
       .then((fetched_data) =>{
@@ -33,8 +33,8 @@ export default function Categories() {
       .catch(err => console.log(err))
 
       setIsLoaded(true)
-    }
-  },[isFocused])
+    // }
+  },[])
 
   React.useEffect(()=>{
     fetch('https://bookshelf-java.azurewebsites.net/books?q=' + searchQuery)

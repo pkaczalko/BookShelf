@@ -19,7 +19,6 @@ export default function AddBookManually(){
                                             isbn: "",
                                             isRead: true,
                                             favorite: true,
-                                            borrower: "John Smith",
                                             wishList: false,
                                             publisher:"",
                                             volume:1,
@@ -34,7 +33,6 @@ export default function AddBookManually(){
                                                     name: ""
                                                 }
                                             ],
-
                                             imgURI: "",
                                             description: ""})
     
@@ -96,17 +94,17 @@ export default function AddBookManually(){
 
     React.useEffect(()=>{
         if (isSaved === true){
-            const {description, ...toSendData} = data
             fetch('https://bookshelf-java.azurewebsites.net/books', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(toSendData)
+                body: JSON.stringify(data)
             })
             .then(res => res.json())
             .then(data => console.log("Succeded POST"))
             .catch(err => console.log(err))
+            setAlertShow(false)
             navigation.navigate('home')
         }
     },[isSaved])
@@ -120,6 +118,14 @@ export default function AddBookManually(){
         }
     },[data])
 
+    React.useEffect(()=>{
+        selectedShelf.name !== "none" ? setData({...data, shelf: {id: selectedShelf.id, name: selectedShelf.name}}) : setData({...data, shelf: null})
+    },[selectedShelf])
+
+    React.useEffect(()=>{
+        coverType !== "none" ? setData({...data, coverType: coverType}) : setData({...data, coverType: null})
+    },[coverType])
+    
     React.useEffect(()=>{
         fetch("https://bookshelf-java.azurewebsites.net/shelves") 
             .then(res => res.json())
@@ -256,6 +262,7 @@ export default function AddBookManually(){
             setAlertShow(true)
         }
         else{
+            setAlertShow(false)
             navigation.navigate('home')
         }
         return true

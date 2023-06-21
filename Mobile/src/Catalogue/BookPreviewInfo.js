@@ -94,7 +94,11 @@ export default function BookPreviewInfo(props){
     },[isDeleted])
 
     const authors = data.authors.map((author, idx)=>{
-        return <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>{author.name}</Text>
+        return( 
+        <Text style={[styles.title, {fontSize:15, fontWeight:"normal", color:"#888888"}]} key={idx}>
+            {idx ===  data.authors.length - 1 ? author.name : author.name +', '}
+        </Text>
+        )
     })
 
     function onHandlePress(){
@@ -136,7 +140,7 @@ export default function BookPreviewInfo(props){
     return(
         <SafeAreaProvider style={{flex:1, flexDirection:"column"}}>
             <View style={styles.container}>
-                <Image src={data.imgURI} style={styles.img} resizeMethod="resize" resizeMode="contain" />
+                <Image src={data.imgURI ? data.imgURI : "https://books.google.pl/googlebooks/images/no_cover_thumb.gif"} style={styles.img} resizeMethod="resize" resizeMode="contain" />
                 <View style={{flex:1}}>
                     <Text style={styles.title} numberOfLines={2}>{data.title}</Text>
                     <Text style={styles.authors}>{authors}</Text>

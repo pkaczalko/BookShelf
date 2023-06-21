@@ -272,10 +272,16 @@ export default function BookPreviewEdit(props){
                                 onChangeText={(value) => handleChange("language", value)} style={[styles.textInput, {marginTop:-4}]}/>
                         <TextInput mode="outlined" label = "Liczba stron" value={data.pageCount?.toString()} maxLength={5} keyboardType="numeric"
                                 onChangeText={(value) => handleChange("pageCount", value)} style={[styles.textInput, {marginTop:-4}]} ref={pageCountRef}/>
+                        <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} maxLength={10} keyboardType="numeric" ref={publishedDateRef}
+                                onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
+                        <Divider bold={true}/>
+                        <Text style={{marginTop:5, marginBottom:-5}}>Kategorie</Text>
                         {categories}
                         <Button mode="contained-tonal" icon="plus" iconColor="silver" 
                                 style={[styles.addAuthorsButton, {marginTop: data.categories.length > 0 ? -9 : 2 }]}
                                 onPress={handleOnAddCategories}>Dodaj kategorie</Button>
+                        <Divider bold={true}/>
+                        <Text style={{marginTop:5, marginBottom:-5}}>Autorzy</Text>
                         {authors}
                         <Button mode="contained-tonal" icon="plus" iconColor="silver" 
                                 style={[styles.addAuthorsButton, {marginTop: data.authors.length > 0 ? -9 : 2 }]}
@@ -295,8 +301,7 @@ export default function BookPreviewEdit(props){
                                         }
                                     }
                         />
-                        <TextInput mode="outlined" label = "Data Wydania" value={data.publishedDate} maxLength={10} keyboardType="numeric" ref={publishedDateRef}
-                                onChangeText={(value) => handleChange("publishedDate", value)} style={[styles.textInput, {marginTop:8}]}/>
+                        <Text style={{}}>Typ Okładki</Text>
                         <View style={styles.picker}>
                             <Picker selectedValue={coverType}
                                     onValueChange={(itemValue, itemIndex) => {setCoverType(itemValue)}}>

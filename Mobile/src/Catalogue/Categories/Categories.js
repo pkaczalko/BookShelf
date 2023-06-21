@@ -19,7 +19,6 @@ export default function Categories() {
   const [shelves, setShelves] = React.useState([])
   const [viewType, setViewType] = React.useState({type:'detailed', icon:'view-comfy'})
   const [showMore, setShowMore] = React.useState(false)
-  const [showOnlyBorrowed, setShowOnlyBorrowed] = React.useState(false)
 
   React.useEffect(()=>{
     if(isFocused){
@@ -28,6 +27,7 @@ export default function Categories() {
       .then((fetched_data) =>{
           const editedData = fetched_data.map(item => ({...item, isChecked: false}))
           editedData.some(item => item.name === "Wypożyczone") ? editedData : editedData.push({id: fetched_data.length + 1, name:"Wypożyczone", isChecked: false})
+          editedData.some(item => item.name === "WishList") ? editedData : editedData.push({id: fetched_data.length + 2, name:"WishList", isChecked: false})
           setShelves(editedData)
       })
       .catch(err => console.log(err))
@@ -40,23 +40,27 @@ export default function Categories() {
     fetch('https://bookshelf-java.azurewebsites.net/books?q=' + searchQuery)
     .then(res => res.json())
     .then((fetched_data) =>{
-        let borrowedData = [...fetched_data]
         let editedData = [...fetched_data]
         const checkedShelves = shelves.filter(item => item.isChecked)
         if (checkedShelves.length > 0){
           if (checkedShelves.filter(shelf => shelf.name === "Wypożyczone").length === 1){
             checkedShelves.pop()
-            borrowedData = fetched_data.filter(item => item.borrower !== null)
+            fetched_data = fetched_data.filter(item => item.borrower !== null)
           }
-          
+
+          if (checkedShelves.filter(shelf => shelf.name === "WishList").length === 1){
+            checkedShelves.pop()
+            fetched_data = fetched_data.filter(item => item.wishList === true)
+          }
+
           if(checkedShelves.length > 0){
-            editedData = borrowedData.map(item => {
+            editedData = fetched_data.map(item => {
               if (checkedShelves.filter(shelf => shelf.name === item.shelf.name).length === 1){
                   return {...item}
               }
             })
           } else {
-            editedData = [...borrowedData]
+            editedData = [...fetched_data]
           }
 
           const filteredEditedData = editedData.filter(item => item !== undefined);
@@ -129,16 +133,16 @@ export default function Categories() {
 
           {shelves.length < 4 ? <FlatList data={shelves} renderItem={renderShelvesCheckbox} keyExtractor={item => item.id}/>
           : <View> 
-              <FlatList data={showMore ? shelves.slice(0, -1) : shelves.slice(0,5)} renderItem={renderShelvesCheckbox} keyExtractor={item => item.id}/>
+              <FlatList data={showMore ? shelves.slice(0, -2) : shelves.slice(0,5)} renderItem={renderShelvesCheckbox} keyExtractor={item => item.id}/>
               <TouchableOpacity style={{flexDirection:"row"}} onPress={() => setShowMore(!showMore)}>
                   <Text style={styles.showMore}>{showMore ? 'Pokaż mniej' : 'Pokaż więcej'}</Text>
                   <Icon name={showMore ? "expand-less" : "expand-more"} size={20} style={{alignSelf:"center"}} color="black"></Icon>
               </TouchableOpacity>
             </View>}
-          <Divider style={{marginTop:20}} bold={true}/>
+          <Divider style={{marginTop:20, marginBottom:20}} bold={true}/>
 
-          <ShelfCheckBox title="Wypożyczone" isChecked={shelves.find(item => item.name === "Wypożyczone")?.isChecked} onChecked={() => handleCheck(shelves.length)}/>
-
+          <ShelfCheckBox title="Wypożyczone" isChecked={shelves.find(item => item.name === "Wypożyczone")?.isChecked} onChecked={() => handleCheck(shelves.length - 1)}/>
+          <ShelfCheckBox title="Na liście życzeń" isChecked={shelves.find(item => item.name === "WishList")?.isChecked} onChecked={() => handleCheck(shelves.length)}/>
         </BottomSheet>
       </View>
     </NativeViewGestureHandler>

@@ -22,8 +22,16 @@ export default function BookDetailed(props){
 
     return(
         <Card style={styles.container} onPress={onPressHandle} elevation={1}>
+            <View style={styles.iconContainer}>
+                <IconButton
+                style={styles.icon}
+                icon={props.wishList || props.borrower !== null ? "bookmark-remove" : "bookmark-check"}
+                size={25}
+                color="white"
+                />
+            </View>
             <Card.Content style={styles.content}>
-                <Card.Cover style={styles.imgCover} source={{ uri: props.imgURI ? props.imgURI : "brak" }} />
+                <Card.Cover style={styles.imgCover} source={{ uri: props.imgURI ? props.imgURI : "https://books.google.pl/googlebooks/images/no_cover_thumb.gif" }} />
                 <View style={styles.info}>
                     <View style={{flex:1, justifyContent:"flex-start"}}>
                         <Text style={styles.title}numberOfLines={2} >{props.title}</Text>
@@ -54,7 +62,9 @@ const styles = StyleSheet.create({
     content:{
         flex:1,
         flexDirection:"row",
-        height:200
+        height:200,
+        marginTop:12,
+        marginBottom:-5
     },
     imgCover:{
         flex:0.5,
@@ -98,5 +108,14 @@ const styles = StyleSheet.create({
     },
     pageCounterContainer:{
         flexDirection:"row",
-    }
+    },
+    iconContainer: {
+        position: 'absolute',
+        top: -10,
+        left: -10,
+        zIndex: 1,
+    },
+      icon: {
+        marginLeft:3
+    },
 })

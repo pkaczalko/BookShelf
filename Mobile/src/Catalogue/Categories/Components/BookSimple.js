@@ -14,7 +14,7 @@ export default function BookSimple(props){
     return(
             <View style={styles.container}>
                 <Card style={styles.cardContainer} mode="elevated" elevation={1} onPress={onPressHandle}>
-                    <Card.Cover style={styles.cardCover} source={{ uri: props.uri }} />
+                    <Card.Cover style={styles.cardCover} source={{ uri: props.uri ? props.uri : "https://books.google.pl/googlebooks/images/no_cover_thumb.gif"}} />
                     {/* {img.isLoaded === false && <Card.Cover style={[styles.cardCover, {backgroundColor:img.backgroundColor}]} />}
                     <ActivityIndicator animating={!img.isLoaded} color={MD2Colors.black} style={styles.cardCover}/> */}
                 </Card>

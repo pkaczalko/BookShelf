@@ -1,6 +1,1 @@
-# BookShelf
-
-https://online.visual-paradigm.com/share.jsp?id=323138393538322d37
-https://www.figma.com/team_invite/redeem/02ZcZLhI5ech3VQm1kpCRS
-https://www.youtube.com/watch?v=jx5hdo50a2M
-https://dev.azure.com/BookShelf-WTB2/BookShelf/_boards/board/t/BookShelf%20Team/Issues
+Bookshelf is an application that allows for effective cataloging of owned books and serves as a tool for creating personalized lists of read titles and tracking reading progress. It is divided into a mobile version and a desktop version.

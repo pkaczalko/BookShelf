@@ -1,4 +1,4 @@
-package com.BookshelfProject.Bookshelf.User;
+package com.BookshelfProject.Bookshelf.user;
 
 import jakarta.persistence.*;
 import lombok.*;

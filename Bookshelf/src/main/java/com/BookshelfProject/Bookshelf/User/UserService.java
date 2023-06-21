@@ -1,4 +1,4 @@
-package com.BookshelfProject.Bookshelf.User;
+package com.BookshelfProject.Bookshelf.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,29 +16,26 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        return this.userRepository.findAll();
+        return userRepository.findAll();
     }
 
     public User getById(Long id) {
-        return (User)this.userRepository.findById(id).orElseThrow(() -> {
-            return new NoSuchElementException("User not found with id " + id);
-        });
+        return userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found with id " + id));
     }
 
     public User addUser(User user) {
-        return (User)this.userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public User updateUser(Long id, User userDetails) {
-        User user = this.getById(id);
+        User user = getById(id);
         user.setLogin(userDetails.getLogin());
         user.setPassword(userDetails.getPassword());
         user.setEmail(userDetails.getEmail());
-
-        return (User)this.userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public void delete(Long id) {
-        this.userRepository.deleteById(id);
+        userRepository.deleteById(id);
     }
 }

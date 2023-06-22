@@ -5,6 +5,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import Add from './BottomRoutes/AddRoute';
 import HomeRoute from './BottomRoutes/HomeRoute';
 import BookPreview from './BottomRoutes/BookPreviewRoute';
+import Login from '../Login/Login';
 
 export default function BottomNavbar(){
     const Stack = createStackNavigator();
@@ -13,6 +14,11 @@ export default function BottomNavbar(){
         <NavigationContainer>
 
             <Stack.Navigator>
+                <Stack.Screen
+                    name="login"
+                    component={Login}
+                    options={{headerShown: false}}
+                />
                 <Stack.Screen
                     name="home"
                     component={HomeRoute}
